@@ -25,8 +25,9 @@ namespace MeaTaste
             if (openFileDialog.ShowDialog() == true)
             {
                 string _fileName = openFileDialog.FileName;
-                _mainWindowModel.OpenedFileLabelContent = _fileName; 
-                int Idfile = FileReader.Hdf5OpenFile(_fileName);
+                _mainWindowModel.OpenedFileLabelContent = _fileName;
+                FileReader fR = new FileReader();
+                long Idfile = fR.Hdf5OpenFile(_fileName);
             }
         }
     }

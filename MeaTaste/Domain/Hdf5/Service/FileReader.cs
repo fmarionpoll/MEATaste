@@ -7,6 +7,7 @@ using System.IO;
 using System.Collections.Generic;
 using HDF.PInvoke;
 using HDF5CSharp;
+using HDF5CSharp.DataTypes;
 
 namespace MeaTaste.Domain.Hdf5.Service
 {
@@ -19,10 +20,14 @@ namespace MeaTaste.Domain.Hdf5.Service
         {
             fileId = 0;
             var status = H5.open();
-            Console.WriteLine("HDF5 open =", status);
+            System.Diagnostics.Debug.WriteLine("HDF5 open =", status);
 
             fileId = H5F.open(FileName, H5F.ACC_RDONLY);
-            Console.WriteLine("fileId =", fileId, "\n");
+            System.Diagnostics.Debug.WriteLine("fileId =", fileId, "\n");
+
+            //List<HDF5CSharp.DataTypes.Hdf5Element> tree = HDF5CSharp.Hdf5.ReadTreeFileStructure(FileName);
+            List<HDF5CSharp.DataTypes.Hdf5Element> flat = HDF5CSharp.Hdf5.ReadFlatFileStructure(FileName);
+
             return fileId;
         }
     }
