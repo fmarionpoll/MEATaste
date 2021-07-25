@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Version>1.0.1</Version>
+    <Authors>FMP</Authors>
+    <Company>EGCE</Company>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Domain\Hdf5\Models\DataTypes\" />
+    <Folder Include="Domain\MeaData\Analyzing\" />
+    <Folder Include="Domain\Hdf5\Storage\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="HDF.PInvoke.1.10" Version="1.10.612" />
+    <PackageReference Include="HDF5-CSharp" Version="1.12.4" />
+  </ItemGroup>
+</Project>
