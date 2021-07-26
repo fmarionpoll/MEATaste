@@ -15,8 +15,20 @@ namespace MeaTaste.Domain.MeaData.Models
     public record Time(int Channel, double TimeChannel);
     public record Version(int Channel, int VersionChannel);
 
-    public record Wellplate (int Id, string Version, Well Well);
-    public record Well(string CellType, ControlWell[] Control, string Group_color, string Group_name, IdWell[] IdWell, string Name);
+    public record Wellplate(
+        string Version,
+        int Id,
+        string Name, 
+        Well[] Well);
+    
+    public record Well(
+        IdWell[] IdWell,
+        string CellType, 
+        ControlWell[] Control, 
+        string Group_color, 
+        string Group_name, 
+       string Name);
+
     public record ControlWell(int Channel, int Item);
     public record IdWell(int Channel, int Item);
 }
