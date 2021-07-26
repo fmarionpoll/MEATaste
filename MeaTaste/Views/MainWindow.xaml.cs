@@ -10,8 +10,6 @@ namespace MeaTaste
     {
         private MainWindowModel _mainWindowModel;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -27,7 +25,8 @@ namespace MeaTaste
                 string _fileName = openFileDialog.FileName;
                 _mainWindowModel.OpenedFileLabelContent = _fileName;
                 FileReader fR = new FileReader();
-                long Idfile = fR.Hdf5OpenFile(_fileName);
+  //            long Idfile = fR.Hdf5OpenFile(_fileName);
+                fR.Hdf5ReadFlatFileStructure(_fileName);
             }
         }
     }

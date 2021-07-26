@@ -13,22 +13,32 @@ namespace MeaTaste.Domain.Hdf5.Service
 {
     public class FileReader
     {
-        long fileId;
-        IList<string> _labels;
+        long fileId = 0;
+       
         
         public long Hdf5OpenFile(string FileName)
         {
-            fileId = 0;
-            var status = H5.open();
-            System.Diagnostics.Debug.WriteLine("HDF5 open =", status);
-
+            //fileId = 0;
+            //var status = H5.open();
+            //System.Diagnostics.Debug.WriteLine("HDF5 open =", status);
             fileId = H5F.open(FileName, H5F.ACC_RDONLY);
-            System.Diagnostics.Debug.WriteLine("fileId =", fileId, "\n");
+            //System.Diagnostics.Debug.WriteLine("fileId =", fileId, "\n");
+
+            return fileId;
+        }
+
+
+        public void Hdf5ReadFlatFileStructure(string FileName)
+        {
+            //fileId = 0;
+            //var status = H5.open();
+            //System.Diagnostics.Debug.WriteLine("HDF5 open =", status);
+
+            //fileId = H5F.open(FileName, H5F.ACC_RDONLY);
+            //System.Diagnostics.Debug.WriteLine("fileId =", fileId, "\n");
 
             //List<HDF5CSharp.DataTypes.Hdf5Element> tree = HDF5CSharp.Hdf5.ReadTreeFileStructure(FileName);
             List<HDF5CSharp.DataTypes.Hdf5Element> flat = HDF5CSharp.Hdf5.ReadFlatFileStructure(FileName);
-
-            return fileId;
         }
     }
 }
