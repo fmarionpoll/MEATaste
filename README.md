@@ -1,11 +1,6 @@
 # MeaTaste
 
-<<<<<<< HEAD
-TasteMEA 
-Read H5 file from MaxWell Biosystems and visualize its content
-=======
 Read H5 file from MaxLab Live Software and visualize its content
->>>>>>> 6aca211b7f126a156f9708284a9b080112394347
 .NET core program written in C# for Windows 10
 
 ---
