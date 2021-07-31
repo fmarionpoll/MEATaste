@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
@@ -9,7 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Domain\Hdf5\Models\DataTypes\" />
-    <Folder Include="Domain\MeaData\Analyzing\" />
+    <Folder Include="Domain\DataMEA\Analyzing\" />
     <Folder Include="Domain\Hdf5\Storage\" />
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MeaTaste\MeaTaste.csproj" />
+    <ProjectReference Include="..\MeaTaste\TasteMEA.csproj" />
   </ItemGroup>
 
 </Project>
