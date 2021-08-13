@@ -22,6 +22,7 @@ namespace MeaTaste.Domain.MeaData.Models
 
     public class MeaExperiment
     {
+        public string FileName { get; set; }
         public Descriptors Descriptors { get; set; }
         public MicroElectrodeArray MicroElectrodeArray { get; set; }
     }
@@ -33,7 +34,7 @@ namespace MeaTaste.Domain.MeaData.Models
 
     public class MicroElectrodeArray
     {
-        public Pixel[] Pixels { get; set; } // 1024
+        public Pixel[] Pixels { get; set; } // 1024/65000
     }
 
     public class Pixel
