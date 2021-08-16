@@ -8,9 +8,7 @@
     <Company>EGCE</Company>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Domain\DataMEA\Analyzing\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="HDF5DotNet.x64" Version="1.8.9" />
+    <PackageReference Include="HDF.PInvoke.1.10" Version="1.10.612" />
+    <PackageReference Include="HDF5.NET" Version="1.0.0-alpha.10.final" />
   </ItemGroup>
 </Project>

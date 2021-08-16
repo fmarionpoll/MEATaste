@@ -2,7 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using MeaTaste.Domain.Hdf5.Service;
+using MeaTaste.Domain.DataMEA.MaxWell;
+using MeaTaste.Domain.DataMEA.Models;
 
 namespace MeaTaste
 {
@@ -24,8 +25,12 @@ namespace MeaTaste
             {
                 string _fileName = openFileDialog.FileName;
                 _mainWindowModel.OpenedFileLabelContent = _fileName;
-                // long Idfile = fR.Hdf5OpenFile(_fileName);
-                Hdf5FileReader.Read(_fileName);
+                if (FileReader.OpenReadMaxWellFile(_fileName)
+                    && FileReader.IsFileReadableAsMaxWellFile())
+                {
+                    MeaExperiment MEAExpInfos = FileReader.GetExperimentInfos();
+                }
+                
             }
         }
     }

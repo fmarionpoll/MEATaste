@@ -1,6 +1,6 @@
 ﻿
 
-namespace MeaTaste.Domain.MeaData.Models
+namespace MeaTaste.Domain.DataMEA.Models
 {
     public class MeasureFileData
     {

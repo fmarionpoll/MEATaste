@@ -1,22 +1,9 @@
 ﻿using System.Linq;
+using System.Diagnostics;
 
-namespace MeaTaste.Domain.MeaData.Models
+namespace MeaTaste.Domain.DataMEA.Models
 {
-    public class MicroElectrodeArrayAnalyzor
-    {
-        private readonly MicroElectrodeArray _microElectrodeArray;
-
-        public MicroElectrodeArrayAnalyzor(MicroElectrodeArray microElectrodeArray) =>
-            _microElectrodeArray = microElectrodeArray;
-
-        public void Analyze() { }
-
-        public bool PixelExists(int x, int y) =>
-            _microElectrodeArray.Pixels.Any(p => p.X == x && p.Y == y);
-
-        public Pixel GetPixel(int X, int Y) =>
-            _microElectrodeArray.Pixels.First(p => p.X == X && p.Y == Y);
-    }
+   
 
     // Models
 
@@ -29,9 +16,25 @@ namespace MeaTaste.Domain.MeaData.Models
 
     public class Descriptors
     {
-        // props
+        // time
+        public double TimeStart { get; set; }
+        public double TimeStop { get; set; }
+        public double SamplingRate { get; set; } = 20000;
+        // settings
+        public double Gain { get; set; }
+        public double Hpf { get; set; }
+        public double Lsb { get; set; }
+        // mapping
+        public ElectrodeChannel[] RecordedChannels;
     }
 
+    public class ElectrodeChannel
+    {
+        public int ChannelNumber;
+        public int ElectrodeNumber;
+        public double XCoordinates_um;
+        public double YCoordinates_um;
+    }
     public class MicroElectrodeArray
     {
         public Pixel[] Pixels { get; set; } // 1024/65000
@@ -53,4 +56,20 @@ namespace MeaTaste.Domain.MeaData.Models
 
     public record Recording(double Gain, double Period, RecordingPoint[] Points);
     public record RecordingPoint(int Index, int Amplication);
+
+    public class MicroElectrodeArrayAnalyzor
+    {
+        private readonly MicroElectrodeArray _microElectrodeArray;
+
+        public MicroElectrodeArrayAnalyzor(MicroElectrodeArray microElectrodeArray) =>
+            _microElectrodeArray = microElectrodeArray;
+
+        public void Analyze() { }
+
+        public bool PixelExists(int x, int y) =>
+            _microElectrodeArray.Pixels.Any(p => p.X == x && p.Y == y);
+
+        public Pixel GetPixel(int X, int Y) =>
+            _microElectrodeArray.Pixels.First(p => p.X == X && p.Y == Y);
+    }
 }
