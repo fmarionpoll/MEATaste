@@ -3,6 +3,7 @@ using HDF.PInvoke;
 using HDF5.NET;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace MeaTaste.Domain.DataMEA.MaxWell
 {
@@ -11,7 +12,7 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
         public static string FileName { get; set; }
         public static string FileVersion { get; set; } = "unknown";
         public static H5File Root { get; set; }
-        
+
 
         public static bool OpenReadMaxWellFile(string fileName)
         {
@@ -21,6 +22,7 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
                 Trace.WriteLine($"HDF5 {majnum}.{minnum}.{relnum}");
 
             Root = H5File.OpenRead(fileName);
+            FileName = fileName;
             return Root != null;
         }
 
@@ -36,7 +38,7 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
             finally
             {
             }
-            
+
             if (FileVersion == "20160704")
             {
                 Trace.WriteLine($"MaxWell file version: legacy ({FileVersion}) or v0");
@@ -56,7 +58,7 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
         {
             MeaExperiment MeaExp = new MeaExperiment
             {
-                
+
                 Descriptors = new Descriptors
                 {
 
@@ -69,8 +71,7 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
             MeaExp.FileName = FileName;
             ReadSettingsDescriptors(MeaExp);
             ReadTimeDescriptors(MeaExp);
-
-
+            ReadMapElectrodes(MeaExp);
             return MeaExp;
         }
 
@@ -82,13 +83,28 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
                 H5Group group = Root.Group("/");
                 H5Dataset dataset = group.Dataset("time");
                 string[] data = dataset.ReadString();
-                string TimeStartString = data[0];
+                string lines = data[0];
                 // "start: 2021-07-15 16:54:58;\nstop: 2021-07-15 16:57:54\n"
+                string[] strings = lines.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                MeaExp.Descriptors.TimeStart = GetTimeFromString(strings[0], "start: ");
+                MeaExp.Descriptors.TimeStop = GetTimeFromString(strings[1], "stop: ");
+                flag = true;
             }
             finally
             {
             }
             return flag;
+        }
+
+        private static DateTime GetTimeFromString(string inputstring, string pattern)
+        {
+            int pos1 = pattern.Length;
+            int pos2 = inputstring.IndexOf(';');
+            if (pos2 < 0)
+                pos2 = inputstring.Length;
+            string dateInput = inputstring.Substring(pos1, pos2 - pos1);
+            DateTime parsedDate = DateTime.Parse(dateInput);
+            return parsedDate;
         }
 
         public static bool ReadSettingsDescriptors(MeaExperiment MeaExp)
@@ -119,7 +135,49 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
             double[] results = datasetGain.Read<double>();
             return results;
         }
-    }
 
-   
+        [StructLayout(LayoutKind.Explicit, Size = 24)]
+        internal struct DatasetMembers
+        {
+                [FieldOffset(0)]
+                public int channel;
+
+                [FieldOffset(4)]
+                public int electrode;
+
+                [FieldOffset(8)]
+                public double x;
+
+                [FieldOffset(16)]
+                public double y;
+        };
+
+        public static bool ReadMapElectrodes(MeaExperiment MeaExp)
+        {
+            bool flag = false;
+            try
+            {
+                H5Group group = Root.Group("/");
+                H5Dataset dataset = group.Dataset("mapping");
+                DatasetMembers[] compoundData = dataset.Read<DatasetMembers>();
+
+                MeaExp.Descriptors.RecordedChannels = new ElectrodeChannel[compoundData.Length];
+                for (int i=0; i< compoundData.Length; i++)
+                {
+                    ElectrodeChannel ec = new ElectrodeChannel();
+                    ec.ChannelNumber = compoundData[i].channel;
+                    ec.ElectrodeNumber = compoundData[i].electrode;
+                    ec.XCoordinates_um = compoundData[i].x;
+                    ec.YCoordinates_um = compoundData[i].y;
+                    MeaExp.Descriptors.RecordedChannels[i] = ec;
+                }
+            }
+            finally
+            {
+            }
+            return flag;
+        }
+       
+    
+    }
 }

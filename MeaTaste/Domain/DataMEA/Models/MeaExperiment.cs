@@ -1,10 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Diagnostics;
 
 namespace MeaTaste.Domain.DataMEA.Models
 {
-   
-
     // Models
 
     public class MeaExperiment
@@ -17,8 +16,8 @@ namespace MeaTaste.Domain.DataMEA.Models
     public class Descriptors
     {
         // time
-        public double TimeStart { get; set; }
-        public double TimeStop { get; set; }
+        public DateTime TimeStart { get; set; }
+        public DateTime TimeStop { get; set; }
         public double SamplingRate { get; set; } = 20000;
         // settings
         public double Gain { get; set; }
@@ -35,6 +34,7 @@ namespace MeaTaste.Domain.DataMEA.Models
         public double XCoordinates_um;
         public double YCoordinates_um;
     }
+
     public class MicroElectrodeArray
     {
         public Pixel[] Pixels { get; set; } // 1024/65000
