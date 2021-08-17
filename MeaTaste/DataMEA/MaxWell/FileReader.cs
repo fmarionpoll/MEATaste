@@ -158,7 +158,10 @@ namespace MeaTaste.DataMEA.MaxWell
                 H5Group group = Root.Group("/");
                 H5Dataset dataset = group.Dataset("sig");
                 H5DataLayout Layout = dataset.Layout;
-            }
+                H5Dataspace Space = dataset.Space;
+                H5DataType Type = dataset.Type;
+                H5FillValue FillValue = dataset.FillValue;
+
             finally
             {
             }
