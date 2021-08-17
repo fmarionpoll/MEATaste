@@ -9,13 +9,13 @@ namespace MeaTaste
 {
     public partial class MainWindow : Window
     {
-        private MainWindowModel _mainWindowModel;
+
+        public MeaExperiment MEAExpInfos;
 
         public MainWindow()
         {
             InitializeComponent();
-            _mainWindowModel = new MainWindowModel();
-            DataContext = _mainWindowModel;
+
         }
 
         private void OpenDialogButton_Click(object sender, RoutedEventArgs e)
@@ -24,37 +24,23 @@ namespace MeaTaste
             if (openFileDialog.ShowDialog() == true)
             {
                 string _fileName = openFileDialog.FileName;
-                _mainWindowModel.OpenedFileLabelContent = _fileName;
                 if (FileReader.OpenReadMaxWellFile(_fileName)
                     && FileReader.IsFileReadableAsMaxWellFile())
                 {
-                    MeaExperiment MEAExpInfos = FileReader.GetExperimentInfos();
+                    MEAExpInfos = FileReader.GetExperimentInfos();
+
+                    OpenedFileLabel.Content = "File: " + FileReader.FileName;
+                    OpenedFileLabel.Visibility = Visibility.Visible;
+                    OpenedFileVersion.Content = "Version: "+ FileReader.FileVersion;
+                    OpenedFileVersion.Visibility = Visibility.Visible;
+
+                    bool flag = FileReader.ReadAllElectrodeDataAsInt(MEAExpInfos, 0);
                 }
-                
+
             }
         }
     }
 
-    public class MainWindowModel : INotifyPropertyChanged
-    {
-        private string _openedFileLabelContent = "";
-
-        public string OpenedFileLabelContent
-        {
-            get { return _openedFileLabelContent; }
-            set
-            {
-                _openedFileLabelContent = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-    }
+ 
 }
 

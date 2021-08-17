@@ -3,7 +3,8 @@ using HDF.PInvoke;
 using HDF5.NET;
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using TasteMEA.DataMEA.MaxWell;
+
 
 namespace MeaTaste.DataMEA.MaxWell
 {
@@ -56,19 +57,7 @@ namespace MeaTaste.DataMEA.MaxWell
 
         public static MeaExperiment GetExperimentInfos()
         {
-            MeaExperiment MeaExp = new MeaExperiment
-            {
-
-                Descriptors = new Descriptors
-                {
-
-                },
-                MicroElectrodeArray = new MicroElectrodeArray
-                {
-                    Pixels = new Pixel[1024]
-                }
-            };
-            MeaExp.FileName = FileName;
+            MeaExperiment MeaExp = new MeaExperiment(FileName, new Descriptors());
             ReadSettingsDescriptors(MeaExp);
             ReadTimeDescriptors(MeaExp);
             ReadMapElectrodes(MeaExp);
@@ -136,22 +125,6 @@ namespace MeaTaste.DataMEA.MaxWell
             return results;
         }
 
-        [StructLayout(LayoutKind.Explicit, Size = 24)]
-        internal struct DatasetMembers
-        {
-            [FieldOffset(0)]
-            public int channel;
-
-            [FieldOffset(4)]
-            public int electrode;
-
-            [FieldOffset(8)]
-            public double x;
-
-            [FieldOffset(16)]
-            public double y;
-        };
-
         public static bool ReadMapElectrodes(MeaExperiment MeaExp)
         {
             bool flag = false;
@@ -159,17 +132,17 @@ namespace MeaTaste.DataMEA.MaxWell
             {
                 H5Group group = Root.Group("/");
                 H5Dataset dataset = group.Dataset("mapping");
-                DatasetMembers[] compoundData = dataset.Read<DatasetMembers>();
+                Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
 
-                MeaExp.Descriptors.RecordedChannels = new ElectrodeChannel[compoundData.Length];
-                for (int i=0; i< compoundData.Length; i++)
+                MeaExp.Descriptors.electrodes = new Electrode[compoundData.Length];
+                for (int i = 0; i < compoundData.Length; i++)
                 {
-                    ElectrodeChannel ec = new ElectrodeChannel(
-                        compoundData[i].channel, 
-                        compoundData[i].electrode, 
+                    Electrode ec = new Electrode(
+                        compoundData[i].channel,
+                        compoundData[i].electrode,
                         compoundData[i].x,
                         compoundData[i].y);
-                    MeaExp.Descriptors.RecordedChannels[i] = ec;
+                    MeaExp.Descriptors.electrodes[i] = ec;
                 }
             }
             finally
@@ -177,7 +150,20 @@ namespace MeaTaste.DataMEA.MaxWell
             }
             return flag;
         }
-       
-    
+
+        public static bool ReadAllElectrodeDataAsInt(MeaExperiment MeaExp, int ElectrodeNumber)
+        {
+            try
+            {
+                H5Group group = Root.Group("/");
+                H5Dataset dataset = group.Dataset("sig");
+                H5DataLayout Layout = dataset.Layout;
+            }
+            finally
+            {
+            }
+
+            return true;
+        }
     }
 }

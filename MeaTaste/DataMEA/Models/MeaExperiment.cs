@@ -10,7 +10,12 @@ namespace MeaTaste.DataMEA.Models
     {
         public string FileName;
         public Descriptors Descriptors;
-        public MicroElectrodeArray MicroElectrodeArray;
+
+        public MeaExperiment(string fileName, Descriptors descriptors)
+        {
+            FileName = fileName;
+            Descriptors = descriptors;
+        }
     }
 
     public record Descriptors
@@ -24,16 +29,15 @@ namespace MeaTaste.DataMEA.Models
         public double Hpf;
         public double Lsb;
         // mapping
-        public ElectrodeChannel[] RecordedChannels;
+        public Electrode[] electrodes;
     }
 
-    public record ElectrodeChannel(
+    public record Electrode(
         int ChannelNumber,
         int ElectrodeNumber,
         double XCoordinates_um,
         double YCoordinates_um);
  
-
     // -------------------------------------
 
     public class MicroElectrodeArray

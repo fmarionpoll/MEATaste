@@ -20,7 +20,7 @@ namespace MeaTaste.DataMEA.Models
         ControlWell[] Control, 
         string Group_color, 
         string Group_name, 
-       string Name);
+        string Name);
 
     public record ControlWell(int Channel, int Item);
     public record IdWell(int Channel, int Item);
