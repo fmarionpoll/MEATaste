@@ -161,7 +161,7 @@ namespace MeaTaste.DataMEA.MaxWell
                 H5Dataspace Space = dataset.Space;
                 H5DataType Type = dataset.Type;
                 H5FillValue FillValue = dataset.FillValue;
-
+            }
             finally
             {
             }
