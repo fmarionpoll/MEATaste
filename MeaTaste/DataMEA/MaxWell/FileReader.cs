@@ -1,11 +1,11 @@
-﻿using MeaTaste.Domain.DataMEA.Models;
+﻿using MeaTaste.DataMEA.Models;
 using HDF.PInvoke;
 using HDF5.NET;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace MeaTaste.Domain.DataMEA.MaxWell
+namespace MeaTaste.DataMEA.MaxWell
 {
     public static class FileReader
     {
@@ -139,17 +139,17 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
         [StructLayout(LayoutKind.Explicit, Size = 24)]
         internal struct DatasetMembers
         {
-                [FieldOffset(0)]
-                public int channel;
+            [FieldOffset(0)]
+            public int channel;
 
-                [FieldOffset(4)]
-                public int electrode;
+            [FieldOffset(4)]
+            public int electrode;
 
-                [FieldOffset(8)]
-                public double x;
+            [FieldOffset(8)]
+            public double x;
 
-                [FieldOffset(16)]
-                public double y;
+            [FieldOffset(16)]
+            public double y;
         };
 
         public static bool ReadMapElectrodes(MeaExperiment MeaExp)
@@ -164,11 +164,11 @@ namespace MeaTaste.Domain.DataMEA.MaxWell
                 MeaExp.Descriptors.RecordedChannels = new ElectrodeChannel[compoundData.Length];
                 for (int i=0; i< compoundData.Length; i++)
                 {
-                    ElectrodeChannel ec = new ElectrodeChannel();
-                    ec.ChannelNumber = compoundData[i].channel;
-                    ec.ElectrodeNumber = compoundData[i].electrode;
-                    ec.XCoordinates_um = compoundData[i].x;
-                    ec.YCoordinates_um = compoundData[i].y;
+                    ElectrodeChannel ec = new ElectrodeChannel(
+                        compoundData[i].channel, 
+                        compoundData[i].electrode, 
+                        compoundData[i].x,
+                        compoundData[i].y);
                     MeaExp.Descriptors.RecordedChannels[i] = ec;
                 }
             }

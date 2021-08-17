@@ -2,38 +2,39 @@
 using System.Linq;
 using System.Diagnostics;
 
-namespace MeaTaste.Domain.DataMEA.Models
+namespace MeaTaste.DataMEA.Models
 {
     // Models
 
-    public class MeaExperiment
+    public record MeaExperiment
     {
-        public string FileName { get; set; }
-        public Descriptors Descriptors { get; set; }
-        public MicroElectrodeArray MicroElectrodeArray { get; set; }
+        public string FileName;
+        public Descriptors Descriptors;
+        public MicroElectrodeArray MicroElectrodeArray;
     }
 
-    public class Descriptors
+    public record Descriptors
     {
         // time
-        public DateTime TimeStart { get; set; }
-        public DateTime TimeStop { get; set; }
-        public double SamplingRate { get; set; } = 20000;
+        public DateTime TimeStart;
+        public DateTime TimeStop;
+        public double SamplingRate = 20000;
         // settings
-        public double Gain { get; set; }
-        public double Hpf { get; set; }
-        public double Lsb { get; set; }
+        public double Gain;
+        public double Hpf;
+        public double Lsb;
         // mapping
         public ElectrodeChannel[] RecordedChannels;
     }
 
-    public class ElectrodeChannel
-    {
-        public int ChannelNumber;
-        public int ElectrodeNumber;
-        public double XCoordinates_um;
-        public double YCoordinates_um;
-    }
+    public record ElectrodeChannel(
+        int ChannelNumber,
+        int ElectrodeNumber,
+        double XCoordinates_um,
+        double YCoordinates_um);
+ 
+
+    // -------------------------------------
 
     public class MicroElectrodeArray
     {
@@ -55,13 +56,13 @@ namespace MeaTaste.Domain.DataMEA.Models
     }
 
     public record Recording(double Gain, double Period, RecordingPoint[] Points);
-    public record RecordingPoint(int Index, int Amplication);
+    public record RecordingPoint(int Index, int Amplification);
 
-    public class MicroElectrodeArrayAnalyzor
+    public class MicroElectrodeArrayAnalyzer
     {
         private readonly MicroElectrodeArray _microElectrodeArray;
 
-        public MicroElectrodeArrayAnalyzor(MicroElectrodeArray microElectrodeArray) =>
+        public MicroElectrodeArrayAnalyzer(MicroElectrodeArray microElectrodeArray) =>
             _microElectrodeArray = microElectrodeArray;
 
         public void Analyze() { }

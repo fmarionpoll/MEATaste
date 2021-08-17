@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using MeaTaste.Domain.DataMEA.MaxWell;
-using MeaTaste.Domain.DataMEA.Models;
+using MeaTaste.DataMEA.MaxWell;
+using MeaTaste.DataMEA.Models;
 
 namespace MeaTaste
 {
