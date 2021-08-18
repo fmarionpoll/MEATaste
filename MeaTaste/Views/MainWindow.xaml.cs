@@ -67,7 +67,7 @@ namespace MeaTaste
 
         private void ListOfElectrodes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            int selectedIndex = MEAExpInfos.Descriptors.electrodes[0].ChannelNumber; // ListOfElectrodes.SelectedIndex;
+            int selectedIndex = MEAExpInfos.Descriptors.electrodes[0].ChannelNumber; 
             oneRow = FileReader.ReadAllElectrodeDataAsInt(selectedIndex);
         }
     }
