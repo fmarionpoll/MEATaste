@@ -4,6 +4,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using MeaTaste.DataMEA.MaxWell;
 using MeaTaste.DataMEA.Models;
+using System.Diagnostics;
+using ScottPlot;
+using System.Linq;
 
 namespace MeaTaste
 {
@@ -11,7 +14,7 @@ namespace MeaTaste
     {
 
         public MeaExperiment MEAExpInfos;
-        public int[] oneRow = null;
+        public ushort[] oneRow = null;
 
         public MainWindow()
         {
@@ -29,46 +32,31 @@ namespace MeaTaste
                     && FileReader.IsFileReadableAsMaxWellFile())
                 {
                     MEAExpInfos = FileReader.GetExperimentInfos();
-                    OpenedFileLabel.Visibility = Visibility.Visible;
-                    OpenedFileVersion.Visibility = Visibility.Visible;
-                    ListOfElectrodes.Visibility = Visibility.Visible;
+                    UpdateLabels();
                 }
 
             }
         }
 
-       
-
+        private void UpdateLabels()
+        {
+            OpenedFileLabel.Visibility = Visibility.Visible;
+            OpenedFileVersion.Visibility = Visibility.Visible;
+            ListOfElectrodes.Visibility = Visibility.Visible;
+            OpenedFileLabel.Content = "File: " + MEAExpInfos.FileName;
+            OpenedFileVersion.Content = "Version: " + MEAExpInfos.FileVersion;
+            ListOfElectrodes.ItemsSource = MEAExpInfos.Descriptors.electrodes;
+        }
         
-        private void OpenedFileLabel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (OpenedFileLabel.Visibility == Visibility.Visible)
-            {
-                OpenedFileLabel.Content = "File: " + MEAExpInfos.FileName;
-            }
-        }
-
-        private void OpenedFileVersion_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (OpenedFileVersion.Visibility == Visibility.Visible)
-            {
-                OpenedFileVersion.Content = "Version: " + MEAExpInfos.FileVersion;
-            }
-        }
-
-        private void ListOfElectrodes_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (ListOfElectrodes.Visibility == Visibility.Visible)
-            {
-                ListOfElectrodes.ItemsSource = MEAExpInfos.Descriptors.electrodes;
-
-            }
-        }
-
         private void ListOfElectrodes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            int selectedIndex = MEAExpInfos.Descriptors.electrodes[0].ChannelNumber; 
+            int selectedIndex = MEAExpInfos.Descriptors.electrodes[0].ChannelNumber;
             oneRow = FileReader.ReadAllElectrodeDataAsInt(selectedIndex);
+
+            var plt = new Plot(600, 400);
+            double[] myData = oneRow.Select(x => (double)x).ToArray();
+            plt.AddSignal(myData, sampleRate: 20_000);
+            plt.Title("Scott Plot of selected row");
         }
     }
 

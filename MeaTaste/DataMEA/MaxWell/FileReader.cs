@@ -152,52 +152,72 @@ namespace MeaTaste.DataMEA.MaxWell
             return flag;
         }
 
-        public static int [] ReadAllElectrodeDataAsInt(int ElectrodeNumber)
+        public static ushort[] ReadAllElectrodeDataAsInt(int ElectrodeNumber)
         {
-            int[] result;
+            H5Group group = Root.Group("/");
+            H5Dataset dataset = group.Dataset("sig");
+            ulong nbchannels = dataset.Space.Dimensions[0]; // 1028 expected
+            ulong nbdatapoints = dataset.Space.Dimensions[1]; // any size
+            return ReadElectrodeDataAsInt(ElectrodeNumber, 0, nbdatapoints -1);
+        }
+
+        public static ushort[] ReadElectrodeDataAsInt(int ElectrodeNumber, ulong startsAt, ulong endsAt)
+        {
+            ushort[] result;
             try
             {
                 H5Group group = Root.Group("/");
                 H5Dataset dataset = group.Dataset("sig");
 
-                int ndimensions = dataset.Space.Dimensions.Length;
+                int ndimensions = dataset.Space.Rank;
                 if (ndimensions != 2)
                     return null;
-                ulong nbchannels = dataset.Space.Dimensions[0]; // 1028 expected
-                ulong nbdatapoints = dataset.Space.Dimensions[1]; // any size
-                var dataType = dataset.Type;
+                //ulong nbchannels = dataset.Space.Dimensions[0];     // 1028 expected
+                //ulong nbdatapoints = dataset.Space.Dimensions[1];   // any size
+                //var dataType = dataset.Type;
 
-                var memoryDims = new ulong[] { nbdatapoints };
+                ulong nbpoints = endsAt - startsAt + 1;
+
+                var memoryDims = new ulong[] { nbpoints };
 
                 var datasetSelection = new HyperslabSelection(
                     rank: 2,
-                    starts: new ulong[] { (ulong)ElectrodeNumber, 0 },      // start at row ElectrodeNumber, column 0
-                    strides: new ulong[] { 1, 1 },                          // don't skip anything
-                    counts: new ulong[] { 1, nbdatapoints },                // read 1 row, ndatapoints columns
-                    blocks: new ulong[] { 1, 1 }                            // blocks are single elements
+                    starts: new ulong[] { (ulong)ElectrodeNumber, startsAt },   // start at row ElectrodeNumber, column 0
+                    strides: new ulong[] { 1, 1 },                              // don't skip anything
+                    counts: new ulong[] { 1, nbpoints },                        // read 1 row, ndatapoints columns
+                    blocks: new ulong[] { 1, 1 }                                // blocks are single elements
                 );
 
                 var memorySelection = new HyperslabSelection(
                     rank: 1,
                     starts: new ulong[] { 0 },
                     strides: new ulong[] { 1 },
-                    counts: new ulong[] { nbdatapoints },
+                    counts: new ulong[] { nbpoints },
                     blocks: new ulong[] { 1 }
                 );
 
                 result = dataset
-                    .Read<int>(
+                    .Read<ushort>(
                         fileSelection: datasetSelection,
                         memorySelection: memorySelection,
                         memoryDims: memoryDims
-                    )
-                    .ToArray1D((long)nbdatapoints);
-                
+                    );
+                //.ToArray1D((long)nbdatapoints);
+
             }
             finally
             {
             }
             return result;
+        }
+
+        public static int[] Keep10bitsOnly(int[] results)
+        {
+            for (int i = 0; i < results.Length; i++)
+            {
+                results[i] &= 1023;
+            }
+            return results;
         }
 
 
