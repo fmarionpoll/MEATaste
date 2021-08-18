@@ -11,6 +11,7 @@
     <PackageReference Include="HDF.PInvoke.1.10" Version="1.10.612" />
     <PackageReference Include="HDF5.NET" Version="1.0.0-alpha.10.final" />
     <PackageReference Include="ScottPlot" Version="4.1.16" />
+    <PackageReference Include="ScottPlot.WPF" Version="4.1.16" />
     <PackageReference Include="System.Linq" Version="4.3.0" />
   </ItemGroup>
 </Project>

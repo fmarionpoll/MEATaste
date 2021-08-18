@@ -5,7 +5,7 @@ using System.Windows;
 using MeaTaste.DataMEA.MaxWell;
 using MeaTaste.DataMEA.Models;
 using System.Diagnostics;
-using ScottPlot;
+using ScottPlot.WPF;
 using System.Linq;
 
 namespace MeaTaste
@@ -53,8 +53,9 @@ namespace MeaTaste
             int selectedIndex = MEAExpInfos.Descriptors.electrodes[0].ChannelNumber;
             oneRow = FileReader.ReadAllElectrodeDataAsInt(selectedIndex);
 
-            var plt = new Plot(600, 400);
+            var plt = wpfPlot1.Plot;
             double[] myData = oneRow.Select(x => (double)x).ToArray();
+            plt.Clear();
             plt.AddSignal(myData, sampleRate: 20_000);
             plt.Title("Scott Plot of selected row");
         }
