@@ -11,6 +11,7 @@ namespace MeaTaste
     {
 
         public MeaExperiment MEAExpInfos;
+        public int[] oneRow = null;
 
         public MainWindow()
         {
@@ -28,16 +29,46 @@ namespace MeaTaste
                     && FileReader.IsFileReadableAsMaxWellFile())
                 {
                     MEAExpInfos = FileReader.GetExperimentInfos();
-
-                    OpenedFileLabel.Content = "File: " + FileReader.FileName;
                     OpenedFileLabel.Visibility = Visibility.Visible;
-                    OpenedFileVersion.Content = "Version: "+ FileReader.FileVersion;
                     OpenedFileVersion.Visibility = Visibility.Visible;
-
-                    bool flag = FileReader.ReadAllElectrodeDataAsInt(MEAExpInfos, 0);
+                    ListOfElectrodes.Visibility = Visibility.Visible;
                 }
 
             }
+        }
+
+       
+
+        
+        private void OpenedFileLabel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (OpenedFileLabel.Visibility == Visibility.Visible)
+            {
+                OpenedFileLabel.Content = "File: " + MEAExpInfos.FileName;
+            }
+        }
+
+        private void OpenedFileVersion_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (OpenedFileVersion.Visibility == Visibility.Visible)
+            {
+                OpenedFileVersion.Content = "Version: " + MEAExpInfos.FileVersion;
+            }
+        }
+
+        private void ListOfElectrodes_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (ListOfElectrodes.Visibility == Visibility.Visible)
+            {
+                ListOfElectrodes.ItemsSource = MEAExpInfos.Descriptors.electrodes;
+
+            }
+        }
+
+        private void ListOfElectrodes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            int selectedIndex = MEAExpInfos.Descriptors.electrodes[0].ChannelNumber; // ListOfElectrodes.SelectedIndex;
+            oneRow = FileReader.ReadAllElectrodeDataAsInt(selectedIndex);
         }
     }
 

@@ -8,7 +8,8 @@ namespace MeaTaste.DataMEA.Models
 
     public record MeaExperiment
     {
-        public string FileName;
+        public string FileName { get; set; }
+        public string FileVersion { get; set; } = "unknown";
         public Descriptors Descriptors;
 
         public MeaExperiment(string fileName, Descriptors descriptors)

@@ -9,7 +9,8 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" Height="37" Margin="32,38,0,0" VerticalAlignment="Top" Width="74" Click="OpenDialogButton_Click" RenderTransformOrigin="0.508,-0.402"/>
-        <Label x:Name="OpenedFileLabel"   HorizontalAlignment="Left" Margin="49,91,0,0" VerticalAlignment="Top" Content="filename" Visibility="Hidden"/>
-        <Label x:Name="OpenedFileVersion" HorizontalAlignment="Left" Margin="49,122,0,0" VerticalAlignment="Top" Content="fileversion" Visibility="Hidden"/>
+        <Label x:Name="OpenedFileLabel"   HorizontalAlignment="Left" Margin="49,91,0,0" VerticalAlignment="Top" Content="filename" Visibility="Hidden" IsVisibleChanged="OpenedFileLabel_IsVisibleChanged"/>
+        <Label x:Name="OpenedFileVersion" HorizontalAlignment="Left" Margin="49,122,0,0" VerticalAlignment="Top" Content="fileversion" Visibility="Hidden" IsVisibleChanged="OpenedFileVersion_IsVisibleChanged"/>
+        <ListBox x:Name="ListOfElectrodes" Margin="32,208,519,31" IsVisibleChanged="ListOfElectrodes_IsVisibleChanged" Visibility="Hidden" SelectionChanged="ListOfElectrodes_SelectionChanged"/>
     </Grid>
 </Window>

@@ -58,6 +58,7 @@ namespace MeaTaste.DataMEA.MaxWell
         public static MeaExperiment GetExperimentInfos()
         {
             MeaExperiment MeaExp = new MeaExperiment(FileName, new Descriptors());
+            MeaExp.FileVersion = FileVersion;
             ReadSettingsDescriptors(MeaExp);
             ReadTimeDescriptors(MeaExp);
             ReadMapElectrodes(MeaExp);
@@ -151,22 +152,56 @@ namespace MeaTaste.DataMEA.MaxWell
             return flag;
         }
 
-        public static bool ReadAllElectrodeDataAsInt(MeaExperiment MeaExp, int ElectrodeNumber)
+        public static int [] ReadAllElectrodeDataAsInt(int ElectrodeNumber)
         {
+            int[] result;
             try
             {
                 H5Group group = Root.Group("/");
                 H5Dataset dataset = group.Dataset("sig");
-                H5DataLayout Layout = dataset.Layout;
-                H5Dataspace Space = dataset.Space;
-                H5DataType Type = dataset.Type;
-                H5FillValue FillValue = dataset.FillValue;
+
+                int ndimensions = dataset.Space.Dimensions.Length;
+                if (ndimensions != 2)
+                    return null;
+                ulong nbchannels = dataset.Space.Dimensions[0]; // 1028 expected
+                ulong nbdatapoints = dataset.Space.Dimensions[1]; // any size
+                var dataType = dataset.Type;
+
+                var memoryDims = new ulong[] { nbdatapoints };
+
+                var datasetSelection = new HyperslabSelection(
+                    rank: 2,
+                    starts: new ulong[] { (ulong)ElectrodeNumber, 0 },      // start at row ElectrodeNumber, column 0
+                    strides: new ulong[] { 1, 1 },                          // don't skip anything
+                    counts: new ulong[] { 1, nbdatapoints },                // read 1 row, ndatapoints columns
+                    blocks: new ulong[] { 1, 1 }                            // blocks are single elements
+                );
+
+                var memorySelection = new HyperslabSelection(
+                    rank: 1,
+                    starts: new ulong[] { 0 },
+                    strides: new ulong[] { 1 },
+                    counts: new ulong[] { nbdatapoints },
+                    blocks: new ulong[] { 1 }
+                );
+
+                result = dataset
+                    .Read<int>(
+                        fileSelection: datasetSelection,
+                        memorySelection: memorySelection,
+                        memoryDims: memoryDims
+                    )
+                    .ToArray1D((long)nbdatapoints);
+                
             }
             finally
             {
             }
-
-            return true;
+            return result;
         }
+
+
     }
+
 }
+
