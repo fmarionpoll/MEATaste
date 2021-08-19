@@ -7,6 +7,7 @@ using MeaTaste.DataMEA.Models;
 using System.Diagnostics;
 using ScottPlot.WPF;
 using System.Linq;
+using TasteMEA.DataMEA.Utilies;
 
 namespace MeaTaste
 {
@@ -14,7 +15,8 @@ namespace MeaTaste
     {
 
         public MeaExperiment MEAExpInfos;
-        public ushort[] oneRow = null;
+        public ushort[,] allData = null;
+        public ushort[] oneIntRow = null;
 
         public MainWindow()
         {
@@ -52,11 +54,16 @@ namespace MeaTaste
         {
             int selected = ListOfElectrodes.SelectedIndex;
             int selectedIndex = MEAExpInfos.Descriptors.electrodes[selected].ChannelNumber;
-            oneRow = FileReader.ReadAllElectrodeDataAsInt(selectedIndex);
+            // this works
+            oneIntRow = FileReader.ReadAll_OneElectrodeAsInt(selectedIndex);
 
+            // this does not work
+            //allData = FileReader.ReadAll_AllElectrodeAsInt();
+            //ushort[] oneIntRow = allData.GetRow(selected);
+            
             var plt = wpfPlot1.Plot;
-            double[] myData = oneRow.Select(x => (double)x).ToArray();
             plt.Clear();
+            double[] myData = oneIntRow.Select(x => (double)x).ToArray();
             plt.AddSignal(myData, sampleRate: 20_000);
             string title = $"channel: {selectedIndex} electrode: {MEAExpInfos.Descriptors.electrodes[selected].ElectrodeNumber}" ;
             plt.Title(title );
