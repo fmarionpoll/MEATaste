@@ -9,11 +9,11 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid>
-        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" Height="37" Margin="32,38,0,0" VerticalAlignment="Top" Width="74" Click="OpenDialogButton_Click" RenderTransformOrigin="0.508,-0.402"/>
-        <Label x:Name="OpenedFileLabel"   HorizontalAlignment="Left" Margin="32,84,0,0" VerticalAlignment="Top" Content="filename" Visibility="Hidden"/>
-        <Label x:Name="OpenedFileVersion" HorizontalAlignment="Left" Margin="32,115,0,0" VerticalAlignment="Top" Content="fileversion" Visibility="Hidden" RenderTransformOrigin="0.495,0.311"/>
-        <ListBox x:Name="ListOfElectrodes" Margin="10,146,510,31" Visibility="Hidden" SelectionChanged="ListOfElectrodes_SelectionChanged"/>
-        <WpfPlot x:Name="wpfPlot1" HorizontalAlignment="Left" Margin="282,165,0,0" VerticalAlignment="Top" Width="518" Height="224"/>
+        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" Height="37" Margin="13,24,0,0" VerticalAlignment="Top" Width="74" Click="OpenDialogButton_Click" RenderTransformOrigin="0.508,-0.402"/>
+        <Label x:Name="OpenedFileLabel"   HorizontalAlignment="Left" Margin="95,30,0,0" VerticalAlignment="Top" Content="filename" Visibility="Visible"/>
+        <Label x:Name="OpenedFileVersion" HorizontalAlignment="Left" Margin="95,56,0,0" VerticalAlignment="Top" Content="fileversion" Visibility="Visible" RenderTransformOrigin="0.495,0.311"/>
+        <ListBox x:Name="ListOfElectrodes" Margin="13,82,523,10" Visibility="Visible" SelectionChanged="ListOfElectrodes_SelectionChanged"/>
+        <WpfPlot x:Name="wpfPlot1" HorizontalAlignment="Left" Margin="282,242,0,0" VerticalAlignment="Top" Width="518" Height="184"/>
 
     </Grid>
 

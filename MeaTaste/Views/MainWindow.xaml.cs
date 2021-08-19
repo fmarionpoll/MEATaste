@@ -50,14 +50,16 @@ namespace MeaTaste
         
         private void ListOfElectrodes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            int selectedIndex = MEAExpInfos.Descriptors.electrodes[0].ChannelNumber;
+            int selected = ListOfElectrodes.SelectedIndex;
+            int selectedIndex = MEAExpInfos.Descriptors.electrodes[selected].ChannelNumber;
             oneRow = FileReader.ReadAllElectrodeDataAsInt(selectedIndex);
 
             var plt = wpfPlot1.Plot;
             double[] myData = oneRow.Select(x => (double)x).ToArray();
             plt.Clear();
             plt.AddSignal(myData, sampleRate: 20_000);
-            plt.Title("Scott Plot of selected row");
+            string title = $"channel: {selectedIndex} electrode: {MEAExpInfos.Descriptors.electrodes[selected].ElectrodeNumber}" ;
+            plt.Title(title );
         }
     }
 
