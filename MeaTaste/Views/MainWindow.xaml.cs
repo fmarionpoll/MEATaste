@@ -1,13 +1,17 @@
 ﻿using Microsoft.Win32;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using MeaTaste.DataMEA.MaxWell;
 using MeaTaste.DataMEA.Models;
-using System.Diagnostics;
-using ScottPlot.WPF;
 using System.Linq;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
 using TasteMEA.DataMEA.Utilies;
+
 
 namespace MeaTaste
 {
@@ -54,19 +58,31 @@ namespace MeaTaste
         {
             int selected = ListOfElectrodes.SelectedIndex;
             int selectedIndex = MEAExpInfos.Descriptors.electrodes[selected].ChannelNumber;
-            // this works
-            oneIntRow = FileReader.ReadAll_OneElectrodeAsInt(selectedIndex);
 
-            // this does not work
-            //allData = FileReader.ReadAll_AllElectrodeAsInt();
-            //ushort[] oneIntRow = allData.GetRow(selected);
-            
-            var plt = wpfPlot1.Plot;
-            plt.Clear();
-            double[] myData = oneIntRow.Select(x => (double)x).ToArray();
-            plt.AddSignal(myData, sampleRate: 20_000);
-            string title = $"channel: {selectedIndex} electrode: {MEAExpInfos.Descriptors.electrodes[selected].ElectrodeNumber}" ;
-            plt.Title(title );
+            Mouse.OverrideCursor = Cursors.Wait;
+            try
+            {
+
+                oneIntRow = FileReader.ReadAll_OneElectrodeAsInt(selectedIndex);
+
+                var plt = wpfPlot1.Plot;
+                plt.Clear();
+                double[] myData = oneIntRow.Select(x => (double)x).ToArray();
+                plt.AddSignal(myData, MEAExpInfos.Descriptors.SamplingRate);
+                string title = $"channel: {selectedIndex} electrode: {MEAExpInfos.Descriptors.electrodes[selected].ElectrodeNumber} (position : x={MEAExpInfos.Descriptors.electrodes[selected].XCoordinates_um}, y={MEAExpInfos.Descriptors.electrodes[selected].YCoordinates_um} µm)";
+                plt.Title(title);
+
+                var plt2 = wpfPlot2.Plot;
+                plt2.Clear();
+                double[] derivRow = Filter.BDeriv(myData, myData.Length);
+                plt2.AddSignal(derivRow, MEAExpInfos.Descriptors.SamplingRate, System.Drawing.Color.Orange);
+                plt2.Title("derivRow");
+                
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
         }
     }
 

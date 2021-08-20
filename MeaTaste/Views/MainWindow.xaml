@@ -6,14 +6,25 @@
         xmlns:local="clr-namespace:MeaTaste"
         xmlns:Models="clr-namespace:MeaTaste.DataMEA.Models" x:Class="MeaTaste.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Width="1090" Height="500">
 
-    <Grid>
-        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" Height="37" Margin="13,24,0,0" VerticalAlignment="Top" Width="74" Click="OpenDialogButton_Click" RenderTransformOrigin="0.508,-0.402"/>
-        <Label x:Name="OpenedFileLabel"   HorizontalAlignment="Left" Margin="95,30,0,0" VerticalAlignment="Top" Content="filename" Visibility="Visible"/>
-        <Label x:Name="OpenedFileVersion" HorizontalAlignment="Left" Margin="95,56,0,0" VerticalAlignment="Top" Content="fileversion" Visibility="Visible" RenderTransformOrigin="0.495,0.311"/>
-        <ListBox x:Name="ListOfElectrodes" Margin="13,82,523,10" Visibility="Visible" SelectionChanged="ListOfElectrodes_SelectionChanged"/>
-        <WpfPlot x:Name="wpfPlot1" HorizontalAlignment="Left" Margin="282,242,0,0" VerticalAlignment="Top" Width="518" Height="184"/>
+    <Grid x:Name="panelGrid" Margin="0,0,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*" />
+            <ColumnDefinition Width="84*" />
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="8*"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" Height="27" Margin="10,0,0,0" VerticalAlignment="Center" Width="113" Click="OpenDialogButton_Click" RenderTransformOrigin="0.508,-0.402" Grid.Column="0"/>
+        <Label x:Name="OpenedFileLabel"   HorizontalAlignment="Left" VerticalAlignment="Top" Content="filename" Visibility="Visible" Grid.Row="0" Grid.Column="1" Width="695" Height="26" Margin="10,0,0,0"/>
+        <Label x:Name="OpenedFileVersion" HorizontalAlignment="Left" Margin="142,0,0,0" VerticalAlignment="Center" Content="fileversion" Visibility="Visible" Grid.Column="0" Height="26" Width="98"/>
+        <ListBox x:Name="ListOfElectrodes" Margin="5,15,10,15" Visibility="Visible" SelectionChanged="ListOfElectrodes_SelectionChanged" Height="Auto" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2"/>
+        <WpfPlot x:Name="wpfPlot1" Margin="10,0,10,0" VerticalAlignment="Center" Grid.Row ="1"  Grid.Column="1" Height="207"/>
+        <WpfPlot x:Name="wpfPlot2" Margin="10,0,10,0" VerticalAlignment="Center" Grid.Row ="2" Grid.Column="1" Height="208"/>
 
     </Grid>
 

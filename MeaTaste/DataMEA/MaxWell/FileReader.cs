@@ -209,67 +209,6 @@ namespace MeaTaste.DataMEA.MaxWell
             return result;
         }
 
-        // TODO: read the whole 1028 channels into 1 large array and suppress unused rows?
-        // TODO: read data chunk by chunk and store only the relevant rows?
-        public static ushort[,] ReadAll_AllElectrodeAsInt()
-        {
-            H5Group group = Root.Group("/");
-            H5Dataset dataset = group.Dataset("sig");
-            ulong nbchannels = dataset.Space.Dimensions[0]; // 1028 expected
-            ulong nbdatapoints = dataset.Space.Dimensions[1]; // any size
-            return Read_AllElectrodeDataAsInt( 0, nbdatapoints - 1);
-        }
-
-        public static ushort[,] Read_AllElectrodeDataAsInt(ulong startsAt, ulong endsAt)
-        {
-            ushort[,] result;
-            try
-            {
-                H5Group group = Root.Group("/");
-                H5Dataset dataset = group.Dataset("sig");
-
-                int ndimensions = dataset.Space.Rank;
-                if (ndimensions != 2)
-                    return null;
-                ulong nbchannels = dataset.Space.Dimensions[0];     // 1028 expected
-                //ulong nbdatapoints = dataset.Space.Dimensions[1];   // any size
-                //var dataType = dataset.Type;
-
-                ulong nbpoints = endsAt - startsAt + 1;
-
-                var memoryDims = new ulong[] { nbchannels, nbpoints };
-
-                var datasetSelection = new HyperslabSelection(
-                    rank: 2,
-                    starts: new ulong[] { 0, startsAt },                // start at row ElectrodeNumber, column 0
-                    strides: new ulong[] { 1, 1 },                      // don't skip anything
-                    counts: new ulong[] { nbchannels, nbpoints },       // read all rows, all columns
-                    blocks: new ulong[] { 1, 1 }                        // blocks are single elements
-                );
-
-                var memorySelection = new HyperslabSelection(
-                    rank: 2,
-                    starts: new ulong[] { 0, 0 },
-                    strides: new ulong[] { 1, 1 },
-                    counts: new ulong[] { nbchannels, nbpoints },
-                    blocks: new ulong[] { 1, 1 }
-                );
-
-                result = dataset
-                    .Read<ushort>(
-                        fileSelection: datasetSelection,
-                        memorySelection: memorySelection,
-                        memoryDims: memoryDims
-                    )
-                    .ToArray2D((long)nbchannels, (long)nbpoints);
-
-            }
-            finally
-            {
-            }
-            return result;
-        }
-
 
     }
 

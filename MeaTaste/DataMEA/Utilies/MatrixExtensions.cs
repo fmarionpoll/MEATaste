@@ -19,8 +19,6 @@ namespace TasteMEA.DataMEA.Utilies
             return rowVector;
         }
 
-
-
         /// <summary>
         /// Sets the row with number 'row' of this 2D-matrix to the parameter 'rowVector'.
         /// </summary>
@@ -31,8 +29,6 @@ namespace TasteMEA.DataMEA.Utilies
             for (var i = 0; i < rowLength; i++)
                 matrix[row, i] = rowVector[i];
         }
-
-
 
         /// <summary>
         /// Returns the column with number 'col' of this matrix as a 1D-Array.
@@ -47,8 +43,6 @@ namespace TasteMEA.DataMEA.Utilies
 
             return colVector;
         }
-
-
 
         /// <summary>
         /// Sets the column with number 'col' of this 2D-matrix to the parameter 'colVector'.
