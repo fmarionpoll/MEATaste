@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 
 namespace TasteMEA.DataMEA.Utilies
 {
@@ -70,8 +70,8 @@ namespace TasteMEA.DataMEA.Utilies
 			}
 		}
 
-        /*
-		public static double[] BMedian(double[] source, int rowLength, int nbspan)
+        
+		public static double[] BMedian(double[] dataIn, int rowLength, int nbspan)
 		{
 			double[] dataOut = new double[rowLength];
 			int m_parray_size = nbspan * 2 + 1;
@@ -80,20 +80,20 @@ namespace TasteMEA.DataMEA.Utilies
 			int i;
 			for (i = 0; i < m_parray_size; i++)
 			{
-				m_parraySorted [i] = source[i]; 
-				m_parrayCircular[i] = source[i];
+				m_parraySorted [i] = dataIn[i]; 
+				m_parrayCircular[i] = dataIn[i];
 			}
 
 			// sort m_parraySorted into ascending order using heapsort algorithm
-			// cf Numerical recipes Press et al.1986, pp 231
+			// cf Numerical recipes Press et al. 1986, pp 231
 			// "l"= index which will be decremented from initial value down to 0 during
 			// 'hiring' (heap creation) phase. Once it reaches 0, the index "ir" will be
 			// decremented from its initial value down to 0 during the 'retirement-and-
 			// promotion' (heap selection) phase.
 
-			int l = nbspan + 1;              // temp index
+			int l = nbspan + 1;             // temp index
 			int ir = m_parray_size - 1;     // temp index
-			double val;                      // temp storage
+			double val;                     // temp storage
 
 			for (; ; )                      // pseudo-loop over m_parraySorted
 			{
@@ -138,15 +138,14 @@ namespace TasteMEA.DataMEA.Utilies
 			}
 			// end of initial sort
 
-			int lp = 0;                 // first data point
-			int lp_next = lp + nbspan;	// last point
+
 			int i_parray_circular = m_parray_size - 1; // point on the last item so that first operation is blank
 
-			for (auto icx = cx; icx > 0; icx--, lp += lp_source_offset_nextpoint, lp_next += lp_source_offset_nextpoint, lp_dest++)
-			{
-				const auto oldvalue = *(m_parrayCircular + i_parray_circular);  // old value
-				const auto newvalue = *lp_next;                                 // new value to insert into array
-				*(m_parrayCircular + i_parray_circular) = newvalue; // save new value into circular array
+            for (int icx = rowLength-1; icx > 0; icx--)
+            {
+                double oldvalue = m_parrayCircular[i_parray_circular];  // old value
+				double newvalue = dataIn[icx];                     // new value to insert into array
+				m_parrayCircular [i_parray_circular] = newvalue; // save new value into circular array
 
 				// update circular array pointer
 				i_parray_circular++;
@@ -159,15 +158,15 @@ namespace TasteMEA.DataMEA.Utilies
 
 				// binary search
 				// Herbert Schildt: C the complete reference McGraw Hill, 1987, pp 488
-				auto jhigh = m_parray_size - 1; // upper index
-				auto jlow = 0;                  // mid point index
-				auto jj2 = (jlow + jhigh) / 2;
+				int jhigh = m_parray_size - 1; // upper index
+				int jlow = 0;                  // mid point index
+				int jj2 = (jlow + jhigh) / 2;
 				while (jlow <= jhigh)
 				{
 					jj2 = (jlow + jhigh) / 2;
-					if (oldvalue > *(m_parraySorted + jj2))
+					if (oldvalue > m_parraySorted [jj2])
 						jlow = jj2 + 1;
-					else if (oldvalue < *(m_parraySorted + jj2))
+					else if (oldvalue < m_parraySorted [jj2])
 						jhigh = jj2 - 1;
 					else
 						break;
@@ -176,47 +175,46 @@ namespace TasteMEA.DataMEA.Utilies
 				// insert new value in the correct position
 
 				// case 1: search (and replace) towards higher values
-				if (newvalue > *(m_parraySorted + jj2))
+				if (newvalue > m_parraySorted [jj2])
 				{
-					auto j = jj2;
-					for (auto k = jj2; newvalue > *(m_parraySorted + k); k++, j++)
+					int j = jj2;
+					for (int k = jj2; newvalue > m_parraySorted [k]; k++, j++)
 					{
-						if (k == m_parray_size)
+						if (k == m_parray_size -1)
 							break;
-						*(m_parraySorted + j) = *(m_parraySorted + j + 1);
+						m_parraySorted [j] = m_parraySorted [j + 1];
 					}
-					*(m_parraySorted + j - 1) = newvalue;
+					m_parraySorted [j - 1] = newvalue;
 				}
 
 				// case 2: search (and replace) towards lower values
-				else if (newvalue < *(m_parraySorted + jj2))
+				else if (newvalue < m_parraySorted [jj2])
 				{
-					auto j = jj2;
-					for (auto k = jj2; newvalue < *(m_parraySorted + k); k--, j--)
+					int j = jj2;
+					for (int k = jj2; newvalue < m_parraySorted [k]; k--, j--)
 					{
 						if (j == 0)
 						{
-							if (newvalue < *m_parraySorted)
+							if (newvalue < m_parraySorted[0])
 								j--;
 							break;
 						}
-						*(m_parraySorted + j) = *(m_parraySorted + j - 1);
+						m_parraySorted [j] = m_parraySorted [j - 1];
 					}
-					*(m_parraySorted + j + 1) = newvalue;
+					m_parraySorted [j + 1] = newvalue;
 				}
 
 				// case 3: already found!
 				else
-					*(m_parraySorted + jj2) = newvalue;
+					m_parraySorted [jj2] = newvalue;
 
-				// save median value in the output array
-				*lp_dest = *lp - *(m_parraySorted + nbspan);
-				ASSERT(lp >= min_lp_source);
-				ASSERT(lp <= max_lp_source);
+                // save median value in the output array
+                dataOut[icx] = dataIn[icx] - m_parraySorted [nbspan-1];
+
 			}
 			return dataOut;
 		}
-        */
+        
 
 	}
 
@@ -225,6 +223,9 @@ namespace TasteMEA.DataMEA.Utilies
     /// Memory: O(windowSize).
     /// Add complexity: O(log(windowSize)).
     /// GetValue complexity: O(1).
+    /// 
+    /// Fast implementation of the moving quantile based on the partitioning heaps (2020)
+    /// https://aakinshin.net/posts/partitioning-heaps-quantile-estimator/
     /// 
     /// <remarks>
     /// Based on the following paper:
@@ -235,7 +236,7 @@ namespace TasteMEA.DataMEA.Utilies
     public class PartitioningHeapsMovingQuantileEstimator
     {
         private readonly int windowSize, k;
-        private readonly double[] h;
+        private readonly double[] elementsOfThePartitioningHeap;
         private readonly int[] heapToElementIndex;
         private readonly int[] elementToHeapIndex;
         private readonly int rootHeapIndex, lowerHeapMaxSize;
@@ -246,7 +247,7 @@ namespace TasteMEA.DataMEA.Utilies
         {
             this.windowSize = windowSize;
             this.k = k;
-            h = new double[windowSize];
+            elementsOfThePartitioningHeap = new double[windowSize];
             heapToElementIndex = new int[windowSize];
             elementToHeapIndex = new int[windowSize];
 
@@ -259,11 +260,11 @@ namespace TasteMEA.DataMEA.Utilies
         {
             int elementIndex1 = heapToElementIndex[heapIndex1];
             int elementIndex2 = heapToElementIndex[heapIndex2];
-            double value1 = h[heapIndex1];
-            double value2 = h[heapIndex2];
+            double value1 = elementsOfThePartitioningHeap[heapIndex1];
+            double value2 = elementsOfThePartitioningHeap[heapIndex2];
 
-            h[heapIndex1] = value2;
-            h[heapIndex2] = value1;
+            elementsOfThePartitioningHeap[heapIndex1] = value2;
+            elementsOfThePartitioningHeap[heapIndex2] = value1;
             heapToElementIndex[heapIndex1] = elementIndex2;
             heapToElementIndex[heapIndex2] = elementIndex1;
             elementToHeapIndex[elementIndex1] = heapIndex2;
@@ -282,7 +283,7 @@ namespace TasteMEA.DataMEA.Utilies
 
                 if (hasChild1 && !hasChild2)
                 {
-                    if (h[heapIndex] < h[heapChildIndex1] && !isUpperHeap || h[heapIndex] > h[heapChildIndex1] && isUpperHeap)
+                    if (elementsOfThePartitioningHeap[heapIndex] < elementsOfThePartitioningHeap[heapChildIndex1] && !isUpperHeap || elementsOfThePartitioningHeap[heapIndex] > elementsOfThePartitioningHeap[heapChildIndex1] && isUpperHeap)
                     {
                         Swap(heapIndex, heapChildIndex1);
                         return heapChildIndex1;
@@ -292,12 +293,12 @@ namespace TasteMEA.DataMEA.Utilies
 
                 if (hasChild1 && hasChild2)
                 {
-                    if ((h[heapIndex] < h[heapChildIndex1] || h[heapIndex] < h[heapChildIndex2]) && !isUpperHeap ||
-                        (h[heapIndex] > h[heapChildIndex1] || h[heapIndex] > h[heapChildIndex2]) && isUpperHeap)
+                    if ((elementsOfThePartitioningHeap[heapIndex] < elementsOfThePartitioningHeap[heapChildIndex1] || elementsOfThePartitioningHeap[heapIndex] < elementsOfThePartitioningHeap[heapChildIndex2]) && !isUpperHeap ||
+                        (elementsOfThePartitioningHeap[heapIndex] > elementsOfThePartitioningHeap[heapChildIndex1] || elementsOfThePartitioningHeap[heapIndex] > elementsOfThePartitioningHeap[heapChildIndex2]) && isUpperHeap)
                     {
                         int heapChildIndex0 =
-                            h[heapChildIndex1] > h[heapChildIndex2] && !isUpperHeap ||
-                            h[heapChildIndex1] < h[heapChildIndex2] && isUpperHeap
+                            elementsOfThePartitioningHeap[heapChildIndex1] > elementsOfThePartitioningHeap[heapChildIndex2] && !isUpperHeap ||
+                            elementsOfThePartitioningHeap[heapChildIndex1] < elementsOfThePartitioningHeap[heapChildIndex2] && isUpperHeap
                                 ? heapChildIndex1
                                 : heapChildIndex2;
                         Swap(heapIndex, heapChildIndex0);
@@ -315,7 +316,7 @@ namespace TasteMEA.DataMEA.Utilies
                 {
                     bool isUpHeap = heapIndex > rootHeapIndex;
                     int heapParentIndex = rootHeapIndex + (heapIndex - rootHeapIndex) / 2;
-                    if (h[heapParentIndex] < h[heapIndex] && !isUpHeap || h[heapParentIndex] > h[heapIndex] && isUpHeap)
+                    if (elementsOfThePartitioningHeap[heapParentIndex] < elementsOfThePartitioningHeap[heapIndex] && !isUpHeap || elementsOfThePartitioningHeap[heapParentIndex] > elementsOfThePartitioningHeap[heapIndex] && isUpHeap)
                     {
                         Swap(heapIndex, heapParentIndex);
                         heapIndex = heapParentIndex;
@@ -359,14 +360,14 @@ namespace TasteMEA.DataMEA.Utilies
                 break;
             }
         }
-
+        
         public void Add(double value)
         {
             int elementIndex = totalElementCount % windowSize;
 
             int Insert(int heapIndex)
             {
-                h[heapIndex] = value;
+                elementsOfThePartitioningHeap[heapIndex] = value;
                 heapToElementIndex[heapIndex] = elementIndex;
                 elementToHeapIndex[elementIndex] = heapIndex;
                 return heapIndex;
@@ -406,14 +407,14 @@ namespace TasteMEA.DataMEA.Utilies
                 Sift(heapIndex);
             }
         }
-
+        
         public double GetQuantile()
         {
             if (totalElementCount == 0)
                 throw new IndexOutOfRangeException("There are no any values");
             if (initStrategy == MovingQuantileEstimatorInitStrategy.OrderStatistics && k >= totalElementCount)
                 throw new IndexOutOfRangeException($"Not enough values (n = {totalElementCount}, k = {k})");
-            return h[rootHeapIndex];
+            return elementsOfThePartitioningHeap[rootHeapIndex];
         }
     }
 

@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 
 namespace MeaTaste.DataMEA.Models
 {
@@ -18,18 +18,26 @@ namespace MeaTaste.DataMEA.Models
         }
     }
 
-    public record Descriptors
+    public class Descriptors
     {
         // time
-        public DateTime TimeStart;
-        public DateTime TimeStop;
+        public DateTime TimeStart { get; set; }
+        public DateTime TimeStop { get; set; }
         public double SamplingRate = 20000;
         // settings
-        public double Gain;
-        public double Hpf;
-        public double Lsb;
+        public double Gain { get; set; }
+        public double Hpf { get; set; }
+        public double Lsb { get; set; }
         // mapping
-        public Electrode[] electrodes;
+        public Electrode[] electrodes { get; set; }
+
+        public List<string> electrodeChannels()
+        {
+            List<string> listChannels = new List<string>(electrodes.Length);
+            foreach (Electrode element in electrodes)
+                listChannels.Add(element.ChannelNumber.ToString());
+            return listChannels;
+        }
     }
 
     public record Electrode(

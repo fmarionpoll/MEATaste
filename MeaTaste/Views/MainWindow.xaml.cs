@@ -46,30 +46,25 @@ namespace MeaTaste
 
         private void UpdateLabels()
         {
-            OpenedFileLabel.Visibility = Visibility.Visible;
-            OpenedFileVersion.Visibility = Visibility.Visible;
-            ListOfElectrodes.Visibility = Visibility.Visible;
             OpenedFileLabel.Content = "File: " + MEAExpInfos.FileName;
             OpenedFileVersion.Content = "Version: " + MEAExpInfos.FileVersion;
-            ListOfElectrodes.ItemsSource = MEAExpInfos.Descriptors.electrodes;
+            List<string> channelsList = MEAExpInfos.Descriptors.electrodeChannels();
+            ListViewChannels.ItemsSource = channelsList;
         }
-        
-        private void ListOfElectrodes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            int selected = ListOfElectrodes.SelectedIndex;
-            int selectedIndex = MEAExpInfos.Descriptors.electrodes[selected].ChannelNumber;
 
+        private void UpdateChannelDisplayed(int selected)
+        {
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
 
-                oneIntRow = FileReader.ReadAll_OneElectrodeAsInt(selectedIndex);
+                oneIntRow = FileReader.ReadAll_OneElectrodeAsInt(selected);
 
                 var plt = wpfPlot1.Plot;
                 plt.Clear();
                 double[] myData = oneIntRow.Select(x => (double)x).ToArray();
                 plt.AddSignal(myData, MEAExpInfos.Descriptors.SamplingRate);
-                string title = $"channel: {selectedIndex} electrode: {MEAExpInfos.Descriptors.electrodes[selected].ElectrodeNumber} (position : x={MEAExpInfos.Descriptors.electrodes[selected].XCoordinates_um}, y={MEAExpInfos.Descriptors.electrodes[selected].YCoordinates_um} µm)";
+                string title = $"channel: {selected} electrode: {MEAExpInfos.Descriptors.electrodes[selected].ElectrodeNumber} (position : x={MEAExpInfos.Descriptors.electrodes[selected].XCoordinates_um}, y={MEAExpInfos.Descriptors.electrodes[selected].YCoordinates_um} µm)";
                 plt.Title(title);
 
                 var plt2 = wpfPlot2.Plot;
@@ -77,12 +72,23 @@ namespace MeaTaste
                 double[] derivRow = Filter.BDeriv(myData, myData.Length);
                 plt2.AddSignal(derivRow, MEAExpInfos.Descriptors.SamplingRate, System.Drawing.Color.Orange);
                 plt2.Title("derivRow");
-                
+
+                //double[] medianRow = Filter.BMedian(myData, myData.Length, 30);
+                //plt2.AddSignal(medianRow, MEAExpInfos.Descriptors.SamplingRate, System.Drawing.Color.Green);
+                //plt2.Title("derivRow + medianRow");
+
             }
             finally
             {
                 Mouse.OverrideCursor = null;
             }
+        }
+        
+        private void ListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            int selected = ListViewChannels.SelectedIndex;
+            int selectedIndex = MEAExpInfos.Descriptors.electrodes[selected].ChannelNumber;
+            UpdateChannelDisplayed(selectedIndex);
         }
     }
 
