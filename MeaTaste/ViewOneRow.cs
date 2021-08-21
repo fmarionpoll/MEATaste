@@ -1,16 +1,13 @@
-﻿using System.Windows;
-using TasteMEA.DataMEA.Models;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Input;
-using TasteMEA.DataMEA.Utilities;
 using TasteMEA.DataMEA.MaxWell;
-
-
+using TasteMEA.DataMEA.Models;
+using TasteMEA.DataMEA.Utilities;
 
 namespace TasteMEA
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         
 
@@ -39,7 +36,7 @@ namespace TasteMEA
                 plt2.AddSignal(derivRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange);
                 plt2.Title("derivRow");
 
-                state.FormsPlots = new ScottPlot.WpfPlot[] { WpfPlot1, WpfPlot2 };
+                state.FormsPlots = new[] { WpfPlot1, WpfPlot2 };
                 foreach (var fp in state.FormsPlots)
                     fp.AxesChanged += OnAxesChanged;
             }

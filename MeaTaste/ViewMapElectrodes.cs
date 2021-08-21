@@ -1,12 +1,10 @@
-﻿
-using System.Windows;
-using TasteMEA.DataMEA.Models;
+﻿using System.Drawing;
 using System.Windows.Input;
-using System.Drawing;
+using TasteMEA.DataMEA.Models;
 
 namespace TasteMEA
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
 
         public ScottPlot.Plottable.ScatterPlot HighlightedPoint;
@@ -54,7 +52,7 @@ namespace TasteMEA
 
         private void WpfElectrodesMap_MouseMove(object sender, MouseEventArgs e)
         {
-            int pointIndex = MoveCursorNearPoint(sender);
+            MoveCursorNearPoint(sender);
         }
 
         private void WpfElectrodesMap_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -76,8 +74,8 @@ namespace TasteMEA
             ScottPlot.Plottable.IPlottable[] table = WpfElectrodesMap.Plot.GetPlottables();
             if (table.Length > 0)
             {
-                ScottPlot.Plottable.ScatterPlot MyScatterPlot = (ScottPlot.Plottable.ScatterPlot)table[0];
-                (double pointX, double pointY, int pointIndex) = MyScatterPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
+                ScottPlot.Plottable.ScatterPlot myScatterPlot = (ScottPlot.Plottable.ScatterPlot)table[0];
+                (double pointX, double pointY, int pointIndex) = myScatterPlot.GetPointNearest(mouseCoordX, mouseCoordY, xyRatio);
                 HighLightMapOfElectrodeAt(pointX, pointY, pointIndex);
                 index = pointIndex;
             }

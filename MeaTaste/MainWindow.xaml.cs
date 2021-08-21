@@ -6,22 +6,17 @@ using TasteMEA.DataMEA.MaxWell;
 
 namespace TasteMEA
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
 
-        public MainWindow()
+        public MainWindow(ApplicationState state, MeaFileReader meaFileReader)
         {
+            this.state = state;
+            this.meaFileReader = meaFileReader;
             InitializeComponent();
         }
-
-        //public MainWindow(ApplicationState state, MeaFileReader meaFileReader)
-        //{
-        //    this.state = state;
-        //    this.meaFileReader = meaFileReader;
-        //    InitializeComponent();
-        //}
 
         private void OpenDialogButton_Click(object sender, RoutedEventArgs e)
         {
