@@ -1,6 +1,6 @@
-﻿using MeaTaste.DataMEA.Models;
+﻿using TasteMEA.DataMEA.Models;
 
-namespace MeaTaste.DataMEA.Hdf5Cache
+namespace TasteMEA.DataMEA.Hdf5Cache
 {
     public class Hdf5Cache : IHdf5CacheReader, IHdf5CacheWriter
     {

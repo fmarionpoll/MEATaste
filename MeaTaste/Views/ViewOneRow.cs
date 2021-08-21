@@ -1,47 +1,46 @@
 ﻿using System.Windows;
-using MeaTaste.DataMEA.Models;
-using System.Linq;
+using TasteMEA.DataMEA.Models;
 using System;
+using System.Linq;
 using System.Windows.Input;
-using TasteMEA.DataMEA.Utilies;
+using TasteMEA.DataMEA.Utilities;
 using TasteMEA.DataMEA.MaxWell;
 
-namespace MeaTaste
+
+
+namespace TasteMEA
 {
     public partial class MainWindow : Window
     {
-
-        public ushort[,] allData = null;
-        public ushort[] oneIntRow;
-        public ScottPlot.WpfPlot[] FormsPlots;
+        
 
         private void UpdateSelectedChannel(Electrode electrode)
         {
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                oneIntRow = FileReader.ReadAll_OneElectrodeAsInt(electrode);
+                state.OneIntRow = FileReader.ReadAll_OneElectrodeAsInt(electrode);
 
-                var plt = wpfPlot1.Plot;
+                var plt = WpfPlot1.Plot;
                 plt.Clear();
-                double[] myData = oneIntRow.Select(x => (double)x).ToArray();
-                plt.AddSignal(myData, MeaExpInfos.Descriptors.SamplingRate);
-                string title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinates_um}, y={electrode.YCoordinates_um} µm)";
+                double[] myData = state.OneIntRow.Select(x => (double)x).ToArray();
+                plt.AddSignal(myData, state.CurrentMeaExperiment.Descriptors.SamplingRate);
+                string title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinate}, y={electrode.YCoordinate} µm)";
                 plt.Title(title);
 
-                var plt2 = wpfPlot2.Plot;
+                var plt2 = WpfPlot2.Plot;
                 plt2.Clear();
 
                 double[] medianRow = Filter.BMedian(myData, myData.Length, 20);
-                plt2.AddSignal(medianRow, MeaExpInfos.Descriptors.SamplingRate, System.Drawing.Color.Green);
+                plt2.AddSignal(medianRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green);
                 plt2.Title("derivRow + medianRow");
 
                 double[] derivRow = Filter.BDeriv(myData, myData.Length);
-                plt2.AddSignal(derivRow, MeaExpInfos.Descriptors.SamplingRate, System.Drawing.Color.Orange);
+                plt2.AddSignal(derivRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange);
                 plt2.Title("derivRow");
 
-                FormsPlots = new ScottPlot.WpfPlot[] { wpfPlot1, wpfPlot2 };
-                foreach (var fp in FormsPlots)
+                state.FormsPlots = new ScottPlot.WpfPlot[] { WpfPlot1, WpfPlot2 };
+                foreach (var fp in state.FormsPlots)
                     fp.AxesChanged += OnAxesChanged;
             }
             finally
@@ -53,7 +52,7 @@ namespace MeaTaste
         private void ListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             int selected = ListViewChannels.SelectedIndex;
-            Electrode electrode = MeaExpInfos.Descriptors.Electrodes[selected];
+            Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[selected];
             UpdateSelectedElectrode(electrode);
         }
 
@@ -68,7 +67,7 @@ namespace MeaTaste
             ScottPlot.WpfPlot changedPlot = (ScottPlot.WpfPlot)sender;
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
 
-            foreach (var fp in FormsPlots)
+            foreach (var fp in state.FormsPlots)
             {
                 if (fp == changedPlot)
                     continue;

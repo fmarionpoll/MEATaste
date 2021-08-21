@@ -1,14 +1,14 @@
 ﻿
 
-namespace MeaTaste.DataMEA.Models
+namespace TasteMEA.DataMEA.Models
 {
-    public class MeaWellPlate
+    public class MEAWellPlate
     {
         public MeaExperiment[] Points { get; set; }
     }
 
 
-    public record Wellplate(
+    public record WellPlate(
         string Version,
         int Id,
         string Name, 

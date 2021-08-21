@@ -2,17 +2,31 @@
 using System.Diagnostics;
 using HDF.PInvoke;
 using HDF5.NET;
-using MeaTaste.DataMEA.Models;
+using TasteMEA.DataMEA.Models;
 
 namespace TasteMEA.DataMEA.MaxWell
 {
+    public class MeaFileReader
+    {
+        public MeaExperiment ReadFile(string fileName)
+        {
+            if (FileReader.OpenReadMaxWellFile(fileName)
+                && FileReader.IsFileReadableAsMaxWellFile())
+            {
+                return FileReader.GetExperimentInfos();
+            }
+
+            return null;
+        }
+    }
+
     public static class FileReader
     {
         public static string FileName { get; set; }
         public static string FileVersion { get; set; } = "unknown";
         public static H5File Root { get; set; }
 
-
+        
         public static bool OpenReadMaxWellFile(string fileName)
         {
             H5.open();
@@ -143,6 +157,8 @@ namespace TasteMEA.DataMEA.MaxWell
                         compoundData[i].y);
                     MeaExp.Descriptors.Electrodes[i] = ec;
                 }
+
+                flag = true;
             }
             finally
             {

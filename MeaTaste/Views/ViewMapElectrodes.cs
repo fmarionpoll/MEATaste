@@ -1,19 +1,10 @@
-﻿using Microsoft.Win32;
+﻿
 using System.Windows;
-using MeaTaste.DataMEA.Models;
-using System.Linq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using TasteMEA.DataMEA.Models;
 using System.Windows.Input;
-using TasteMEA.DataMEA.Utilies;
-using ScottPlot.WPF;
 using System.Drawing;
 
-namespace MeaTaste
+namespace TasteMEA
 {
     public partial class MainWindow : Window
     {
@@ -25,8 +16,8 @@ namespace MeaTaste
 
         private void InitElectrodesMap()
         {
-            double[] xs = MeaExpInfos.Descriptors.GetArray_electrodes_XPos();
-            double[] ys = MeaExpInfos.Descriptors.GetArray_electrodes_YPos();
+            double[] xs = state.CurrentMeaExperiment.Descriptors.GetElectrodesXCoordinate();
+            double[] ys = state.CurrentMeaExperiment.Descriptors.GetElectrodesYCoordinate();
             var plt = WpfElectrodesMap.Plot;
             plt.AddScatterPoints(xs, ys);
             plt.Title("Electrodes Map");
@@ -43,7 +34,7 @@ namespace MeaTaste
 
         private void UpdateSelectedElectrodeOnMap(Electrode electrode)
         {
-            HighLightMapOfElectrodeAt(electrode.XCoordinates_um, electrode.YCoordinates_um, electrode.ChannelNumber);
+            HighLightMapOfElectrodeAt(electrode.XCoordinate, electrode.YCoordinate, electrode.ChannelNumber);
         }
 
         private void HighLightMapOfElectrodeAt(double xs, double ys, int pointIndex)
@@ -69,7 +60,7 @@ namespace MeaTaste
         private void WpfElectrodesMap_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int pointIndex = MoveCursorNearPoint(sender);
-            Electrode electrode = MeaExpInfos.Descriptors.Electrodes[pointIndex];
+            Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[pointIndex];
             // TODO: not sure this is right (search item first then select?)
             UpdateSelectedElectrode(electrode);
             ListViewChannels.SelectedIndex = pointIndex;

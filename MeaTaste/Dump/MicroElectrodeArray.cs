@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Diagnostics;
+﻿using System.Linq;
 
-namespace MeaTaste.Dump
+
+namespace TasteMEA.Dump
 {
     // Models
 

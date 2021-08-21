@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MeaTaste.DataMEA.Models
+namespace TasteMEA.DataMEA.Models
 {
     // Models
 
@@ -32,30 +32,24 @@ namespace MeaTaste.DataMEA.Models
         // mapping
         public Electrode[] Electrodes { get; set; }
 
-        public int[] GetChannelNumbers() =>
+        public int[] GetElectrodesChannelNumber() =>
             Electrodes.Select(electrode => electrode.ChannelNumber).ToArray();
 
-        public double[] GetArray_electrodes_XPos()
-        {
-            double[] xPos = new double[Electrodes.Length];
-            for (int i=0; i< Electrodes.Length; i++)
-                xPos[i] = Electrodes[i].XCoordinates_um;
-            return xPos;
-        }
+        public int[] GetElectrodesElectrodeNumber() =>
+            Electrodes.Select(electrode => electrode.ElectrodeNumber).ToArray();
 
-        public double[] GetArray_electrodes_YPos()
-        {
-            double[] yPos = new double[Electrodes.Length];
-            for (int i = 0; i < Electrodes.Length; i++)
-                yPos[i] = Electrodes[i].YCoordinates_um;
-            return yPos;
-        }
+        public double[] GetElectrodesXCoordinate() =>
+            Electrodes.Select(electrode => electrode.XCoordinate).ToArray();
+        
+        public double[] GetElectrodesYCoordinate() =>
+            Electrodes.Select(electrode => electrode.YCoordinate).ToArray();
+      
     }
 
     public record Electrode(
         int ChannelNumber,
         int ElectrodeNumber,
-        double XCoordinates_um,
-        double YCoordinates_um);
+        double XCoordinate,
+        double YCoordinate);
 
 }
