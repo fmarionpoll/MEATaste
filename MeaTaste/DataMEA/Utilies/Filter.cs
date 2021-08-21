@@ -70,7 +70,6 @@ namespace TasteMEA.DataMEA.Utilies
 			}
 		}
 
-        
 		public static double[] BMedian(double[] dataIn, int rowLength, int nbspan)
 		{
 			double[] dataOut = new double[rowLength];
@@ -138,7 +137,6 @@ namespace TasteMEA.DataMEA.Utilies
 			}
 			// end of initial sort
 
-
 			int i_parray_circular = m_parray_size - 1; // point on the last item so that first operation is blank
 
             for (int icx = rowLength-1; icx > 0; icx--)
@@ -188,7 +186,7 @@ namespace TasteMEA.DataMEA.Utilies
 				}
 
 				// case 2: search (and replace) towards lower values
-				else if (newvalue < m_parraySorted [jj2])
+				else if (newvalue < m_parraySorted[jj2])
 				{
 					int j = jj2;
 					for (int k = jj2; newvalue < m_parraySorted [k]; k--, j--)
@@ -199,18 +197,17 @@ namespace TasteMEA.DataMEA.Utilies
 								j--;
 							break;
 						}
-						m_parraySorted [j] = m_parraySorted [j - 1];
+						m_parraySorted[j] = m_parraySorted [j - 1];
 					}
-					m_parraySorted [j + 1] = newvalue;
+					m_parraySorted[j + 1] = newvalue;
 				}
 
 				// case 3: already found!
 				else
-					m_parraySorted [jj2] = newvalue;
+					m_parraySorted[jj2] = newvalue;
 
                 // save median value in the output array
-                dataOut[icx] = dataIn[icx] - m_parraySorted [nbspan-1];
-
+                dataOut[icx] = dataIn[icx] - m_parraySorted[nbspan-1];
 			}
 			return dataOut;
 		}

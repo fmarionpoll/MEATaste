@@ -1,12 +1,10 @@
-﻿using MeaTaste.DataMEA.Models;
+﻿using System;
+using System.Diagnostics;
 using HDF.PInvoke;
 using HDF5.NET;
-using System;
-using System.Diagnostics;
-using TasteMEA.DataMEA.MaxWell;
+using MeaTaste.DataMEA.Models;
 
-
-namespace MeaTaste.DataMEA.MaxWell
+namespace TasteMEA.DataMEA.MaxWell
 {
     public static class FileReader
     {
@@ -65,7 +63,7 @@ namespace MeaTaste.DataMEA.MaxWell
             return MeaExp;
         }
 
-        public static bool ReadTimeDescriptors(MeaExperiment MeaExp)
+        public static bool ReadTimeDescriptors(MeaExperiment meaExp)
         {
             bool flag = false;
             try
@@ -76,8 +74,8 @@ namespace MeaTaste.DataMEA.MaxWell
                 string lines = data[0];
                 // "start: 2021-07-15 16:54:58;\nstop: 2021-07-15 16:57:54\n"
                 string[] strings = lines.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                MeaExp.Descriptors.TimeStart = GetTimeFromString(strings[0], "start: ");
-                MeaExp.Descriptors.TimeStop = GetTimeFromString(strings[1], "stop: ");
+                meaExp.Descriptors.TimeStart = GetTimeFromString(strings[0], "start: ");
+                meaExp.Descriptors.TimeStop = GetTimeFromString(strings[1], "stop: ");
                 flag = true;
             }
             finally
@@ -86,18 +84,18 @@ namespace MeaTaste.DataMEA.MaxWell
             return flag;
         }
 
-        private static DateTime GetTimeFromString(string inputstring, string pattern)
+        private static DateTime GetTimeFromString(string inputString, string pattern)
         {
             int pos1 = pattern.Length;
-            int pos2 = inputstring.IndexOf(';');
+            int pos2 = inputString.IndexOf(';');
             if (pos2 < 0)
-                pos2 = inputstring.Length;
-            string dateInput = inputstring.Substring(pos1, pos2 - pos1);
+                pos2 = inputString.Length;
+            string dateInput = inputString.Substring(pos1, pos2 - pos1);
             DateTime parsedDate = DateTime.Parse(dateInput);
             return parsedDate;
         }
 
-        public static bool ReadSettingsDescriptors(MeaExperiment MeaExp)
+        public static bool ReadSettingsDescriptors(MeaExperiment meaExp)
         {
             bool flag = false;
             try
@@ -105,13 +103,13 @@ namespace MeaTaste.DataMEA.MaxWell
                 H5Group group = Root.Group("/settings");
 
                 double[] gainarray = ReadDoubleDataFromGroup(group, "gain");
-                MeaExp.Descriptors.Gain = gainarray[0];
+                meaExp.Descriptors.Gain = gainarray[0];
 
                 double[] hpfarray = ReadDoubleDataFromGroup(group, "hpf");
-                MeaExp.Descriptors.Hpf = hpfarray[0];
+                meaExp.Descriptors.Hpf = hpfarray[0];
 
                 double[] lsbarray = ReadDoubleDataFromGroup(group, "lsb");
-                MeaExp.Descriptors.Lsb = lsbarray[0];
+                meaExp.Descriptors.Lsb = lsbarray[0];
             }
             finally
             {
@@ -135,7 +133,7 @@ namespace MeaTaste.DataMEA.MaxWell
                 H5Dataset dataset = group.Dataset("mapping");
                 Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
 
-                MeaExp.Descriptors.electrodes = new Electrode[compoundData.Length];
+                MeaExp.Descriptors.Electrodes = new Electrode[compoundData.Length];
                 for (int i = 0; i < compoundData.Length; i++)
                 {
                     Electrode ec = new Electrode(
@@ -143,7 +141,7 @@ namespace MeaTaste.DataMEA.MaxWell
                         compoundData[i].electrode,
                         compoundData[i].x,
                         compoundData[i].y);
-                    MeaExp.Descriptors.electrodes[i] = ec;
+                    MeaExp.Descriptors.Electrodes[i] = ec;
                 }
             }
             finally
@@ -152,16 +150,16 @@ namespace MeaTaste.DataMEA.MaxWell
             return flag;
         }
 
-        public static ushort[] ReadAll_OneElectrodeAsInt(int ElectrodeNumber)
+        public static ushort[] ReadAll_OneElectrodeAsInt(Electrode electrode)
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
             ulong nbchannels = dataset.Space.Dimensions[0]; // 1028 expected
             ulong nbdatapoints = dataset.Space.Dimensions[1]; // any size
-            return Read_OneElectrodeDataAsInt(ElectrodeNumber, 0, nbdatapoints -1);
+            return Read_OneElectrodeDataAsInt(electrode.ChannelNumber, 0, nbdatapoints -1);
         }
 
-        public static ushort[] Read_OneElectrodeDataAsInt(int ElectrodeNumber, ulong startsAt, ulong endsAt)
+        public static ushort[] Read_OneElectrodeDataAsInt(int Channel, ulong startsAt, ulong endsAt)
         {
             ushort[] result;
             try
@@ -182,7 +180,7 @@ namespace MeaTaste.DataMEA.MaxWell
 
                 var datasetSelection = new HyperslabSelection(
                     rank: 2,
-                    starts: new ulong[] { (ulong)ElectrodeNumber, startsAt },   // start at row ElectrodeNumber, column 0
+                    starts: new ulong[] { (ulong)Channel, startsAt },   // start at row ElectrodeNumber, column 0
                     strides: new ulong[] { 1, 1 },                              // don't skip anything
                     counts: new ulong[] { 1, nbpoints },                        // read 1 row, ndatapoints columns
                     blocks: new ulong[] { 1, 1 }                                // blocks are single elements

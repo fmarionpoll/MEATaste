@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MeaTaste.DataMEA.Models
 {
@@ -29,14 +30,25 @@ namespace MeaTaste.DataMEA.Models
         public double Hpf { get; set; }
         public double Lsb { get; set; }
         // mapping
-        public Electrode[] electrodes { get; set; }
+        public Electrode[] Electrodes { get; set; }
 
-        public List<string> electrodeChannels()
+        public int[] GetChannelNumbers() =>
+            Electrodes.Select(electrode => electrode.ChannelNumber).ToArray();
+
+        public double[] GetArray_electrodes_XPos()
         {
-            List<string> listChannels = new List<string>(electrodes.Length);
-            foreach (Electrode element in electrodes)
-                listChannels.Add(element.ChannelNumber.ToString());
-            return listChannels;
+            double[] xPos = new double[Electrodes.Length];
+            for (int i=0; i< Electrodes.Length; i++)
+                xPos[i] = Electrodes[i].XCoordinates_um;
+            return xPos;
+        }
+
+        public double[] GetArray_electrodes_YPos()
+        {
+            double[] yPos = new double[Electrodes.Length];
+            for (int i = 0; i < Electrodes.Length; i++)
+                yPos[i] = Electrodes[i].YCoordinates_um;
+            return yPos;
         }
     }
 

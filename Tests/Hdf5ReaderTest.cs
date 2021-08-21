@@ -1,9 +1,9 @@
-﻿using MeaTaste.DataMEA.MaxWell;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TasteMEA.DataMEA.MaxWell;
 using Xunit;
 
 namespace Tests
