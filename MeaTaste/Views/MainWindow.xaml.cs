@@ -1,6 +1,5 @@
-﻿using System.Windows;
-using Microsoft.Win32;
-using TasteMEA.DataMEA.MaxWell;
+﻿using TasteMEA.DataMEA.MaxWell;
+using TasteMEA.Infrastructure;
 
 namespace TasteMEA.Views
 {

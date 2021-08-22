@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TasteMEA.DataMEA;
 using TasteMEA.DataMEA.MaxWell;
 
 namespace TasteMEA.Infrastructure
@@ -28,7 +27,7 @@ namespace TasteMEA.Infrastructure
             {
                 services.AddSingleton<Views.FileOpenedPanel>();
                 services.AddSingleton<Views.ElectrodesMapPanel>();
-                services.AddSingleton<Views.DisplayOneElectrodePanel>(); 
+                services.AddSingleton<Views.OneElectrodePanel>(); 
                 services.AddSingleton<Views.MainWindow>();
             }
         }

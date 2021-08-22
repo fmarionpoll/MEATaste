@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Input;
 using TasteMEA.DataMEA.Models;
 using TasteMEA.DataMEA.MaxWell;
@@ -11,12 +10,12 @@ namespace TasteMEA.Views
     /// <summary>
     /// Interaction logic for DisplayOneElectrodePanel.xaml
     /// </summary>
-    public partial class DisplayOneElectrodePanel : UserControl
+    public partial class OneElectrodePanel
     {
-        private readonly ApplicationState state;
-        private readonly MeaFileReader meaFileReader;
+        private ushort[] rawSignalFromOneElectrode;
+        private ScottPlot.WpfPlot[] formsPlots;
 
-        public DisplayOneElectrodePanel()
+        public OneElectrodePanel()
         {
             InitializeComponent();
         }
@@ -35,16 +34,16 @@ namespace TasteMEA.Views
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                state.OneIntRow = fileReader.ReadAll_OneElectrodeAsInt(electrode);
+                rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrode);
 
-                var plt = WpfPlot1.Plot;
+                var plt = RawSignal.Plot;
                 plt.Clear();
-                double[] myData = state.OneIntRow.Select(x => (double)x).ToArray();
+                double[] myData = rawSignalFromOneElectrode.Select(x => (double)x).ToArray();
                 plt.AddSignal(myData, state.CurrentMeaExperiment.Descriptors.SamplingRate);
                 string title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinate}, y={electrode.YCoordinate} µm)";
                 plt.Title(title);
 
-                var plt2 = WpfPlot2.Plot;
+                var plt2 = FilteredSignal.Plot;
                 plt2.Clear();
 
                 double[] medianRow = Filter.BMedian(myData, myData.Length, 20);
@@ -55,8 +54,8 @@ namespace TasteMEA.Views
                 plt2.AddSignal(derivRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange);
                 plt2.Title("derivRow");
 
-                state.FormsPlots = new[] { WpfPlot1, WpfPlot2 };
-                foreach (var fp in state.FormsPlots)
+                formsPlots = new[] { RawSignal, FilteredSignal };
+                foreach (var fp in formsPlots)
                     fp.AxesChanged += OnAxesChanged;
             }
             finally
@@ -70,7 +69,7 @@ namespace TasteMEA.Views
             ScottPlot.WpfPlot changedPlot = (ScottPlot.WpfPlot)sender;
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
 
-            foreach (var fp in state.FormsPlots)
+            foreach (var fp in formsPlots)
             {
                 if (fp == changedPlot)
                     continue;

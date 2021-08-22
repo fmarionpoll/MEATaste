@@ -1,11 +1,10 @@
 ﻿using TasteMEA.DataMEA.Models;
 
-namespace TasteMEA
+namespace TasteMEA.Infrastructure
 {
     public class ApplicationState
     {
         public MeaExperiment CurrentMeaExperiment;
-        public ushort[] OneIntRow;
-        public ScottPlot.WpfPlot[] FormsPlots;
+        
     }
 }

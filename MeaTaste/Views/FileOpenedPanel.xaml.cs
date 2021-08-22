@@ -1,15 +1,16 @@
-﻿using System.Windows.Controls;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using TasteMEA.DataMEA.MaxWell;
+using TasteMEA.Infrastructure;
+
 
 namespace TasteMEA.Views
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class FileOpenedPanel : UserControl
+    public partial class FileOpenedPanel
     {
-        private readonly ApplicationState state;
+        private readonly ApplicationState state = new ApplicationState();
         private readonly MeaFileReader meaFileReader;
 
         public FileOpenedPanel()

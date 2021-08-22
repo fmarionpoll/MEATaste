@@ -1,25 +1,20 @@
-﻿using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using TasteMEA.DataMEA.Models;
-using TasteMEA.DataMEA.MaxWell;
+
 
 namespace TasteMEA.Views
 {
     /// <summary>
     /// Interaction logic for ElectrodesMap.xaml
     /// </summary>
-    public partial class ElectrodesMapPanel : UserControl
+    public partial class ElectrodesMapPanel 
     {
-        private ScottPlot.Plottable.ScatterPlot HighlightedPoint;
-        private int LastHighlightedIndex = -1;
-        private readonly ApplicationState state;
-        private readonly MeaFileReader meaFileReader;
+        private ScottPlot.Plottable.ScatterPlot highlightedPoint;
+        private int lastHighlightedIndex = -1;
+
 
         public ElectrodesMapPanel()
         {
-            // TODO
-            //this.meaFileReader = meaFileReader;
-            //this.state = state; 
             InitializeComponent();
         }
 
@@ -58,14 +53,14 @@ namespace TasteMEA.Views
         private void HighLightMapOfElectrodeAt(double xs, double ys, int pointIndex)
         {
             // place the highlight over the point of interest
-            HighlightedPoint.Xs[0] = xs;
-            HighlightedPoint.Ys[0] = ys;
-            HighlightedPoint.IsVisible = true;
+            highlightedPoint.Xs[0] = xs;
+            highlightedPoint.Ys[0] = ys;
+            highlightedPoint.IsVisible = true;
 
             // render if the highlighted point chnaged
-            if (LastHighlightedIndex != pointIndex)
+            if (lastHighlightedIndex != pointIndex)
             {
-                LastHighlightedIndex = pointIndex;
+                lastHighlightedIndex = pointIndex;
                 ElectrodesMap.Plot.Render();
             }
         }
@@ -86,11 +81,11 @@ namespace TasteMEA.Views
             plt.YLabel("Vertical position µm");
 
             // Add a red circle we can move around later as a highlighted point indicator
-            HighlightedPoint = plt.AddPoint(0, 0);
-            HighlightedPoint.Color = System.Drawing.Color.Red;
-            HighlightedPoint.MarkerSize = 10;
-            HighlightedPoint.MarkerShape = ScottPlot.MarkerShape.openCircle;
-            HighlightedPoint.IsVisible = false;
+            highlightedPoint = plt.AddPoint(0, 0);
+            highlightedPoint.Color = System.Drawing.Color.Red;
+            highlightedPoint.MarkerSize = 10;
+            highlightedPoint.MarkerShape = ScottPlot.MarkerShape.openCircle;
+            highlightedPoint.IsVisible = false;
         }
 
     }
