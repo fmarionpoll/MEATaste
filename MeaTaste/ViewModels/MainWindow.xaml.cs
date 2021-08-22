@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Windows;
+using System.Windows.Navigation;
 using TasteMEA.DataMEA.MaxWell;
 
 
@@ -11,10 +12,17 @@ namespace TasteMEA
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
 
-        public MainWindow(ApplicationState state, MeaFileReader meaFileReader)
+        //public MainWindow(ApplicationState state, MeaFileReader meaFileReader)
+        //{
+        //    this.state = state;
+        //    this.meaFileReader = meaFileReader;
+        //    InitializeComponent();
+        //}
+
+        public MainWindow()
         {
-            this.state = state;
-            this.meaFileReader = meaFileReader;
+            state = new ApplicationState();
+            meaFileReader = new MeaFileReader();
             InitializeComponent();
         }
 
