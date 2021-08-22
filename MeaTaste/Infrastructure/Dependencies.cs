@@ -27,6 +27,8 @@ namespace TasteMEA.Infrastructure
             void ConfigureWindows()
             {
                 services.AddSingleton<Views.FileOpenedPanel>();
+                services.AddSingleton<Views.ElectrodesMapPanel>();
+                services.AddSingleton<Views.DisplayOneElectrodePanel>(); 
                 services.AddSingleton<Views.MainWindow>();
             }
         }

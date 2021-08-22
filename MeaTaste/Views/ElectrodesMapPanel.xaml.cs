@@ -15,10 +15,11 @@ namespace TasteMEA.Views
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
 
-        public ElectrodesMapPanel(MeaFileReader meaFileReader, ApplicationState state)
+        public ElectrodesMapPanel()
         {
-            this.meaFileReader = meaFileReader;
-            this.state = state; 
+            // TODO
+            //this.meaFileReader = meaFileReader;
+            //this.state = state; 
             InitializeComponent();
         }
 
