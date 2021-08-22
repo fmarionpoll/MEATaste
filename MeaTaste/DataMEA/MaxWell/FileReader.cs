@@ -8,26 +8,32 @@ namespace TasteMEA.DataMEA.MaxWell
 {
     public class MeaFileReader
     {
+        private readonly FileReader fileReader;
+
+        public MeaFileReader(FileReader fileReader)
+        {
+            this.fileReader = fileReader;
+        }
+
         public MeaExperiment ReadFile(string fileName)
         {
-            if (FileReader.OpenReadMaxWellFile(fileName)
-                && FileReader.IsFileReadableAsMaxWellFile())
+            if (fileReader.OpenReadMaxWellFile(fileName)
+                && fileReader.IsFileReadableAsMaxWellFile())
             {
-                return FileReader.GetExperimentInfos();
+                return fileReader.GetExperimentInfos();
             }
-
             return null;
         }
     }
 
-    public static class FileReader
+    public class FileReader
     {
         public static string FileName { get; set; }
         public static string FileVersion { get; set; } = "unknown";
         public static H5File Root { get; set; }
 
         
-        public static bool OpenReadMaxWellFile(string fileName)
+        public bool OpenReadMaxWellFile(string fileName)
         {
             H5.open();
             uint majnum = 0, minnum = 0, relnum = 0;
@@ -39,7 +45,7 @@ namespace TasteMEA.DataMEA.MaxWell
             return Root != null;
         }
 
-        public static bool IsFileReadableAsMaxWellFile()
+        public bool IsFileReadableAsMaxWellFile()
         {
             try
             {
@@ -67,7 +73,7 @@ namespace TasteMEA.DataMEA.MaxWell
             return false;
         }
 
-        public static MeaExperiment GetExperimentInfos()
+        public MeaExperiment GetExperimentInfos()
         {
             MeaExperiment MeaExp = new MeaExperiment(FileName, new Descriptors());
             MeaExp.FileVersion = FileVersion;
@@ -77,7 +83,7 @@ namespace TasteMEA.DataMEA.MaxWell
             return MeaExp;
         }
 
-        public static bool ReadTimeDescriptors(MeaExperiment meaExp)
+        public bool ReadTimeDescriptors(MeaExperiment meaExp)
         {
             bool flag = false;
             try
@@ -98,7 +104,7 @@ namespace TasteMEA.DataMEA.MaxWell
             return flag;
         }
 
-        private static DateTime GetTimeFromString(string inputString, string pattern)
+        private DateTime GetTimeFromString(string inputString, string pattern)
         {
             int pos1 = pattern.Length;
             int pos2 = inputString.IndexOf(';');
@@ -109,7 +115,7 @@ namespace TasteMEA.DataMEA.MaxWell
             return parsedDate;
         }
 
-        public static bool ReadSettingsDescriptors(MeaExperiment meaExp)
+        public bool ReadSettingsDescriptors(MeaExperiment meaExp)
         {
             bool flag = false;
             try
@@ -131,14 +137,14 @@ namespace TasteMEA.DataMEA.MaxWell
             return flag;
         }
 
-        private static double[] ReadDoubleDataFromGroup(H5Group group, string headerName)
+        private double[] ReadDoubleDataFromGroup(H5Group group, string headerName)
         {
             H5Dataset datasetGain = group.Dataset(headerName);
             double[] results = datasetGain.Read<double>();
             return results;
         }
 
-        public static bool ReadMapElectrodes(MeaExperiment MeaExp)
+        public bool ReadMapElectrodes(MeaExperiment MeaExp)
         {
             bool flag = false;
             try
@@ -166,7 +172,7 @@ namespace TasteMEA.DataMEA.MaxWell
             return flag;
         }
 
-        public static ushort[] ReadAll_OneElectrodeAsInt(Electrode electrode)
+        public ushort[] ReadAll_OneElectrodeAsInt(Electrode electrode)
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
@@ -175,7 +181,7 @@ namespace TasteMEA.DataMEA.MaxWell
             return Read_OneElectrodeDataAsInt(electrode.ChannelNumber, 0, nbdatapoints -1);
         }
 
-        public static ushort[] Read_OneElectrodeDataAsInt(int Channel, ulong startsAt, ulong endsAt)
+        public ushort[] Read_OneElectrodeDataAsInt(int Channel, ulong startsAt, ulong endsAt)
         {
             ushort[] result;
             try
