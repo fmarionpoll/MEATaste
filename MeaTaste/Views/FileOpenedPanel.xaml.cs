@@ -10,13 +10,14 @@ namespace TasteMEA.Views
     /// </summary>
     public partial class FileOpenedPanel
     {
-        private readonly ApplicationState state = new ApplicationState();
-        private readonly MeaFileReader meaFileReader;
-
         public FileOpenedPanel()
         {
             InitializeComponent();
         }
+
+        private readonly ApplicationState state = new ApplicationState();
+        private readonly MeaFileReader meaFileReader;
+
 
         private void OpenDialogButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
