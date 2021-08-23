@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace TasteMEA.DataMEA.MaxWell
+namespace MEATaste.DataMEA.MaxWell
 {
     class Legacy
     {

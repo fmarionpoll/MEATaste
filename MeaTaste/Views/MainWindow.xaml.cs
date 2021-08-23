@@ -1,17 +1,18 @@
-﻿using TasteMEA.DataMEA.MaxWell;
-using TasteMEA.ViewModels;
+﻿using MEATaste.DataMEA.MaxWell;
+using MEATaste.ViewModels;
 
-namespace TasteMEA.Views
+namespace MEATaste.Views
 {
     public partial class MainWindow
     {
-        private readonly ApplicationState state;
-        private readonly MeaFileReader meaFileReader;
+        private readonly ApplicationState _applicationState;
+        private readonly MeaFileReader _meaFileReader;
 
-        public MainWindow(MeaFileReader meaFileReader, ApplicationState state)
+        public MainWindow(MeaFileReader meaFileReader, ApplicationState applicationState)
         {
-            this.meaFileReader = meaFileReader;
-            this.state = state;
+            this._meaFileReader = meaFileReader;
+            this._applicationState = applicationState;
+            DataContext = _applicationState;
             InitializeComponent();
         }
 

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
-using TasteMEA.DataMEA.Models;
-using TasteMEA.DataMEA.MaxWell;
-using TasteMEA.DataMEA.Utilities;
-using TasteMEA.ViewModels;
+using MEATaste.DataMEA.MaxWell;
+using MEATaste.DataMEA.Models;
+using MEATaste.DataMEA.Utilities;
+using MEATaste.ViewModels;
 
-namespace TasteMEA.Views
+namespace MEATaste.Views
 {
     /// <summary>
     /// Interaction logic for DisplayOneElectrodePanel.xaml

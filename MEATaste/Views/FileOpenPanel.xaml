@@ -2,8 +2,10 @@
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-         x:Class="TasteMEA.Views.FileOpenedPanel"
+         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+         xmlns:viewModels="clr-namespace:MEATaste.ViewModels"
+         x:Class="MEATaste.Views.FileOpenPanel"
+         d:DataContext="{d:DesignInstance viewModels:FileOpenPanelModel, IsDesignTimeCreatable=True}"
          mc:Ignorable="d" Height="28" Width="700">
 
     <Grid>
@@ -16,6 +18,5 @@
                Visibility="Visible" Margin="173,0,0,0" Height="26" >
         </Label>
     </Grid>
-
 
 </UserControl>

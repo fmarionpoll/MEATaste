@@ -1,4 +1,4 @@
-﻿namespace TasteMEA.DataMEA
+﻿namespace MEATaste.DataMEA
 {
     public class OldHdf5Reader : IHdf5Reader
     {

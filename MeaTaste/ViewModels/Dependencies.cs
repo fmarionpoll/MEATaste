@@ -1,14 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using TasteMEA.DataMEA.MaxWell;
+﻿using MEATaste.DataMEA.MaxWell;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace TasteMEA.ViewModels
+namespace MEATaste.ViewModels
 {
     public static class Dependencies
     {
         public static void ConfigureServices(ServiceCollection services)
         {
             ConfigureHandlers();
-            ConfigureWindows();
+            ConfigureViews();
+            ConfigureViewModels();
 
             void ConfigureHandlers()
             {
@@ -23,12 +24,20 @@ namespace TasteMEA.ViewModels
                 services.AddSingleton<MeaFileReader>();
             }
 
-            void ConfigureWindows()
+            void ConfigureViews()
             {
-                services.AddSingleton<Views.FileOpenedPanel>();
+                services.AddSingleton<Views.FileOpenPanel>();
                 services.AddSingleton<Views.ElectrodesMapPanel>();
                 services.AddSingleton<Views.OneElectrodePanel>(); 
                 services.AddSingleton<Views.MainWindow>();
+            }
+            
+            void ConfigureViewModels()
+            {
+                services.AddSingleton<FileOpenPanelModel>();
+                services.AddSingleton<ElectrodesMapPanelModel>();
+                services.AddSingleton<OneElectrodePanelModel>();
+                services.AddSingleton<MainWindowModel>();
             }
         }
     }

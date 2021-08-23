@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TasteMEA.DataMEA.Utilities
+namespace MEATaste.DataMEA.Utilities
 {
     public static class Filter
     {

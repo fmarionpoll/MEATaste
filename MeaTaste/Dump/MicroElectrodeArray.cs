@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 
 
-namespace TasteMEA.Dump
+namespace MEATaste.Dump
 {
     // Models
 

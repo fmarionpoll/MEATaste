@@ -1,6 +1,6 @@
 ﻿
 
-namespace TasteMEA.DataMEA.Models
+namespace MEATaste.DataMEA.Models
 {
     public class MEAWellPlate
     {

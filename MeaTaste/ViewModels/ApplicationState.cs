@@ -1,6 +1,6 @@
-﻿using TasteMEA.DataMEA.Models;
+﻿using MEATaste.DataMEA.Models;
 
-namespace TasteMEA.ViewModels
+namespace MEATaste.ViewModels
 {
     public class ApplicationState 
     {

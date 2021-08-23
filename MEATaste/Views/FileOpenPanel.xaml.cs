@@ -1,16 +1,16 @@
-﻿using Microsoft.Win32;
-using TasteMEA.DataMEA.MaxWell;
-using TasteMEA.ViewModels;
+﻿using MEATaste.DataMEA.MaxWell;
+using MEATaste.ViewModels;
+using Microsoft.Win32;
 
 
-namespace TasteMEA.Views
+namespace MEATaste.Views
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class FileOpenedPanel
+    public partial class FileOpenPanel
     {
-        public FileOpenedPanel()
+        public FileOpenPanel()
         {
             InitializeComponent();
         }
@@ -19,7 +19,7 @@ namespace TasteMEA.Views
         private readonly MeaFileReader meaFileReader;
 
         // Custom constructor to pass expense report data
-        public FileOpenedPanel(MeaFileReader meaFileReader, ApplicationState state): this()
+        public FileOpenPanel(MeaFileReader meaFileReader, ApplicationState state): this()
         {
             this.meaFileReader = meaFileReader;
             this.state = state;

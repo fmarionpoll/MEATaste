@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using HDF.PInvoke;
 using HDF5.NET;
-using TasteMEA.DataMEA.Models;
+using MEATaste.DataMEA.Models;
 
-namespace TasteMEA.DataMEA.MaxWell
+namespace MEATaste.DataMEA.MaxWell
 {
     public class MeaFileReader
     {

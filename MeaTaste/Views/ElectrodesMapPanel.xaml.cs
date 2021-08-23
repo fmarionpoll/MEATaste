@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
-using TasteMEA.DataMEA.Models;
-using TasteMEA.DataMEA.MaxWell;
-using TasteMEA.ViewModels;
+using MEATaste.DataMEA.MaxWell;
+using MEATaste.DataMEA.Models;
+using MEATaste.ViewModels;
 
-namespace TasteMEA.Views
+namespace MEATaste.Views
 {
     /// <summary>
     /// Interaction logic for ElectrodesMap.xaml

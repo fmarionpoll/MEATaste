@@ -1,7 +1,7 @@
 ﻿
 // from : https://stackoverflow.com/questions/16636019/how-to-get-1d-column-array-and-1d-row-array-from-2d-array-c-net
 
-namespace TasteMEA.DataMEA.Utilities
+namespace MEATaste.DataMEA.Utilities
 {
     public static class MatrixExtensions
     {
