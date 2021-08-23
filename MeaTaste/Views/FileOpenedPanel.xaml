@@ -8,10 +8,13 @@
          mc:Ignorable="d" Height="28" Width="700">
 
     <Grid>
-        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="0.508,-0.402" Margin="0,0,0,0" Height="26" Click="OpenDialogButton_Click" />
-        <Label x:Name="FileVersionLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="file version" Visibility="Visible" Margin="80,0,0,0" Height="26" >
+        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" VerticalAlignment="Top"
+                RenderTransformOrigin="0.508,-0.402" Margin="21,0,0,0" Height="26" Click="OpenDialogButton_Click" />
+        <Label x:Name="FileVersionLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="file version" 
+               Visibility="Visible" Margin="101,0,0,0" Height="26" >
         </Label>
-        <Label x:Name="FileNameLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="file name" Visibility="Visible" Margin="152,0,0,0" Height="26" >
+        <Label x:Name="FileNameLabel" HorizontalAlignment="Left" VerticalAlignment="Center" Content="file name" 
+               Visibility="Visible" Margin="173,0,0,0" Height="26" >
             <Label.DataContext>
                 <infrastructure:ApplicationState/>
             </Label.DataContext>

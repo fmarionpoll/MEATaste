@@ -25,18 +25,17 @@
         </views:FileOpenedPanel>
         <views:ElectrodesMapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" 
                                   Grid.Row="2" Margin="0,0,0,0" />
-        <views:OneElectrodePanel HorizontalAlignment="Center"  VerticalAlignment="Top"    Grid.Column="1" 
-                                 Grid.Row ="1" Grid.RowSpan="2" Margin="0,0,0,0" />
+        <views:OneElectrodePanel HorizontalAlignment="Center"  VerticalAlignment="Top"    Grid.Column="1" Grid.RowSpan="3" Margin="0,28,0,0" Width="840" />
 
-        <ListView x:Name="ListViewChannels" HorizontalAlignment="Left" Height="199" Margin="14,0,0,0" Grid.Row="1"
-                  Grid.Column="0" VerticalAlignment="Center" Width="83">
+        <ListView x:Name="ListViewChannels" HorizontalAlignment="Left" Height="199" Margin="24,0,0,0" Grid.Row="1"
+                  Grid.Column="0" VerticalAlignment="Center" Width="122">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="channel"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        
+
     </Grid>
 
 
