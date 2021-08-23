@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TasteMEA", "MeaTaste\TasteMEA.csproj", "{44BB9228-33A5-40BB-825F-33892CC8BC45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MEATaste", "MeaTaste\MEATaste.csproj", "{44BB9228-33A5-40BB-825F-33892CC8BC45}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{FD02DC9F-CAF7-46A8-80C0-547EB6C1FCD8}"
 EndProject
