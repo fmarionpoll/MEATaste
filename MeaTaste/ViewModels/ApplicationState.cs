@@ -1,6 +1,6 @@
 ﻿using TasteMEA.DataMEA.Models;
 
-namespace TasteMEA.Infrastructure
+namespace TasteMEA.ViewModels
 {
     public class ApplicationState 
     {

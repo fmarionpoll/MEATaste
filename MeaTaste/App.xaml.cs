@@ -1,7 +1,7 @@
 ﻿
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using TasteMEA.Infrastructure;
+using TasteMEA.ViewModels;
 
 
 namespace TasteMEA

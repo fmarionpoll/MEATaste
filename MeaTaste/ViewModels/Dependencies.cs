@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TasteMEA.DataMEA.MaxWell;
 
-namespace TasteMEA.Infrastructure
+namespace TasteMEA.ViewModels
 {
     public static class Dependencies
     {

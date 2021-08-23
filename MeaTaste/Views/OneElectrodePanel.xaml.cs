@@ -4,7 +4,7 @@ using System.Windows.Input;
 using TasteMEA.DataMEA.Models;
 using TasteMEA.DataMEA.MaxWell;
 using TasteMEA.DataMEA.Utilities;
-using TasteMEA.Infrastructure;
+using TasteMEA.ViewModels;
 
 namespace TasteMEA.Views
 {

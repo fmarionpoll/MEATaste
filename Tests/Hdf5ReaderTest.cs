@@ -11,10 +11,12 @@ namespace Tests
     public class Hdf5ReaderTest
     {
         //[Fact]
-        public void ShouldOpenFileAndGetContent()
+        public void ShouldOpenFileAndGetContent(FileReader fileReader, string fileName)
         {
-            bool Open_OK = FileReader.OpenReadMaxWellFile(@"E:\2021 MaxWell\Trace_20210715_16_54_48_1mM(+++).raw.h5");
-            bool v0_OK = FileReader.IsFileReadableAsMaxWellFile();
+            if (fileName == null)
+                fileName = @"E:\2021 MaxWell\Trace_20210715_16_54_48_1mM(+++).raw.h5";
+            bool Open_OK = fileReader.OpenReadMaxWellFile(fileName);
+            bool v0_OK = fileReader.IsFileReadableAsMaxWellFile();
         }
     }
 }

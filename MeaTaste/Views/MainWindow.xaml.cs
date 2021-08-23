@@ -1,5 +1,5 @@
 ﻿using TasteMEA.DataMEA.MaxWell;
-using TasteMEA.Infrastructure;
+using TasteMEA.ViewModels;
 
 namespace TasteMEA.Views
 {
