@@ -15,8 +15,15 @@ namespace TasteMEA.Views
             InitializeComponent();
         }
 
-        private readonly ApplicationState state = new ApplicationState();
+        private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
+
+        // Custom constructor to pass expense report data
+        public FileOpenedPanel(MeaFileReader meaFileReader, ApplicationState state): this()
+        {
+            this.meaFileReader = meaFileReader;
+            this.state = state;
+        }
 
 
         private void OpenDialogButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -26,7 +33,7 @@ namespace TasteMEA.Views
             {
                 var fileName = openFileDialog.FileName;
                 state.CurrentMeaExperiment = meaFileReader.ReadFile(fileName);
-                UpdateLabelsWhenNewFileIsOpened();
+                //UpdateLabelsWhenNewFileIsOpened();
             }
         }
 

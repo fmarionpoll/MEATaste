@@ -1,14 +1,21 @@
 ﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             x:Class="TasteMEA.Views.FileOpenedPanel"
-             mc:Ignorable="d" Height="28" Width="700">
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+         xmlns:infrastructure="clr-namespace:TasteMEA.Infrastructure" 
+         x:Class="TasteMEA.Views.FileOpenedPanel"
+         mc:Ignorable="d" Height="28" Width="700">
+
     <Grid>
         <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="0.508,-0.402" Margin="0,0,0,0" Height="26" Click="OpenDialogButton_Click" />
-        <Label x:Name="FileVersionLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="file version" Visibility="Visible" Margin="80,0,0,0" Height="26" />
-        <Label x:Name="FileNameLabel"   HorizontalAlignment="Left" VerticalAlignment="Top" Content="file name" Visibility="Visible" Margin="152,0,0,0" Height="26" />
+        <Label x:Name="FileVersionLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="file version" Visibility="Visible" Margin="80,0,0,0" Height="26" >
+        </Label>
+        <Label x:Name="FileNameLabel"   HorizontalAlignment="Left" VerticalAlignment="Top" Content="file name" Visibility="Visible" Margin="152,0,0,0" Height="26" >
+            <Label.DataContext>
+                <infrastructure:ApplicationState/>
+            </Label.DataContext>
+        </Label>
     </Grid>
 
 

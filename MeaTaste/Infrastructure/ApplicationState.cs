@@ -2,7 +2,7 @@
 
 namespace TasteMEA.Infrastructure
 {
-    public class ApplicationState
+    public class ApplicationState 
     {
         public MeaExperiment CurrentMeaExperiment;
         

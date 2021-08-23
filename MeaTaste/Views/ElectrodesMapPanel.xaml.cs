@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using TasteMEA.DataMEA.Models;
-
+using TasteMEA.DataMEA.MaxWell;
+using TasteMEA.Infrastructure;
 
 namespace TasteMEA.Views
 {
@@ -16,6 +17,16 @@ namespace TasteMEA.Views
         public ElectrodesMapPanel()
         {
             InitializeComponent();
+        }
+
+        // Custom constructor to pass data
+        private readonly ApplicationState state;
+        private readonly MeaFileReader meaFileReader;
+
+        public ElectrodesMapPanel(MeaFileReader meaFileReader, ApplicationState state) : this()
+        {
+            this.meaFileReader = meaFileReader;
+            this.state = state;
         }
 
         private void ElectrodesMap_MouseMove(object sender, MouseEventArgs e)
