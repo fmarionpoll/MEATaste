@@ -20,7 +20,8 @@
         </Grid.RowDefinitions>
 
         <views:FileOpenPanel HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"
-                               Grid.ColumnSpan="2" Width="1080"/>
+                               Grid.ColumnSpan="2" Width="1080"
+                               />
         <views:ElectrodesMapPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="0" 
                                   Grid.Row="2" Margin="0,0,0,0" />
         <views:OneElectrodePanel HorizontalAlignment="Center"  VerticalAlignment="Top"    Grid.Column="1" 

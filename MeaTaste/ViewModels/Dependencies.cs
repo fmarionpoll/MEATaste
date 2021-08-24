@@ -5,7 +5,7 @@ namespace MEATaste.ViewModels
 {
     public static class Dependencies
     {
-        public static void ConfigureServices(ServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services)
         {
             ConfigureHandlers();
             ConfigureViews();
