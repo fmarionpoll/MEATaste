@@ -1,7 +1,5 @@
-﻿
-using System;
-using System.Windows;
-using MEATaste.ViewModels;
+﻿using System.Windows;
+using MEATaste.Infrastructure;
 using MEATaste.Views;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,13 +8,14 @@ namespace MEATaste
 {
     public partial class App : Application
     {
-        private readonly ServiceProvider _serviceProvider;
+        public static ServiceProvider ServiceProvider { get ; private set; }
+        private readonly ServiceProvider serviceProvider;
 
         public App()
         {
             var services = new ServiceCollection();
             ConfigureServices(services);
-            _serviceProvider = services.BuildServiceProvider();
+            serviceProvider = services.BuildServiceProvider();
         }
 
         private void ConfigureServices(IServiceCollection services)
@@ -26,8 +25,9 @@ namespace MEATaste
 
         private void OnStartup(object sender, StartupEventArgs e)
         {
-            var mainWindow = _serviceProvider.GetService<MainWindow>();
-            mainWindow.Show();
+            ServiceProvider = serviceProvider;
+            var mainWindow = serviceProvider.GetService<MainWindow>();
+            mainWindow!.Show();
         }
     }
 }

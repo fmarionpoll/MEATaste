@@ -1,15 +1,17 @@
 ﻿using MEATaste.DataMEA.MaxWell;
+using MEATaste.ViewModels;
+using MEATaste.Views.FileOpenPanel;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MEATaste.ViewModels
+namespace MEATaste.Infrastructure
 {
     public static class Dependencies
     {
         public static void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<Views.MainWindow>();
             ConfigureHandlers();
-            ConfigureViews();
-            ConfigureViewModels();
+            ConfigureControllers();
 
             void ConfigureHandlers()
             {
@@ -24,17 +26,9 @@ namespace MEATaste.ViewModels
                 services.AddSingleton<MeaFileReader>();
             }
 
-            void ConfigureViews()
+            void ConfigureControllers()
             {
-                services.AddSingleton<Views.FileOpenPanel>();
-                services.AddSingleton<Views.ElectrodesMapPanel>();
-                services.AddSingleton<Views.OneElectrodePanel>(); 
-                services.AddSingleton<Views.MainWindow>();
-            }
-            
-            void ConfigureViewModels()
-            {
-                services.AddSingleton<FileOpenPanelModel>();
+                services.AddSingleton<FileOpenPanelController>();
                 services.AddSingleton<ElectrodesMapPanelModel>();
                 services.AddSingleton<OneElectrodePanelModel>();
                 services.AddSingleton<MainWindowModel>();

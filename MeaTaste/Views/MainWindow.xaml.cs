@@ -1,4 +1,5 @@
 ﻿using MEATaste.DataMEA.MaxWell;
+using MEATaste.Infrastructure;
 using MEATaste.ViewModels;
 
 namespace MEATaste.Views

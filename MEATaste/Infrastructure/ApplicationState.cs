@@ -1,6 +1,6 @@
 ﻿using MEATaste.DataMEA.Models;
 
-namespace MEATaste.ViewModels
+namespace MEATaste.Infrastructure
 {
     public class ApplicationState 
     {

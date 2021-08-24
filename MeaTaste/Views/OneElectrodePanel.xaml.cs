@@ -4,6 +4,7 @@ using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.DataMEA.Utilities;
+using MEATaste.Infrastructure;
 using MEATaste.ViewModels;
 
 namespace MEATaste.Views
