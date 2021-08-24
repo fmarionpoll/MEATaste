@@ -33,17 +33,8 @@ namespace MEATaste.Views.FileOpenPanel
 
                 ViewModel.FileNameLabel = state.CurrentMeaExperiment.FileName;
                 ViewModel.FileVersionLabel = state.CurrentMeaExperiment.FileVersion;
-                //UpdateLabelsWhenNewFileIsOpened();
             }
         }
 
-        private void UpdateLabelsWhenNewFileIsOpened()
-        {
-            //FileNameLabel.Content = "File: " + state.CurrentMeaExperiment.FileName;
-            //FileVersionLabel.Content = "Version: " + state.CurrentMeaExperiment.FileVersion;
-            //var channelsList = state.CurrentMeaExperiment.Descriptors.GetElectrodesChannelNumber();
-            //ListViewChannels.ItemsSource = channelsList;
-            //InitElectrodesMap();
-        }
     }
 }
