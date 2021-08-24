@@ -11,6 +11,10 @@ namespace MEATaste.Views.FileOpenPanel
         private readonly MeaFileReader meaFileReader;
         private readonly ApplicationState state;
 
+        public FileOpenPanelController()
+        {
+        }
+
         public FileOpenPanelController(MeaFileReader meaFileReader, ApplicationState state)
         {
             this.meaFileReader = meaFileReader;
@@ -23,7 +27,9 @@ namespace MEATaste.Views.FileOpenPanel
             };
         }
 
-        public void OpenFile()
+        
+
+            public void OpenFile()
         {
             var openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
