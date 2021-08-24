@@ -2,7 +2,7 @@
 using MEATaste.Infrastructure;
 using Microsoft.Win32;
 
-namespace MEATaste.Views.FileOpenPanel
+namespace MEATaste.Views.FileOpen
 {
     public class FileOpenPanelController
     {
@@ -10,10 +10,6 @@ namespace MEATaste.Views.FileOpenPanel
 
         private readonly MeaFileReader meaFileReader;
         private readonly ApplicationState state;
-
-        public FileOpenPanelController()
-        {
-        }
 
         public FileOpenPanelController(MeaFileReader meaFileReader, ApplicationState state)
         {
@@ -27,9 +23,7 @@ namespace MEATaste.Views.FileOpenPanel
             };
         }
 
-        
-
-            public void OpenFile()
+        public void OpenFile()
         {
             var openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)

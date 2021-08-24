@@ -1,6 +1,6 @@
 ﻿using MEATaste.DataMEA.MaxWell;
 using MEATaste.ViewModels;
-using MEATaste.Views.FileOpenPanel;
+using MEATaste.Views.FileOpen;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Infrastructure

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 
-namespace MEATaste.Views.FileOpenPanel
+namespace MEATaste.Views.FileOpen
 {
     public class FileOpenPanelViewModel : INotifyPropertyChanged
     {
@@ -14,11 +14,9 @@ namespace MEATaste.Views.FileOpenPanel
             get => fileVersionLabel;
             set
             {
-                if (fileVersionLabel != value)
-                {
-                    fileVersionLabel = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileVersionLabel"));
-                }
+                if (fileVersionLabel == value) return;
+                fileVersionLabel = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileVersionLabel)));
             }
         }
 
@@ -27,20 +25,16 @@ namespace MEATaste.Views.FileOpenPanel
             get => fileNameLabel;
             set
             {
-                if (fileNameLabel != value)
-                {
-                    fileNameLabel = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNameLabel"));
-                }
+                if (fileNameLabel == value) return;
+                fileNameLabel = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileNameLabel)));
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

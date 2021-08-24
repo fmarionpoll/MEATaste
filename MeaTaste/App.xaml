@@ -3,15 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:MEATaste.Views"
              xmlns:viewModels="clr-namespace:MEATaste.ViewModels"
-             xmlns:fileOpenPanel="clr-namespace:MEATaste.Views.FileOpenPanel"
+             xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
              Startup="OnStartup">
                
     <Application.Resources>
         <DataTemplate DataType="{x:Type viewModels:ElectrodesMapPanelModel}">
             <views:ElectrodesMapPanel />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type fileOpenPanel:FileOpenPanelController}">
-            <fileOpenPanel:FileOpenPanelView />
+        <DataTemplate DataType="{x:Type fileOpen:FileOpenPanelController}">
+            <fileOpen:FileOpenPanelView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type viewModels:OneElectrodePanelModel}">
             <views:OneElectrodePanel />

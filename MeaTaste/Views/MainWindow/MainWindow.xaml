@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:MEATaste.Views"
-        xmlns:fileOpenPanel="clr-namespace:MEATaste.Views.FileOpenPanel"
+        xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         mc:Ignorable="d"
         Title="MainWindow" Width="1090" Height="500">
 
@@ -20,7 +20,7 @@
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
 
-        <fileOpenPanel:FileOpenPanelView HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"
+        <fileOpen:FileOpenPanelView HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"
                                Grid.ColumnSpan="2" Width="1080"
                                />
         <views:ElectrodesMapPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="0" 

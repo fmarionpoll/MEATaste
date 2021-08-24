@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace MEATaste.Views.FileOpenPanel
+namespace MEATaste.Views.FileOpen
 {
     public partial class FileOpenPanelView
     {
