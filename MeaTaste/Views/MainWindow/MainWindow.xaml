@@ -1,11 +1,13 @@
 ﻿<Window 
-        x:Class="MEATaste.Views.MainWindow"
+        x:Class="MEATaste.Views.MainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:MEATaste.Views"
-        xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
+        xmlns:oneElectrode="clr-namespace:MEATaste.Views.OneElectrode"
+        xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
+        xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
+        xmlns:fileOpen1="clr-namespace:MEATaste.Views.FileOpen"
         mc:Ignorable="d"
         Title="MainWindow" Width="1090" Height="500">
 
@@ -15,27 +17,17 @@
             <ColumnDefinition Width="84*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="8*"/>
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
 
-        <fileOpen:FileOpenPanelView HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"
-                               Grid.ColumnSpan="2" Width="1080"
-                               />
-        <views:ElectrodesMapPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="0" 
+        <fileOpen1:FileOpenPanelView HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"
+                               Grid.ColumnSpan="2" Margin="0,0,0,0"/>
+        <electrodesMap:ElectrodesMapPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="0" 
                                   Grid.Row="2" Margin="0,0,0,0" />
-        <views:OneElectrodePanel HorizontalAlignment="Center"  VerticalAlignment="Top"    Grid.Column="1" 
-                                  Grid.Row="1" Grid.RowSpan="2" Margin="0,10,0,0" Width="840" Height="429" />
-
-        <ListView x:Name="ListViewChannels" HorizontalAlignment="Left" Height="199" Margin="24,0,0,0" Grid.Row="1"
-                  Grid.Column="0" VerticalAlignment="Center" Width="122">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="channel"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <oneElectrode:OneElectrodePanel HorizontalAlignment="Center"  VerticalAlignment="Top"    Grid.Column="1" Grid.RowSpan="3" Margin="0,28,0,0" Width="788" />
+        <electrodesList:ElectrodesListPanelView HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" Height="198" Width="230" Grid.Row="1" />
 
     </Grid>
 

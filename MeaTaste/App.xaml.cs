@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using MEATaste.Infrastructure;
-using MEATaste.Views;
+using MEATaste.Views.MainWindow;
 using Microsoft.Extensions.DependencyInjection;
 
 

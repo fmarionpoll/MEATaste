@@ -1,8 +1,7 @@
 ﻿using MEATaste.DataMEA.MaxWell;
 using MEATaste.Infrastructure;
-using MEATaste.ViewModels;
 
-namespace MEATaste.Views
+namespace MEATaste.Views.MainWindow
 {
     public partial class MainWindow
     {
@@ -11,8 +10,8 @@ namespace MEATaste.Views
 
         public MainWindow(MeaFileReader meaFileReader, ApplicationState applicationState)
         {
-            this._meaFileReader = meaFileReader;
-            this._applicationState = applicationState;
+            _meaFileReader = meaFileReader;
+            _applicationState = applicationState;
             DataContext = _applicationState;
             InitializeComponent();
         }

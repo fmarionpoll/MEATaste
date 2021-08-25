@@ -1,6 +1,9 @@
 ﻿using MEATaste.DataMEA.MaxWell;
-using MEATaste.ViewModels;
+using MEATaste.Views.ElectrodesList;
+using MEATaste.Views.ElectrodesMap;
 using MEATaste.Views.FileOpen;
+using MEATaste.Views.MainWindow;
+using MEATaste.Views.OneElectrode;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Infrastructure
@@ -9,7 +12,7 @@ namespace MEATaste.Infrastructure
     {
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Views.MainWindow>();
+            services.AddSingleton<MainWindow>();
             ConfigureHandlers();
             ConfigureControllers();
 
@@ -31,6 +34,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<FileOpenPanelController>();
                 services.AddSingleton<ElectrodesMapPanelModel>();
                 services.AddSingleton<OneElectrodePanelModel>();
+                services.AddSingleton<ElectrodesListPanelController>();
                 services.AddSingleton<MainWindowModel>();
             }
         }

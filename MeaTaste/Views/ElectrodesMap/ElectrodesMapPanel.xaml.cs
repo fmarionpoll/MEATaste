@@ -2,9 +2,8 @@
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
-using MEATaste.ViewModels;
 
-namespace MEATaste.Views
+namespace MEATaste.Views.ElectrodesMap
 {
     /// <summary>
     /// Interaction logic for ElectrodesMap.xaml

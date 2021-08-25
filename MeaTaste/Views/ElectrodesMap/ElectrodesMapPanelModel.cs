@@ -1,6 +1,6 @@
 ﻿
 
-namespace MEATaste.ViewModels
+namespace MEATaste.Views.ElectrodesMap
 {
     public partial class ElectrodesMapPanelModel
     {

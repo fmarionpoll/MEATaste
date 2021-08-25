@@ -12,9 +12,11 @@ namespace MEATaste.DataMEA.Models
         public string FileVersion { get; set; } = "unknown";
         public Descriptors Descriptors;
 
-        public MeaExperiment(string fileName, Descriptors descriptors)
+        public MeaExperiment(string fileName, string fileVersion, Descriptors descriptors)
         {
             FileName = fileName;
+            if (fileVersion != null)
+                FileVersion = fileVersion;
             Descriptors = descriptors;
         }
     }

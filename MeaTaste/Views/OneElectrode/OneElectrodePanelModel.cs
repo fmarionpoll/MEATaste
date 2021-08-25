@@ -1,6 +1,6 @@
 ﻿
 
-namespace MEATaste.ViewModels
+namespace MEATaste.Views.OneElectrode
 {
     public partial class OneElectrodePanelModel
     {

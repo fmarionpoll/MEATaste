@@ -75,12 +75,11 @@ namespace MEATaste.DataMEA.MaxWell
 
         public MeaExperiment GetExperimentInfos()
         {
-            MeaExperiment MeaExp = new MeaExperiment(FileName, new Descriptors());
-            MeaExp.FileVersion = FileVersion;
-            ReadSettingsDescriptors(MeaExp);
-            ReadTimeDescriptors(MeaExp);
-            ReadMapElectrodes(MeaExp);
-            return MeaExp;
+            var meaExp = new MeaExperiment(FileName, FileVersion, new Descriptors());
+            ReadSettingsDescriptors(meaExp);
+            ReadTimeDescriptors(meaExp);
+            ReadMapElectrodes(meaExp);
+            return meaExp;
         }
 
         public bool ReadTimeDescriptors(MeaExperiment meaExp)

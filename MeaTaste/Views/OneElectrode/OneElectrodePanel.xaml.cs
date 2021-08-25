@@ -5,9 +5,8 @@ using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.DataMEA.Utilities;
 using MEATaste.Infrastructure;
-using MEATaste.ViewModels;
 
-namespace MEATaste.Views
+namespace MEATaste.Views.OneElectrode
 {
     /// <summary>
     /// Interaction logic for DisplayOneElectrodePanel.xaml
