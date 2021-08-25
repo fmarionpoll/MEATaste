@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 
@@ -29,10 +30,13 @@ namespace MEATaste.Views.FileOpen
                 if (fileNameLabel == value) return;
                 fileNameLabel = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileNameLabel)));
+                if (NewFileIsLoadedAction != null)
+                    NewFileIsLoadedAction();
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public static event Action NewFileIsLoadedAction;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => 

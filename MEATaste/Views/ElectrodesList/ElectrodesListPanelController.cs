@@ -2,6 +2,7 @@
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
+using MEATaste.Views.FileOpen;
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -18,6 +19,7 @@ namespace MEATaste.Views.ElectrodesList
             this.state = state;
 
             ViewModel = new ElectrodesListPanelViewModel();
+            FileOpenPanelViewModel.NewFileIsLoadedAction += FillTable;
         }
 
         public void FillTable()
@@ -31,7 +33,10 @@ namespace MEATaste.Views.ElectrodesList
 
         public void SelectedRow(int selectedRowIndex)
         {
-            ViewModel.SelectedElectrodesTableIndex = selectedRowIndex;
+            ViewModel.SelectedElectrodeIndex = selectedRowIndex;
         }
+
+        public int GetElectrodeChannel(int index) =>
+            state.CurrentMeaExperiment.Descriptors.Electrodes[index].ChannelNumber;
     }
 }

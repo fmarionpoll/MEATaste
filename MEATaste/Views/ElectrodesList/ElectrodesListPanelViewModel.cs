@@ -22,30 +22,29 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-        //// Binding must be set to One-Way for read-only properties
-        //public int SelectedElectrodesTableIndex
-        //{
-        //    get
-        //    {
-        //        if (ElectrodesTable is {Count: > 0})
-        //            return ElectrodesTable.IndexOf(SelectedElectrode);
-        //        else
-        //            return -1;
-        //    }
-            
-        //}
+        // Binding must be set to One-Way for read-only properties
+        private int selectedElectrodeIndex;
+        public int SelectedElectrodeIndex
+        {
+            get => selectedElectrodeIndex;
 
-        //private Electrode selectedElectrode;
-        //public Electrode SelectedElectrode
-        //{
-        //    get => selectedElectrode;
-        //    set
-        //    {
-        //        selectedElectrode = value;
-        //        OnPropertyChanged(nameof(SelectedElectrode));
-        //        OnPropertyChanged(nameof(SelectedElectrodesTableIndex));
-        //    }
-        //}
+            set
+            {
+                selectedElectrodeIndex = value;
+                OnPropertyChanged(nameof(SelectedElectrodeIndex));
+            }
+        }
+
+        private Electrode selectedElectrode;
+        public Electrode SelectedElectrode
+        {
+            get => selectedElectrode;
+            set
+            {
+                selectedElectrode = value;
+                OnPropertyChanged(nameof(SelectedElectrode));
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

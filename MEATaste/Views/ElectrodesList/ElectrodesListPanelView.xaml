@@ -5,19 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:electrodeslist="clr-namespace:MEATaste.Views.ElectrodesList" 
              d:DataContext="{d:DesignInstance Type=electrodeslist:ElectrodesListPanelViewModel}"
-             mc:Ignorable="d" d:DesignHeight="234" d:DesignWidth="309.13" >
+             mc:Ignorable="d" d:DesignWidth="309.13" Height="232" >
     <Viewbox Height="auto" Width="auto">
-        <Canvas Height="201" Width="250">
-
-            <Button x:Name="LoadData" Content="Load data" HorizontalAlignment="Left" VerticalAlignment="Top"
-                    Click="Load_Data_Click" Width="60" Height="20" />
-            <DataGrid x:Name="ElectrodesGrid" Margin="0,20,0,0" SelectionMode="Single" CanUserAddRows="False"
+        <Canvas Height="184" Width="250">
+            <DataGrid x:Name="ElectrodesGrid" Margin="0,0,0,0" SelectionMode="Single" CanUserAddRows="False"
                       AlternatingRowBackground="LightBlue" AlternationCount="2"
                       CanUserDeleteRows="False"
                       ItemsSource="{Binding ElectrodesTable}" 
+                      SelectedIndex="{Binding SelectedElectrodeIndex}"
+                      SelectedItem="{Binding SelectedElectrode}"
                       AutoGenerateColumns="True" EnableColumnVirtualization="True"
                       EnableRowVirtualization="True" HorizontalContentAlignment="Center"
-                      VerticalContentAlignment="Center" Height="171" Width="250" RenderTransformOrigin="0.508,0.207" 
+                      VerticalContentAlignment="Center" 
+                      SelectionChanged="ElectrodesGrid_SelectionChanged"
+                      Canvas.Left="20" Canvas.Top="20" Height="164" Width="230" 
                        />
 
         </Canvas>
