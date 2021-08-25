@@ -16,11 +16,7 @@ namespace MEATaste.Views.FileOpen
             this.meaFileReader = meaFileReader;
             this.state = state;
 
-            ViewModel = new FileOpenPanelViewModel
-            {
-                FileNameLabel = "file name",
-                FileVersionLabel = "file version"
-            };
+            ViewModel = new FileOpenPanelViewModel();
         }
 
         public void OpenFile()

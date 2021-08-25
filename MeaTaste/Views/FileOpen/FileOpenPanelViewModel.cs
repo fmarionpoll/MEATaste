@@ -2,12 +2,13 @@
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 
+
 namespace MEATaste.Views.FileOpen
 {
     public class FileOpenPanelViewModel : INotifyPropertyChanged
     {
-        private string fileVersionLabel;
-        private string fileNameLabel;
+        private string fileVersionLabel = string.Empty;
+        private string fileNameLabel = string.Empty;
 
         public string FileVersionLabel
         {

@@ -13,5 +13,9 @@ namespace MEATaste.Views.ElectrodesList
             DataContext = controller!.ViewModel;
             InitializeComponent();
         }
+
+        private void Load_Data_Click(object sender, System.Windows.RoutedEventArgs e) => controller.FillTable();
+
+
     }
 }

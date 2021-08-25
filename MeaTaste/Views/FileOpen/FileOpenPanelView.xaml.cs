@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace MEATaste.Views.FileOpen
 {
@@ -14,5 +16,6 @@ namespace MEATaste.Views.FileOpen
         }
 
         private void OpenDialogButton_Click(object sender, System.Windows.RoutedEventArgs e) => controller.OpenFile();
+
     }
 }

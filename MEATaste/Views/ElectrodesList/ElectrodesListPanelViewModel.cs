@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 using MEATaste.DataMEA.Models;
@@ -7,18 +8,45 @@ namespace MEATaste.Views.ElectrodesList
 {
     public class ElectrodesListPanelViewModel : INotifyPropertyChanged
     {
-        private Electrode[] electrodes;
 
-        public Electrode[] Electrodes
+        private ObservableCollection<Electrode> electrodesTable;
+
+        public ObservableCollection<Electrode> ElectrodesTable
         {
-            get => electrodes;
+            get => electrodesTable;
             set
             {
-                if (electrodes == value) return;
-                electrodes = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Electrodes)));
+                if (electrodesTable == value) return;
+                electrodesTable = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectrodesTable)));
             }
         }
+
+        //// Binding must be set to One-Way for read-only properties
+        //public int SelectedElectrodesTableIndex
+        //{
+        //    get
+        //    {
+        //        if (ElectrodesTable is {Count: > 0})
+        //            return ElectrodesTable.IndexOf(SelectedElectrode);
+        //        else
+        //            return -1;
+        //    }
+            
+        //}
+
+        //private Electrode selectedElectrode;
+        //public Electrode SelectedElectrode
+        //{
+        //    get => selectedElectrode;
+        //    set
+        //    {
+        //        selectedElectrode = value;
+        //        OnPropertyChanged(nameof(SelectedElectrode));
+        //        OnPropertyChanged(nameof(SelectedElectrodesTableIndex));
+        //    }
+        //}
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

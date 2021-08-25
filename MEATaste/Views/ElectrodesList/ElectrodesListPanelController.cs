@@ -1,4 +1,6 @@
-﻿using MEATaste.DataMEA.MaxWell;
+﻿using System.Collections.ObjectModel;
+using MEATaste.DataMEA.MaxWell;
+using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 
 namespace MEATaste.Views.ElectrodesList
@@ -16,6 +18,20 @@ namespace MEATaste.Views.ElectrodesList
             this.state = state;
 
             ViewModel = new ElectrodesListPanelViewModel();
+        }
+
+        public void FillTable()
+        {
+            ViewModel.ElectrodesTable = new ObservableCollection<Electrode>();
+            foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
+            {
+                ViewModel.ElectrodesTable.Add(electrode);
+            }
+        }
+
+        public void SelectedRow(int selectedRowIndex)
+        {
+            ViewModel.SelectedElectrodesTableIndex = selectedRowIndex;
         }
     }
 }
