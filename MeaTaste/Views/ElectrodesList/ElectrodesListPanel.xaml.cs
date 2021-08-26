@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using MEATaste.DataMEA.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -22,6 +23,8 @@ namespace MEATaste.Views.ElectrodesList
             if (dg == null) return;
             var index = dg.SelectedIndex;
             controller.SelectedRow(index);
+
+           // get data from controller.Model? from observablecollection?
         }
 
     }
