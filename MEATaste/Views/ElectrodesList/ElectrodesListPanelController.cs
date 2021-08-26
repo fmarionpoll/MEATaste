@@ -3,6 +3,11 @@ using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using MEATaste.Views.FileOpen;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+
+
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -24,11 +29,22 @@ namespace MEATaste.Views.ElectrodesList
 
         public void FillTable()
         {
-            Model.ElectrodesTable = new ObservableCollection<Electrode>();
+            Model.ElectrodesTableModel = new ObservableCollection<Electrode>();
+            Model.XYPlotDataModel = new PlotModel {Title = "Electrodes position (µm)"};
+            var scatterSeries = new ScatterSeries {MarkerType = MarkerType.Circle};
+            int pointsize = 5;
+            int colorValue = 128;
             foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
             {
-                Model.ElectrodesTable.Add(electrode);
+                Model.ElectrodesTableModel.Add(electrode);
+                var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate, pointsize, colorValue);
+                scatterSeries.Points.Add(point);
             }
+
+            Model.XYPlotDataModel.Series.Add(scatterSeries);
+            Model.XYPlotDataModel.Axes.Add(new LinearColorAxis
+                {Position = AxisPosition.Right, Palette = OxyPalettes.Jet(200)});
+            Model.XYPlotDataModel.InvalidatePlot(true);
         }
 
         public void SelectedRow(int selectedRowIndex)

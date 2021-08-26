@@ -1,28 +1,29 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 using MEATaste.DataMEA.Models;
+using OxyPlot;
+
+
 
 namespace MEATaste.Views.ElectrodesList
 {
     public class ElectrodesListPanelModel : INotifyPropertyChanged
     {
-
-        private ObservableCollection<Electrode> electrodesTable;
-
-        public ObservableCollection<Electrode> ElectrodesTable
+        private ObservableCollection<Electrode> electrodesTableModel;
+        public ObservableCollection<Electrode> ElectrodesTableModel
         {
-            get => electrodesTable;
+            get => electrodesTableModel;
             set
             {
-                if (electrodesTable == value) return;
-                electrodesTable = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectrodesTable)));
+                if (electrodesTableModel == value) return;
+                electrodesTableModel = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectrodesTableModel)));
             }
         }
 
-        // Binding must be set to One-Way for read-only properties
         private int selectedElectrodeIndex;
         public int SelectedElectrodeIndex
         {
@@ -43,6 +44,19 @@ namespace MEATaste.Views.ElectrodesList
             {
                 selectedElectrode = value;
                 OnPropertyChanged(nameof(SelectedElectrode));
+            }
+        }
+
+        private PlotModel xyPlotDataModel;
+
+        public PlotModel XYPlotDataModel
+        {
+            get => xyPlotDataModel;
+            set
+            {
+                if (xyPlotDataModel == value) return;
+                xyPlotDataModel = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(XYPlotDataModel)));
             }
         }
 
