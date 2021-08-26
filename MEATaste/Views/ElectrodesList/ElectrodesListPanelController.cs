@@ -25,26 +25,45 @@ namespace MEATaste.Views.ElectrodesList
 
             Model = new ElectrodesListPanelModel();
             FileOpenPanelModel.NewFileIsLoadedAction += FillTable;
+            FileOpenPanelModel.NewFileIsLoadedAction += FillMap;
         }
 
         public void FillTable()
         {
             Model.ElectrodesTableModel = new ObservableCollection<Electrode>();
-            Model.XYPlotDataModel = new PlotModel {Title = "Electrodes position (µm)"};
-            var scatterSeries = new ScatterSeries {MarkerType = MarkerType.Circle};
-            int pointsize = 5;
-            int colorValue = 128;
             foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
             {
                 Model.ElectrodesTableModel.Add(electrode);
-                var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate, pointsize, colorValue);
-                scatterSeries.Points.Add(point);
             }
+        }
 
-            Model.XYPlotDataModel.Series.Add(scatterSeries);
-            Model.XYPlotDataModel.Axes.Add(new LinearColorAxis
-                {Position = AxisPosition.Right, Palette = OxyPalettes.Jet(200)});
-            Model.XYPlotDataModel.InvalidatePlot(true);
+        public void FillMap()
+        {
+            Model.ScatterPlotModel = new PlotModel { Title = "Electrodes position (µm)" };
+            PlotModel plotModel = Model.ScatterPlotModel;
+            AddAxes(plotModel);
+            AddSeries(plotModel);
+            plotModel.InvalidatePlot(true);
+        }
+
+        private void AddAxes(PlotModel plotModel)
+        {
+            var xAxis = new LinearAxis { Title = "x (µm)", Position = AxisPosition.Bottom };
+            plotModel.Axes.Add(xAxis);
+
+            var yAxis = new LinearAxis { Title = "y (µm)", Position = AxisPosition.Left };
+            plotModel.Axes.Add(yAxis);
+        }
+
+        private void AddSeries(PlotModel plotModel)
+        {
+            var series = new ScatterSeries { MarkerType = MarkerType.Circle };
+            foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
+            {
+                var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
+                series.Points.Add(point);
+            }
+            Model.ScatterPlotModel.Series.Add(series);
         }
 
         public void SelectedRow(int selectedRowIndex)

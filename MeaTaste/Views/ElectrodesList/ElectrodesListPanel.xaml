@@ -6,7 +6,7 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:electrodeslist="clr-namespace:MEATaste.Views.ElectrodesList" 
              d:DataContext="{d:DesignInstance Type=electrodeslist:ElectrodesListPanelModel}"
-             mc:Ignorable="d" d:DesignWidth="250" Height="232" >
+             mc:Ignorable="d" d:DesignWidth="250" Height="465" >
 
     <Grid Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
@@ -30,8 +30,7 @@
                   SelectionChanged="ElectrodesGrid_SelectionChanged"
                   />
 
-        <oxy:PlotView x:Name="ElectrodesMapView"
-                      Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                      DataContext="{Binding oxyPlot.XYPlotDataModel}" Background="AliceBlue" />
+        <oxy:PlotView Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                      Model="{Binding ScatterPlotModel}" Background="AliceBlue" />
     </Grid>
 </UserControl>

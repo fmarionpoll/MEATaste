@@ -47,17 +47,22 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-        private PlotModel xyPlotDataModel;
+        private PlotModel scatterPlotModel;
 
-        public PlotModel XYPlotDataModel
+        public PlotModel ScatterPlotModel
         {
-            get => xyPlotDataModel;
+            get => scatterPlotModel;
             set
             {
-                if (xyPlotDataModel == value) return;
-                xyPlotDataModel = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(XYPlotDataModel)));
+                if (scatterPlotModel == value) return;
+                scatterPlotModel = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScatterPlotModel)));
             }
+        }
+
+        public ElectrodesListPanelModel()
+        {
+            ScatterPlotModel = new PlotModel {Title="dummy"};
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
