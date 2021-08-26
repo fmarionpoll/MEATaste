@@ -6,7 +6,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:oneElectrode="clr-namespace:MEATaste.Views.OneElectrode"
         xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
-        xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         mc:Ignorable="d"
         Title="MainWindow" Width="1090" Height="500">
@@ -22,10 +21,9 @@
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
 
-        <fileOpen:FileOpenPanelView Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
-        <electrodesList:ElectrodesListPanelView Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+        <fileOpen:FileOpenPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+        <electrodesList:ElectrodesListPanel Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
         <oneElectrode:OneElectrodePanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-
 
     </Grid>
 

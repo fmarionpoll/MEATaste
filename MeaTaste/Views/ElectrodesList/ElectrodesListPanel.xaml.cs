@@ -5,12 +5,12 @@ using OxyPlot.Wpf;
 
 namespace MEATaste.Views.ElectrodesList
 {
-    public partial class ElectrodesListPanelView : UserControl
+    public partial class ElectrodesListPanel : UserControl
     {
         private readonly ElectrodesListPanelController controller;
         private static readonly PlotView PlotView = new PlotView();
 
-        public ElectrodesListPanelView()
+        public ElectrodesListPanel()
         {
             controller = App.ServiceProvider.GetService<ElectrodesListPanelController>();
             DataContext = controller!.Model;

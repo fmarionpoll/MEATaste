@@ -4,11 +4,11 @@ using System.Windows.Controls;
 
 namespace MEATaste.Views.FileOpen
 {
-    public partial class FileOpenPanelView
+    public partial class FileOpenPanel
     {
         private readonly FileOpenPanelController controller;
 
-        public FileOpenPanelView()
+        public FileOpenPanel()
         {
             controller = App.ServiceProvider.GetService<FileOpenPanelController>();
             DataContext = controller!.Model;

@@ -1,6 +1,5 @@
 ﻿using MEATaste.DataMEA.MaxWell;
 using MEATaste.Views.ElectrodesList;
-using MEATaste.Views.ElectrodesMap;
 using MEATaste.Views.FileOpen;
 using MEATaste.Views.MainWindow;
 using MEATaste.Views.OneElectrode;
