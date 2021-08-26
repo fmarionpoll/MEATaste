@@ -8,7 +8,7 @@ namespace MEATaste.Views.ElectrodesList
 {
     public class ElectrodesListPanelController
     {
-        public ElectrodesListPanelViewModel ViewModel { get; }
+        public ElectrodesListPanelModel Model { get; }
 
         private readonly MeaFileReader meaFileReader;
         private readonly ApplicationState state;
@@ -18,22 +18,22 @@ namespace MEATaste.Views.ElectrodesList
             this.meaFileReader = meaFileReader;
             this.state = state;
 
-            ViewModel = new ElectrodesListPanelViewModel();
-            FileOpenPanelViewModel.NewFileIsLoadedAction += FillTable;
+            Model = new ElectrodesListPanelModel();
+            FileOpenPanelModel.NewFileIsLoadedAction += FillTable;
         }
 
         public void FillTable()
         {
-            ViewModel.ElectrodesTable = new ObservableCollection<Electrode>();
+            Model.ElectrodesTable = new ObservableCollection<Electrode>();
             foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
             {
-                ViewModel.ElectrodesTable.Add(electrode);
+                Model.ElectrodesTable.Add(electrode);
             }
         }
 
         public void SelectedRow(int selectedRowIndex)
         {
-            ViewModel.SelectedElectrodeIndex = selectedRowIndex;
+            Model.SelectedElectrodeIndex = selectedRowIndex;
         }
 
         public int GetElectrodeChannel(int index) =>

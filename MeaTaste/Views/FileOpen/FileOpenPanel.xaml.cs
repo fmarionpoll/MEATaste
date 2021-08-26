@@ -11,7 +11,7 @@ namespace MEATaste.Views.FileOpen
         public FileOpenPanelView()
         {
             controller = App.ServiceProvider.GetService<FileOpenPanelController>();
-            DataContext = controller!.ViewModel;
+            DataContext = controller!.Model;
             InitializeComponent();
         }
 

@@ -6,7 +6,7 @@ using MEATaste.DataMEA.Models;
 
 namespace MEATaste.Views.ElectrodesList
 {
-    public class ElectrodesListPanelViewModel : INotifyPropertyChanged
+    public class ElectrodesListPanelModel : INotifyPropertyChanged
     {
 
         private ObservableCollection<Electrode> electrodesTable;

@@ -11,7 +11,7 @@ namespace MEATaste.Views.ElectrodesList
         public ElectrodesListPanelView()
         {
             controller = App.ServiceProvider.GetService<ElectrodesListPanelController>();
-            DataContext = controller!.ViewModel;
+            DataContext = controller!.Model;
             InitializeComponent();
         }
 

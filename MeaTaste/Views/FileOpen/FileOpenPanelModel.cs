@@ -6,7 +6,7 @@ using MEATaste.Annotations;
 
 namespace MEATaste.Views.FileOpen
 {
-    public class FileOpenPanelViewModel : INotifyPropertyChanged
+    public class FileOpenPanelModel : INotifyPropertyChanged
     {
         private string fileVersionLabel = string.Empty;
         private string fileNameLabel = string.Empty;

@@ -6,7 +6,7 @@ namespace MEATaste.Views.FileOpen
 {
     public class FileOpenPanelController
     {
-        public FileOpenPanelViewModel ViewModel { get; }
+        public FileOpenPanelModel Model { get; }
 
         private readonly MeaFileReader meaFileReader;
         private readonly ApplicationState state;
@@ -16,7 +16,7 @@ namespace MEATaste.Views.FileOpen
             this.meaFileReader = meaFileReader;
             this.state = state;
 
-            ViewModel = new FileOpenPanelViewModel();
+            Model = new FileOpenPanelModel();
         }
 
         public void OpenFile()
@@ -27,8 +27,8 @@ namespace MEATaste.Views.FileOpen
                 var fileName = openFileDialog.FileName;
                 state.CurrentMeaExperiment = meaFileReader.ReadFile(fileName);
 
-                ViewModel.FileNameLabel = state.CurrentMeaExperiment.FileName;
-                ViewModel.FileVersionLabel = state.CurrentMeaExperiment.FileVersion;
+                Model.FileNameLabel = state.CurrentMeaExperiment.FileName;
+                Model.FileVersionLabel = state.CurrentMeaExperiment.FileVersion;
             }
         }
 

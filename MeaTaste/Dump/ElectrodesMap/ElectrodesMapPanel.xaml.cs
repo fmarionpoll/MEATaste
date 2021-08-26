@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Views.ElectrodesMap
 {
-    public partial class ElectrodesMapPanelView : UserControl
+    public partial class ElectrodesMapPanel : UserControl
     {
         private readonly ElectrodeMapPanelController controller;
 
-        public ElectrodesMapPanelView()
+        public ElectrodesMapPanel()
         {
             controller = App.ServiceProvider.GetService<ElectrodeMapPanelController>();
             DataContext = controller!.ViewModel;

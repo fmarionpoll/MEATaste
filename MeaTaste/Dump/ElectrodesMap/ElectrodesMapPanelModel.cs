@@ -5,7 +5,7 @@ using MEATaste.Annotations;
 
 namespace MEATaste.Views.ElectrodesMap
 {
-    public class ElectrodesMapPanelViewModel : INotifyPropertyChanged
+    public class ElectrodesMapPanelModel : INotifyPropertyChanged
     {
 
         private int selectedElectrodeIndex;
