@@ -1,5 +1,6 @@
 ﻿using MEATaste.DataMEA.MaxWell;
 using MEATaste.Views.ElectrodesList;
+using MEATaste.Views.ElectrodesMap;
 using MEATaste.Views.FileOpen;
 using MEATaste.Views.MainWindow;
 using MEATaste.Views.OneElectrode;
@@ -32,6 +33,7 @@ namespace MEATaste.Infrastructure
             {
                 services.AddSingleton<FileOpenPanelController>();
                 services.AddSingleton<ElectrodesListPanelController>();
+                services.AddSingleton<ElectrodesMapPanelController>(); 
                 services.AddSingleton<OneElectrodePanelModel>();
                 services.AddSingleton<MainWindowModel>();
             }

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 using MEATaste.DataMEA.Models;
-using OxyPlot;
+
 
 
 
@@ -47,23 +47,6 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-        private PlotModel scatterPlotModel;
-
-        public PlotModel ScatterPlotModel
-        {
-            get => scatterPlotModel;
-            set
-            {
-                if (scatterPlotModel == value) return;
-                scatterPlotModel = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScatterPlotModel)));
-            }
-        }
-
-        public ElectrodesListPanelModel()
-        {
-            ScatterPlotModel = new PlotModel {Title="dummy"};
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

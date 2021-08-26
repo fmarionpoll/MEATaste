@@ -2,13 +2,17 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:oneElectrode="clr-namespace:MEATaste.Views.OneElectrode"
-             xmlns:viewModels="clr-namespace:MEATaste.Views.ElectrodesList"
+             xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
              xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
+             xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
              Startup="OnStartup">
                
     <Application.Resources>
-        <DataTemplate DataType="{x:Type viewModels:ElectrodesListPanelModel}">
-            <viewModels:ElectrodesListPanel />
+        <DataTemplate DataType="{x:Type electrodesList:ElectrodesListPanelModel}">
+            <electrodesList:ElectrodesListPanel />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type electrodesMap:ElectrodesMapPanelModel}">
+            <electrodesMap:ElectrodesMapPanel />
         </DataTemplate>
         <DataTemplate DataType="{x:Type fileOpen:FileOpenPanelController}">
             <fileOpen:FileOpenPanel />
