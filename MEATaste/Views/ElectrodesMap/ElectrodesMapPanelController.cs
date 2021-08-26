@@ -53,6 +53,7 @@ namespace MEATaste.Views.ElectrodesMap
                 SelectionMode = SelectionMode.Single,
                 MarkerType = MarkerType.Circle
             };
+
             foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
             {
                 var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
