@@ -8,8 +8,8 @@
              d:DataContext="{d:DesignInstance Type=electrodeslist:ElectrodesListPanelModel}"
              mc:Ignorable="d" d:DesignWidth="450" Height="465" >
 
-    <Grid Margin="0,0,0,0">
-        <DataGrid x:Name="ElectrodesGrid" Margin="10,10,10,10"
+    <Grid Margin="10,10,10,20">
+        <DataGrid x:Name="ElectrodesGrid" 
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                   SelectionMode="Single" CanUserAddRows="False"
                   AlternatingRowBackground="LightBlue" AlternationCount="2"
@@ -20,7 +20,12 @@
                   AutoGenerateColumns="True" 
                   EnableColumnVirtualization="True" EnableRowVirtualization="True" 
                   HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" 
-                  SelectionChanged="ElectrodesGrid_SelectionChanged"
-        />
+                  SelectionChanged="ElectrodesGrid_SelectionChanged" >
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                                         Color="#FF0000"/>
+                    </DataGrid.Resources>
+        </DataGrid>
+
     </Grid>
 </UserControl>

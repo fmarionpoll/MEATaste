@@ -23,8 +23,8 @@
         </Grid.RowDefinitions>
 
         <fileOpen:FileOpenPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
-        <electrodesList:ElectrodesListPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
-        <electrodesMap:ElectrodesMapPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+        <electrodesList:ElectrodesListPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+        <electrodesMap:ElectrodesMapPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
         <oneElectrode:OneElectrodePanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
     </Grid>

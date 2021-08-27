@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics;
+using System.Drawing.Text;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -54,7 +55,8 @@ namespace MEATaste.Views.ElectrodesMap
             var series = new ScatterSeries
             {
                 SelectionMode = SelectionMode.Single,
-                MarkerType = MarkerType.Circle
+                MarkerType = MarkerType.Circle,
+                MarkerFill = OxyColors.LightBlue
             };
 
             foreach (var electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
@@ -67,25 +69,71 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void CurrentIndexHasChanged()
         {
+            
             int indexSelected = state.CurrentMeaExperiment.CurrentElectrodesIndex;
-            if (indexSelected >= 0)
+            Trace.WriteLine($"Map: selected index number has changed ={indexSelected}");
+
+            var plotModel = Model.ScatterPlotModel;
+            
+            if (indexSelected < 0)
+            {
+                SuppressSelectedPoint(plotModel);
+            }
+            else 
             {
                 Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[indexSelected];
+                SetSelectedPoint(plotModel, electrode);
+                CenterPlotOnElectrode(plotModel, electrode);
                 Trace.WriteLine($"Map: electrode = {electrode}");
             }
-            else
-            {
-                Trace.WriteLine($"Map: selected index number has changed ={indexSelected}");
-            }
-
-            int nbseries = Model.ScatterPlotModel.Series.Count;
-            if (nbseries < 2)
-            {
-                // create new series with color red
-                ScatterSeries series = (ScatterSeries)Model.ScatterPlotModel.Series[0];
-            }
             
-           
+            plotModel.InvalidatePlot(true);
+        }
+
+        private void CenterPlotOnElectrode(PlotModel plotModel, Electrode electrode)
+        {
+            plotModel.Axes[0].Reset();
+            plotModel.Axes[1].Reset();
+
+            double delta = 150;
+
+            plotModel.Axes[0].Minimum = electrode.XCoordinate - delta;
+            plotModel.Axes[0].Maximum = electrode.XCoordinate + delta;
+
+            plotModel.Axes[1].Minimum = electrode.YCoordinate - delta;
+            plotModel.Axes[1].Maximum = electrode.YCoordinate + delta;
+        }
+
+        private void SuppressSelectedPoint(PlotModel plotModel)
+        {
+            if ( plotModel.Series.Count > 1)
+            {
+                plotModel.Series.RemoveAt(1);
+            }
+        }
+
+        private void SetSelectedPoint(PlotModel plotModel, Electrode electrode)
+        {
+            if (plotModel.Series.Count < 2)
+                AddSelectedSeries(plotModel);
+            ScatterSeries series = (ScatterSeries)Model.ScatterPlotModel.Series[1];
+            series.Points.RemoveAt(0);
+            var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
+            series.Points.Add(point);
+
+        }
+
+        private void AddSelectedSeries(PlotModel plotModel)
+        {
+            var series = new ScatterSeries
+            {
+                SelectionMode = SelectionMode.Single,
+                MarkerType = MarkerType.Circle,
+                MarkerFill = OxyColors.Red
+            };
+            var point = new ScatterPoint(0, 0);
+            series.Points.Add(point);
+            plotModel.Series.Add(series);
         }
 
        
