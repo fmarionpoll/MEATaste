@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
@@ -39,6 +40,21 @@ namespace MEATaste.Views.ElectrodesMap
             PlotAddAxes(plotModel);
             PlotAddSeries(plotModel);
             plotModel.InvalidatePlot(true);
+
+            plotModel.MouseDown += PlotModel_MouseDown;
+        }
+
+        private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
+        {
+            var plotModel = Model.ScatterPlotModel;
+            var s = plotModel.Series[0] as ScatterSeries;
+            ElementCollection<Axis> axisList = plotModel.Axes;
+
+            Axis xAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Bottom);
+            Axis yAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Left);
+
+            DataPoint dataPointp = Axis.InverseTransform(e.Position, xAxis, yAxis);
+            Trace.WriteLine($"coord ={dataPointp}");
         }
 
         private void PlotAddAxes(PlotModel plotModel)
@@ -92,16 +108,18 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void CenterPlotOnElectrode(PlotModel plotModel, Electrode electrode)
         {
-            plotModel.Axes[0].Reset();
-            plotModel.Axes[1].Reset();
+            var xAxis = plotModel.Axes[0];
+            var yAxis = plotModel.Axes[1];
+            xAxis.Reset();
+            yAxis.Reset();
 
-            double delta = 150;
+            var deltax = 150;
+            xAxis.Minimum = electrode.XCoordinate - deltax;
+            xAxis.Maximum = electrode.XCoordinate + deltax;
 
-            plotModel.Axes[0].Minimum = electrode.XCoordinate - delta;
-            plotModel.Axes[0].Maximum = electrode.XCoordinate + delta;
-
-            plotModel.Axes[1].Minimum = electrode.YCoordinate - delta;
-            plotModel.Axes[1].Maximum = electrode.YCoordinate + delta;
+            var deltay = deltax * plotModel.Height / plotModel.Width;
+            yAxis.Minimum = electrode.YCoordinate - deltay;
+            yAxis.Maximum = electrode.YCoordinate + deltay;
         }
 
         private void SuppressSelectedPoint(PlotModel plotModel)
@@ -116,7 +134,9 @@ namespace MEATaste.Views.ElectrodesMap
         {
             if (plotModel.Series.Count < 2)
                 AddSelectedSeries(plotModel);
-            ScatterSeries series = (ScatterSeries)Model.ScatterPlotModel.Series[1];
+            if (plotModel.Series.Count < 2)
+                return;
+            ScatterSeries series = (ScatterSeries) plotModel.Series[1];
             series.Points.RemoveAt(0);
             var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
             series.Points.Add(point);

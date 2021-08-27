@@ -3,28 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:electrodeslist="clr-namespace:MEATaste.Views.ElectrodesList" 
              d:DataContext="{d:DesignInstance Type=electrodeslist:ElectrodesListPanelModel}"
-             mc:Ignorable="d" d:DesignWidth="450" Height="465" >
+             mc:Ignorable="d" d:DesignWidth="450" Height="378" >
 
-    <Grid Margin="10,10,10,20">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <DataGrid x:Name="ElectrodesGrid" 
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  SelectionMode="Single" CanUserAddRows="False"
-                  AlternatingRowBackground="LightBlue" AlternationCount="2"
-                  CanUserDeleteRows="False"
+                  Grid.Row="0"
+                  Height="Auto"
+                  Margin="20"
+                  SelectionMode="Single" 
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False" 
+                  AlternationCount="2"
                   ItemsSource="{Binding ElectrodesTableModel}" 
                   SelectedIndex="{Binding SelectedElectrodeIndex}"
                   SelectedItem="{Binding SelectedElectrodeItem}"
-                  AutoGenerateColumns="True" 
-                  EnableColumnVirtualization="True" EnableRowVirtualization="True" 
-                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" 
-                  SelectionChanged="ElectrodesGrid_SelectionChanged" >
-                    <DataGrid.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                  EnableColumnVirtualization="True" 
+                  EnableRowVirtualization="True" 
+                  SelectionChanged="ElectrodesGrid_SelectionChanged" 
+                  HorizontalAlignment ="Stretch" VerticalAlignment ="Stretch" HorizontalContentAlignment ="Stretch" VerticalContentAlignment = "Stretch"
+                  >
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
                                          Color="#FF0000"/>
-                    </DataGrid.Resources>
+            </DataGrid.Resources>
         </DataGrid>
 
     </Grid>

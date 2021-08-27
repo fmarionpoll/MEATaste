@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 using MEATaste.Annotations;
 using OxyPlot;
+using OxyPlot.Series;
 
 namespace MEATaste.Views.ElectrodesMap
 {
@@ -23,7 +26,11 @@ namespace MEATaste.Views.ElectrodesMap
         public ElectrodesMapPanelModel()
         {
             ScatterPlotModel = new PlotModel();
+            ScatterPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom });
+            ScatterPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Maximum = 10, Minimum = 0 });
         }
+
+       
 
         public event PropertyChangedEventHandler PropertyChanged;
 

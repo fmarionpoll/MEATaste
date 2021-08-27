@@ -48,6 +48,17 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
+        private int selectedElectrodeIndex;
+        public int SelectedElectrodeIndex
+        {
+            get => selectedElectrodeIndex;
+            set
+            {
+                selectedElectrodeIndex = value;
+                OnPropertyChanged(nameof(SelectedElectrodeIndex));
+            }
+        }
+
         public static event Action SelectedElectrodeChannelChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
