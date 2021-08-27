@@ -1,6 +1,6 @@
 ﻿
 using System.Diagnostics;
-using System.Drawing.Text;
+using System.Windows;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -136,7 +136,7 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.Series.Add(series);
         }
 
-        public void MouseDoubleClick()
+        public void MouseDown(Point p)
         {
 
         }

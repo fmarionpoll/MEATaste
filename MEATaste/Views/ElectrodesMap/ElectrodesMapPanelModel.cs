@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
-using MEATaste.DataMEA.Models;
 using OxyPlot;
 
 namespace MEATaste.Views.ElectrodesMap
@@ -25,17 +24,6 @@ namespace MEATaste.Views.ElectrodesMap
         {
             ScatterPlotModel = new PlotModel();
         }
-
-        //private int selectedElectrodeChannelNumber;
-        //public int SelectedElectrodeChannelNumber
-        //{
-        //    get => selectedElectrodeChannelNumber;
-        //    set
-        //    {
-        //        selectedElectrodeChannelNumber = value;
-        //        OnPropertyChanged(nameof(SelectedElectrodeChannelNumber));
-        //    }
-        //}
 
         public event PropertyChangedEventHandler PropertyChanged;
 

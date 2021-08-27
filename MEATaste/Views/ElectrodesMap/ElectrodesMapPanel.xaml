@@ -6,7 +6,7 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="465">
-    <Grid MouseDown="Grid_MouseDown">
+    <Grid >
         <oxy:PlotView 
             Model="{Binding ScatterPlotModel}"  />
     </Grid>
