@@ -136,7 +136,10 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.Series.Add(series);
         }
 
-       
+        public void MouseDoubleClick()
+        {
+
+        }
         
     }
 }
