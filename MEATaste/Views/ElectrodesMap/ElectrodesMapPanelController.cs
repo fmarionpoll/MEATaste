@@ -2,6 +2,7 @@
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
+using MEATaste.Views.ElectrodesList;
 using MEATaste.Views.FileOpen;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -23,6 +24,7 @@ namespace MEATaste.Views.ElectrodesMap
 
             Model = new ElectrodesMapPanelModel();
             FileOpenPanelModel.NewFileIsLoadedAction += PlotLoadData;
+            ElectrodesListPanelModel.SelectedElectrodeChannelChanged += SelectChannel;
         }
 
         public void PlotLoadData()
@@ -62,6 +64,10 @@ namespace MEATaste.Views.ElectrodesMap
             Model.ScatterPlotModel.Series.Add(series);
         }
 
+        private void SelectChannel()
+        {
+
+        }
         
     }
 }

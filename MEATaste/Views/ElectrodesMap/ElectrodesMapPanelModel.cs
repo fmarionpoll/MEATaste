@@ -26,17 +26,16 @@ namespace MEATaste.Views.ElectrodesMap
             ScatterPlotModel = new PlotModel();
         }
 
-        private int selectedElectrodeIndex = -1;
-        public int SelectedElectrodeIndex
-        {
-            get => selectedElectrodeIndex;
-
-            set
-            {
-                selectedElectrodeIndex = value;
-                OnPropertyChanged(nameof(SelectedElectrodeIndex));
-            }
-        }
+        //private int selectedElectrodeChannelNumber;
+        //public int SelectedElectrodeChannelNumber
+        //{
+        //    get => selectedElectrodeChannelNumber;
+        //    set
+        //    {
+        //        selectedElectrodeChannelNumber = value;
+        //        OnPropertyChanged(nameof(SelectedElectrodeChannelNumber));
+        //    }
+        //}
 
         public event PropertyChangedEventHandler PropertyChanged;
 

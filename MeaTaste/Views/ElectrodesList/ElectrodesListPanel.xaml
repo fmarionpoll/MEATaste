@@ -16,7 +16,7 @@
                   CanUserDeleteRows="False"
                   ItemsSource="{Binding ElectrodesTableModel}" 
                   SelectedIndex="{Binding SelectedElectrodeIndex}"
-                  SelectedItem="{Binding SelectedElectrode}"
+                  SelectedItem="{Binding SelectedElectrodeItem}"
                   AutoGenerateColumns="True" 
                   EnableColumnVirtualization="True" EnableRowVirtualization="True" 
                   HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" 

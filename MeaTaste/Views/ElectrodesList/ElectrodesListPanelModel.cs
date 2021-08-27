@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -23,31 +24,31 @@ namespace MEATaste.Views.ElectrodesList
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectrodesTableModel)));
             }
         }
-
-        private int selectedElectrodeIndex;
-        public int SelectedElectrodeIndex
+        
+        private Electrode selectedElectrodeItem;
+        public Electrode SelectedElectrodeItem
         {
-            get => selectedElectrodeIndex;
-
+            get => selectedElectrodeItem;
             set
             {
-                selectedElectrodeIndex = value;
-                OnPropertyChanged(nameof(SelectedElectrodeIndex));
+                selectedElectrodeItem = value;
+                OnPropertyChanged(nameof(SelectedElectrodeItem));
             }
         }
 
-        private Electrode selectedElectrode;
-        public Electrode SelectedElectrode
+        private int selectedElectrodeChannelNumber;
+        public int SelectedElectrodeChannelNumber
         {
-            get => selectedElectrode;
+            get => selectedElectrodeChannelNumber;
             set
             {
-                selectedElectrode = value;
-                OnPropertyChanged(nameof(SelectedElectrode));
+                selectedElectrodeChannelNumber = value;
+                OnPropertyChanged(nameof(SelectedElectrodeChannelNumber));
+                SelectedElectrodeChannelChanged();
             }
         }
 
-
+        public static event Action SelectedElectrodeChannelChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

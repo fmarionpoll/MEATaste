@@ -21,10 +21,10 @@ namespace MEATaste.Views.ElectrodesList
         {
             var dg = sender as DataGrid;
             if (dg == null) return;
-            var index = dg.SelectedIndex;
-            controller.SelectedRow(index);
 
-           // get data from controller.Model? from observablecollection?
+            Electrode electrode = (Electrode) dg.SelectedItem;
+            int channelNumber = electrode.ChannelNumber;
+            controller.SelectedChannel(channelNumber);
         }
 
     }

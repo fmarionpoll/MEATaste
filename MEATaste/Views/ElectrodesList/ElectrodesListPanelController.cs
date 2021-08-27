@@ -34,9 +34,15 @@ namespace MEATaste.Views.ElectrodesList
         }
 
 
-        public void SelectedRow(int selectedRowIndex)
+        public void SelectedChannel(int selectedChannel)
         {
-            Model.SelectedElectrodeIndex = selectedRowIndex;
+            
+            foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
+            {
+                if (electrode.ChannelNumber != selectedChannel) continue;
+                Model.SelectedElectrodeChannelNumber = selectedChannel;
+                break;
+            }
         }
 
         public int GetElectrodeChannel(int index) =>
