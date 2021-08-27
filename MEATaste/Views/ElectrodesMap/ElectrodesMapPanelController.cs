@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -24,7 +25,7 @@ namespace MEATaste.Views.ElectrodesMap
 
             Model = new ElectrodesMapPanelModel();
             FileOpenPanelModel.NewFileIsLoadedAction += PlotLoadData;
-            ElectrodesListPanelModel.SelectedElectrodeChannelChanged += SelectChannel;
+            ElectrodesListPanelModel.SelectedElectrodeChannelChanged += CurrentIndexHasChanged;
         }
 
         public void PlotLoadData()
@@ -56,18 +57,38 @@ namespace MEATaste.Views.ElectrodesMap
                 MarkerType = MarkerType.Circle
             };
 
-            foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
+            foreach (var electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
             {
                 var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
                 series.Points.Add(point);
             }
-            Model.ScatterPlotModel.Series.Add(series);
+            plotModel.Series.Add(series);
         }
 
-        private void SelectChannel()
+        private void CurrentIndexHasChanged()
         {
+            int indexSelected = state.CurrentMeaExperiment.CurrentElectrodesIndex;
+            if (indexSelected >= 0)
+            {
+                Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[indexSelected];
+                Trace.WriteLine($"Map: electrode = {electrode}");
+            }
+            else
+            {
+                Trace.WriteLine($"Map: selected index number has changed ={indexSelected}");
+            }
 
+            int nbseries = Model.ScatterPlotModel.Series.Count;
+            if (nbseries < 2)
+            {
+                // create new series with color red
+                ScatterSeries series = (ScatterSeries)Model.ScatterPlotModel.Series[0];
+            }
+            
+           
         }
+
+       
         
     }
 }

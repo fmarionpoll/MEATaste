@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -33,20 +34,38 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-
-        public void SelectedChannel(int selectedChannel)
+        public void SetCurrentElectrodeIndexFromChannelNumber(int selectedChannel)
         {
-            
             foreach (Electrode electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
             {
                 if (electrode.ChannelNumber != selectedChannel) continue;
+
+                state.CurrentMeaExperiment.CurrentElectrodesIndex =
+                    GetIndexOfElectrodeFromChannelNumber(selectedChannel);
+
+                //int indexCurrent = state.CurrentMeaExperiment.CurrentElectrodesIndex;
+                //Electrode electrodeCurrent = state.CurrentMeaExperiment.Descriptors.Electrodes[indexCurrent];
+                //Trace.WriteLine(
+                //    $"List: electrode = {electrodeCurrent}");
                 Model.SelectedElectrodeChannelNumber = selectedChannel;
                 break;
             }
         }
 
-        public int GetElectrodeChannel(int index) =>
-            state.CurrentMeaExperiment.Descriptors.Electrodes[index].ChannelNumber;
+        private int GetIndexOfElectrodeFromChannelNumber(int selectedChannel)
+        {
+            int indexElectrode = -1;
+            for (int i = 0; i < state.CurrentMeaExperiment.Descriptors.Electrodes.Length; i++)
+            {
+                var electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[i];
+                if (electrode.ChannelNumber != selectedChannel) continue;
+                indexElectrode = i;
+                break;
+            }
+
+            return indexElectrode;
+        }
+
 
     }
 }

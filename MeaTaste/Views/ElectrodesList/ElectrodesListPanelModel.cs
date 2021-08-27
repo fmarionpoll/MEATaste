@@ -44,7 +44,7 @@ namespace MEATaste.Views.ElectrodesList
             {
                 selectedElectrodeChannelNumber = value;
                 OnPropertyChanged(nameof(SelectedElectrodeChannelNumber));
-                SelectedElectrodeChannelChanged();
+                SelectedElectrodeChannelChanged?.Invoke();
             }
         }
 
