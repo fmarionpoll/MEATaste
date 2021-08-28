@@ -34,7 +34,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<FileOpenPanelController>();
                 services.AddSingleton<ElectrodesListPanelController>();
                 services.AddSingleton<ElectrodesMapPanelController>(); 
-                services.AddSingleton<OneElectrodePanelModel>();
+                services.AddSingleton<OneElectrodePanelController>();
                 services.AddSingleton<MainWindowModel>();
             }
         }

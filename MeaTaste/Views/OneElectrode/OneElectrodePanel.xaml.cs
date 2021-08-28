@@ -8,33 +8,23 @@ using MEATaste.Infrastructure;
 
 namespace MEATaste.Views.OneElectrode
 {
-    /// <summary>
-    /// Interaction logic for DisplayOneElectrodePanel.xaml
-    /// </summary>
-    public partial class OneElectrodePanel
+  
+    public class OneElectrodePanel
     {
         private ushort[] rawSignalFromOneElectrode;
         private ScottPlot.WpfPlot[] formsPlots;
+        private readonly OneElectrodePanelController controller;
 
         public OneElectrodePanel()
         {
+            controller = App.ServiceProvider.GetService<OneElectrodePanelController>();
+            DataContext = controller!.Model;
             InitializeComponent();
         }
 
-        // Custom constructor to pass data
-        private readonly ApplicationState state;
-        private readonly MeaFileReader meaFileReader;
-
-        public OneElectrodePanel(MeaFileReader meaFileReader, ApplicationState state) : this()
-        {
-            this.meaFileReader = meaFileReader;
-            this.state = state;
-        }
-
+        
         private void UpdateSelectedElectrode(Electrode electrode)
         {
-            // TODO find a way to update the other controls
-            //UpdateSelectedElectrodeOnMap(electrode);
             UpdateSelectedChannel(electrode);
         }
 

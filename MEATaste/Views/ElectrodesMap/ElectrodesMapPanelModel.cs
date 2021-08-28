@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
 using MEATaste.Annotations;
 using OxyPlot;
-using OxyPlot.Series;
+
 
 namespace MEATaste.Views.ElectrodesMap
 {

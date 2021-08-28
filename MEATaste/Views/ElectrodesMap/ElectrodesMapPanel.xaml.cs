@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OxyPlot.Wpf;
-using System.Windows;
 using System.Windows.Controls;
 
 
