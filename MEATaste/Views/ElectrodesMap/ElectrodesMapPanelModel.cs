@@ -28,9 +28,7 @@ namespace MEATaste.Views.ElectrodesMap
             ScatterPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Maximum = 10, Minimum = 0 });
         }
 
-       
-
-        public event PropertyChangedEventHandler PropertyChanged;
+       public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>

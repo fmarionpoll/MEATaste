@@ -1,19 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Input;
-using MEATaste.DataMEA.MaxWell;
-using MEATaste.DataMEA.Models;
-using MEATaste.DataMEA.Utilities;
-using MEATaste.Infrastructure;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Windows.Controls;
+
 
 namespace MEATaste.Views.OneElectrode
 {
   
-    public class OneElectrodePanel
+    public partial class OneElectrodePanel
     {
-        private ushort[] rawSignalFromOneElectrode;
-        private ScottPlot.WpfPlot[] formsPlots;
-        private readonly OneElectrodePanelController controller;
+      private readonly OneElectrodePanelController controller;
 
         public OneElectrodePanel()
         {
@@ -22,65 +16,9 @@ namespace MEATaste.Views.OneElectrode
             InitializeComponent();
         }
 
-        
-        private void UpdateSelectedElectrode(Electrode electrode)
+        private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            UpdateSelectedChannel(electrode);
-        }
 
-        private void UpdateSelectedChannel(Electrode electrode)
-        {
-            var fileReader = new FileReader(); // delete this
-
-            Mouse.OverrideCursor = Cursors.Wait;
-            try
-            {
-                rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrode);
-
-                var plt = RawSignal.Plot;
-                plt.Clear();
-                double[] myData = rawSignalFromOneElectrode.Select(x => (double)x).ToArray();
-                plt.AddSignal(myData, state.CurrentMeaExperiment.Descriptors.SamplingRate);
-                string title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinate}, y={electrode.YCoordinate} µm)";
-                plt.Title(title);
-
-                var plt2 = FilteredSignal.Plot;
-                plt2.Clear();
-
-                double[] medianRow = Filter.BMedian(myData, myData.Length, 20);
-                plt2.AddSignal(medianRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green);
-                plt2.Title("derivRow + medianRow");
-
-                double[] derivRow = Filter.BDeriv(myData, myData.Length);
-                plt2.AddSignal(derivRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange);
-                plt2.Title("derivRow");
-
-                formsPlots = new[] { RawSignal, FilteredSignal };
-                foreach (var fp in formsPlots)
-                    fp.AxesChanged += OnAxesChanged;
-            }
-            finally
-            {
-                Mouse.OverrideCursor = null;
-            }
-        }
-
-        private void OnAxesChanged(object sender, EventArgs e)
-        {
-            ScottPlot.WpfPlot changedPlot = (ScottPlot.WpfPlot)sender;
-            var newAxisLimits = changedPlot.Plot.GetAxisLimits();
-
-            foreach (var fp in formsPlots)
-            {
-                if (fp == changedPlot)
-                    continue;
-
-                // disable events briefly to avoid an infinite loop
-                fp.Configuration.AxesChangedEventEnabled = false;
-                fp.Plot.SetAxisLimitsX(newAxisLimits.XMin, newAxisLimits.XMax);
-                fp.Render();
-                fp.Configuration.AxesChangedEventEnabled = true;
-            }
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -22,7 +21,7 @@ namespace MEATaste.Views.ElectrodesList
             this.state = state;
 
             Model = new ElectrodesListPanelModel();
-            FileOpenPanelModel.NewFileIsLoadedAction += TableLoadData;
+            FileOpenPanelModel.NewHdf5FileIsLoadedAction += TableLoadData;
         }
 
         public void TableLoadData()
@@ -42,11 +41,6 @@ namespace MEATaste.Views.ElectrodesList
 
                 state.CurrentMeaExperiment.CurrentElectrodesIndex =
                     GetIndexOfElectrodeFromChannelNumber(selectedChannel);
-
-                //int indexCurrent = state.CurrentMeaExperiment.CurrentElectrodesIndex;
-                //Electrode electrodeCurrent = state.CurrentMeaExperiment.Descriptors.Electrodes[indexCurrent];
-                //Trace.WriteLine(
-                //    $"List: electrode = {electrodeCurrent}");
                 Model.SelectedElectrodeChannelNumber = selectedChannel;
                 break;
             }

@@ -30,13 +30,13 @@ namespace MEATaste.Views.FileOpen
                 if (fileNameLabel == value) return;
                 fileNameLabel = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileNameLabel)));
-                if (NewFileIsLoadedAction != null)
-                    NewFileIsLoadedAction();
+                if (NewHdf5FileIsLoadedAction != null)
+                    NewHdf5FileIsLoadedAction();
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public static event Action NewFileIsLoadedAction;
+        public static event Action NewHdf5FileIsLoadedAction;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => 

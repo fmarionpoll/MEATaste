@@ -26,7 +26,7 @@ namespace MEATaste.Views.ElectrodesMap
             this.state = state;
 
             Model = new ElectrodesMapPanelModel();
-            FileOpenPanelModel.NewFileIsLoadedAction += PlotLoadData;
+            FileOpenPanelModel.NewHdf5FileIsLoadedAction += PlotLoadData;
             ElectrodesListPanelModel.SelectedElectrodeChannelChanged += CurrentIndexHasChanged;
         }
 
