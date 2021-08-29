@@ -26,11 +26,11 @@ namespace MEATaste.Views.ElectrodesMap
             this.state = state;
 
             Model = new ElectrodesMapPanelModel();
-            FileOpenPanelModel.NewHdf5FileIsLoadedAction += PlotLoadData;
-            ElectrodesListPanelModel.SelectedElectrodeChannelChanged += CurrentIndexHasChanged;
+            FileOpenPanelModel.NewHdf5FileIsLoadedAction += PlotElectrodesMap;
+            ElectrodesListPanelModel.NewCurrentElectrodeChannelAction += ChangeSelectedElectrode;
         }
 
-        public void PlotLoadData()
+        public void PlotElectrodesMap()
         {
             Model.ScatterPlotModel = new PlotModel
             {
@@ -42,6 +42,29 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.InvalidatePlot(true);
 
             plotModel.MouseDown += PlotModel_MouseDown;
+        }
+
+        public void ChangeSelectedElectrode()
+        {
+
+            int indexSelected = state.CurrentMeaExperiment.CurrentElectrodesIndex;
+            Trace.WriteLine($"Map: selected index number has changed ={indexSelected}");
+
+            var plotModel = Model.ScatterPlotModel;
+
+            if (indexSelected < 0)
+            {
+                SuppressSelectedPoint(plotModel);
+            }
+            else
+            {
+                Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[indexSelected];
+                SetSelectedPoint(plotModel, electrode);
+                CenterPlotOnElectrode(plotModel, electrode);
+                Trace.WriteLine($"Map: electrode = {electrode}");
+            }
+
+            plotModel.InvalidatePlot(true);
         }
 
         private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
@@ -82,30 +105,7 @@ namespace MEATaste.Views.ElectrodesMap
             }
             plotModel.Series.Add(series);
         }
-
-        private void CurrentIndexHasChanged()
-        {
-            
-            int indexSelected = state.CurrentMeaExperiment.CurrentElectrodesIndex;
-            Trace.WriteLine($"Map: selected index number has changed ={indexSelected}");
-
-            var plotModel = Model.ScatterPlotModel;
-            
-            if (indexSelected < 0)
-            {
-                SuppressSelectedPoint(plotModel);
-            }
-            else 
-            {
-                Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[indexSelected];
-                SetSelectedPoint(plotModel, electrode);
-                CenterPlotOnElectrode(plotModel, electrode);
-                Trace.WriteLine($"Map: electrode = {electrode}");
-            }
-            
-            plotModel.InvalidatePlot(true);
-        }
-
+        
         private void CenterPlotOnElectrode(PlotModel plotModel, Electrode electrode)
         {
             var xAxis = plotModel.Axes[0];

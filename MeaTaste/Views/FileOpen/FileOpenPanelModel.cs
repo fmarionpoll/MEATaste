@@ -18,7 +18,7 @@ namespace MEATaste.Views.FileOpen
             {
                 if (fileVersionLabel == value) return;
                 fileVersionLabel = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileVersionLabel)));
+                OnPropertyChanged(nameof(FileVersionLabel));
             }
         }
 
@@ -29,15 +29,15 @@ namespace MEATaste.Views.FileOpen
             {
                 if (fileNameLabel == value) return;
                 fileNameLabel = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileNameLabel)));
+                OnPropertyChanged(nameof(FileNameLabel));
                 if (NewHdf5FileIsLoadedAction != null)
                     NewHdf5FileIsLoadedAction();
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
         public static event Action NewHdf5FileIsLoadedAction;
-
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

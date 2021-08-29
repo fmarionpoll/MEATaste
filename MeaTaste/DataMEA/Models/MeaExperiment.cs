@@ -11,6 +11,8 @@ namespace MEATaste.DataMEA.Models
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
         public int CurrentElectrodesIndex { get; set; } = -1;
+        public ushort[] rawSignalFromOneElectrode;
+
         public Descriptors Descriptors;
 
         public MeaExperiment(string fileName, string fileVersion, Descriptors descriptors)

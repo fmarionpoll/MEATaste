@@ -17,7 +17,7 @@ namespace MEATaste.Views.ElectrodesMap
             {
                 if (scatterPlotModel == value) return;
                 scatterPlotModel = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScatterPlotModel)));
+                OnPropertyChanged(nameof(ScatterPlotModel));
             }
         }
 

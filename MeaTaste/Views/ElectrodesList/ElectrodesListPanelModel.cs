@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 using MEATaste.Annotations;
 using MEATaste.DataMEA.Models;
 
@@ -13,6 +13,10 @@ namespace MEATaste.Views.ElectrodesList
     public class ElectrodesListPanelModel : INotifyPropertyChanged
     {
         private ObservableCollection<Electrode> electrodesTableModel;
+        private int selectedElectrodeChannelNumber;
+        private Electrode selectedElectrodeItem;
+        private int selectedElectrodeIndex;
+
         public ObservableCollection<Electrode> ElectrodesTableModel
         {
             get => electrodesTableModel;
@@ -20,12 +24,11 @@ namespace MEATaste.Views.ElectrodesList
             {
                 if (electrodesTableModel == value) return;
                 electrodesTableModel = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectrodesTableModel)));
+                OnPropertyChanged(nameof(ElectrodesTableModel));
             }
         }
         
-        private Electrode selectedElectrodeItem;
-        public Electrode SelectedElectrodeItem
+       public Electrode SelectedElectrodeItem
         {
             get => selectedElectrodeItem;
             set
@@ -35,21 +38,19 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-        private int selectedElectrodeChannelNumber;
-        public int SelectedElectrodeChannelNumber
+       public int SelectedElectrodeChannelNumber
         {
             get => selectedElectrodeChannelNumber;
             set
             {
                 selectedElectrodeChannelNumber = value;
                 OnPropertyChanged(nameof(SelectedElectrodeChannelNumber));
-                if (SelectedElectrodeChannelChanged != null)
-                    SelectedElectrodeChannelChanged();
+                if (NewCurrentElectrodeChannelAction != null)
+                    NewCurrentElectrodeChannelAction();
             }
         }
 
-        private int selectedElectrodeIndex;
-        public int SelectedElectrodeIndex
+         public int SelectedElectrodeIndex
         {
             get => selectedElectrodeIndex;
             set
@@ -59,7 +60,7 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-        public static event Action SelectedElectrodeChannelChanged;
+        public static event Action NewCurrentElectrodeChannelAction;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

@@ -5,10 +5,11 @@ using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using MEATaste.Views.ElectrodesList;
+using MEATaste.Views.FileOpen;
 
 namespace MEATaste.Views.OneElectrode
 {
-    class OneElectrodePanelController
+    public class OneElectrodePanelController
     {
         public OneElectrodePanelModel Model { get; }
 
@@ -21,13 +22,17 @@ namespace MEATaste.Views.OneElectrode
             this.state = state;
 
             Model = new OneElectrodePanelModel();
-           // ElectrodesListPanelModel.SelectedElectrodeChannelChanged += UpdateData();
 
+            FileOpenPanelModel.NewHdf5FileIsLoadedAction += ClearCurrentData;
+            ElectrodesListPanelModel.NewCurrentElectrodeChannelAction += CurrentDataHasChanged();
+        }
 
+        public void ClearCurrentData()
+        {
 
         }
 
-        public void UpdateData()
+        public void CurrentDataHasChanged()
         {
 
         }
@@ -44,11 +49,11 @@ namespace MEATaste.Views.OneElectrode
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                Model.RawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrode);
-
-                var plt = Model.FormsPlots.Plot;
+                state.CurrentMeaExperiment.rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrode);
+                ushort[] rawSignal = state.CurrentMeaExperiment.rawSignalFromOneElectrode;
+                var plt = Model.DataPlot.Plot;
                 plt.Clear();
-                double[] myData = Model.RawSignalFromOneElectrode.Select(x => (double)x).ToArray();
+                double[] myData = rawSignal.Select(x => (double)x).ToArray();
                 plt.AddSignal(myData, state.CurrentMeaExperiment.Descriptors.SamplingRate);
                 string title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinate}, y={electrode.YCoordinate} µm)";
                 plt.Title(title);
