@@ -144,6 +144,8 @@ namespace MEATaste.Views.ElectrodesMap
 
             var currentExperiment = state.CurrentMeaExperiment.Get();
             var selectedElectrode = currentExperiment.Descriptors.Electrodes.FirstOrDefault(x => x.XCoordinate == dataPointp.X && x.YCoordinate == dataPointp.Y);
+            Trace.WriteLine($"selected electrode is ={selectedElectrode}");
+
             state.SelectedElectrode.Set(selectedElectrode);
         }
 
