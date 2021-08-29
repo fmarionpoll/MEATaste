@@ -10,7 +10,6 @@ namespace MEATaste.DataMEA.Models
     {
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
-        public int CurrentElectrodesIndex { get; set; } = -1;
         public ushort[] rawSignalFromOneElectrode;
 
         public Descriptors Descriptors;
@@ -21,7 +20,6 @@ namespace MEATaste.DataMEA.Models
             if (fileVersion != null)
                 FileVersion = fileVersion;
             Descriptors = descriptors;
-            CurrentElectrodesIndex = -1;
         }
     }
 

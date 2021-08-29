@@ -2,11 +2,8 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
-using MEATaste.Views.ElectrodesList;
-using MEATaste.Views.FileOpen;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -17,25 +14,24 @@ namespace MEATaste.Views.ElectrodesMap
     {
         public ElectrodesMapPanelModel Model { get; }
 
-        private readonly MeaFileReader meaFileReader;
         private readonly ApplicationState state;
 
-        public ElectrodesMapPanelController(MeaFileReader meaFileReader, ApplicationState state)
+        public ElectrodesMapPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
-            this.meaFileReader = meaFileReader;
             this.state = state;
 
             Model = new ElectrodesMapPanelModel();
-            FileOpenPanelModel.NewHdf5FileIsLoadedAction += PlotElectrodesMap;
-            ElectrodesListPanelModel.NewCurrentElectrodeChannelAction += ChangeSelectedElectrode;
+
+            eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, PlotElectrodesMap);
+            eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
         }
 
-        public void PlotElectrodesMap()
+        private void PlotElectrodesMap()
         {
             Model.ScatterPlotModel = new PlotModel
             {
                 SelectionColor = OxyColors.Red
-            }; 
+            };
             var plotModel = Model.ScatterPlotModel;
             PlotAddAxes(plotModel);
             PlotAddSeries(plotModel);
@@ -44,24 +40,17 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.MouseDown += PlotModel_MouseDown;
         }
 
-        public void ChangeSelectedElectrode()
+        private void ChangeSelectedElectrode()
         {
-
-            int indexSelected = state.CurrentMeaExperiment.CurrentElectrodesIndex;
-            Trace.WriteLine($"Map: selected index number has changed ={indexSelected}");
-
+            var selectedElectode = state.SelectedElectrode.Get();
             var plotModel = Model.ScatterPlotModel;
 
-            if (indexSelected < 0)
-            {
+            if (selectedElectode == null)
                 SuppressSelectedPoint(plotModel);
-            }
             else
             {
-                Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[indexSelected];
-                SetSelectedPoint(plotModel, electrode);
-                CenterPlotOnElectrode(plotModel, electrode);
-                Trace.WriteLine($"Map: electrode = {electrode}");
+                SetSelectedPoint(plotModel, selectedElectode);
+                CenterPlotOnElectrode(plotModel, selectedElectode);
             }
 
             plotModel.InvalidatePlot(true);
@@ -70,13 +59,12 @@ namespace MEATaste.Views.ElectrodesMap
         private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
         {
             var plotModel = Model.ScatterPlotModel;
-            var s = plotModel.Series[0] as ScatterSeries;
-            ElementCollection<Axis> axisList = plotModel.Axes;
+            var axisList = plotModel.Axes;
 
-            Axis xAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Bottom);
-            Axis yAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Left);
+            var xAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Bottom);
+            var yAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Left);
 
-            DataPoint dataPointp = Axis.InverseTransform(e.Position, xAxis, yAxis);
+            var dataPointp = Axis.InverseTransform(e.Position, xAxis, yAxis);
             Trace.WriteLine($"coord ={dataPointp}");
         }
 
@@ -98,11 +86,12 @@ namespace MEATaste.Views.ElectrodesMap
                 MarkerFill = OxyColors.LightBlue
             };
 
-            foreach (var electrode in state.CurrentMeaExperiment.Descriptors.Electrodes)
+            foreach (var electrode in state.CurrentMeaExperiment.Get().Descriptors.Electrodes)
             {
                 var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
                 series.Points.Add(point);
             }
+
             plotModel.Series.Add(series);
         }
         
@@ -113,21 +102,19 @@ namespace MEATaste.Views.ElectrodesMap
             xAxis.Reset();
             yAxis.Reset();
 
-            var deltax = 150;
-            xAxis.Minimum = electrode.XCoordinate - deltax;
-            xAxis.Maximum = electrode.XCoordinate + deltax;
+            const int deltaX = 150;
+            xAxis.Minimum = electrode.XCoordinate - deltaX;
+            xAxis.Maximum = electrode.XCoordinate + deltaX;
 
-            var deltay = deltax * plotModel.Height / plotModel.Width;
+            var deltay = deltaX * plotModel.Height / plotModel.Width;
             yAxis.Minimum = electrode.YCoordinate - deltay;
             yAxis.Maximum = electrode.YCoordinate + deltay;
         }
 
         private void SuppressSelectedPoint(PlotModel plotModel)
         {
-            if ( plotModel.Series.Count > 1)
-            {
+            if ( plotModel.Series.Count > 1) 
                 plotModel.Series.RemoveAt(1);
-            }
         }
 
         private void SetSelectedPoint(PlotModel plotModel, Electrode electrode)
@@ -136,7 +123,7 @@ namespace MEATaste.Views.ElectrodesMap
                 AddSelectedSeries(plotModel);
             if (plotModel.Series.Count < 2)
                 return;
-            ScatterSeries series = (ScatterSeries) plotModel.Series[1];
+            var series = (ScatterSeries) plotModel.Series[1];
             series.Points.RemoveAt(0);
             var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
             series.Points.Add(point);

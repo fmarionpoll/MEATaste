@@ -18,12 +18,11 @@ namespace MEATaste.Infrastructure
 
             void ConfigureHandlers()
             {
-                //var oldReader = new OldHdf5Reader();
-                //var newReader = new NewHdf5Reader();
+                var eventBus = new EventBus();
+                services.AddSingleton<IEventRaiser>(eventBus);
+                services.AddSingleton<IEventSubscriber>(eventBus);
 
-                //services.AddSingleton<GlobalHdf5Reader>();
-                //services.AddSingleton<IHdf5Reader>(new GlobalHdf5Reader(oldReader, newReader));
-
+                services.AddSingleton<StatePropertyFactory>();
                 services.AddSingleton<ApplicationState>();
                 services.AddSingleton<FileReader>();
                 services.AddSingleton<MeaFileReader>();

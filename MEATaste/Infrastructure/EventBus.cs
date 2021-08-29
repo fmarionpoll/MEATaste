@@ -1,37 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MEATaste.Infrastructure
 {
-    //public class IEventBus
-    //{
-    //    private List<Func<bool>> subscribers;
+    public class EventBus : IEventSubscriber, IEventRaiser
+    {
+        private readonly List<EventSubscriber> subscribers = new();
 
-    //    public void Raise(Event event);
+        public void Raise(EventType eventType) => subscribers.Iter(x => x.Action());
 
-    //    public void Subscribe()
-    //    {
-            
-    //        Func<bool> action = () =>
-    //        {
-    //            return true;
-    //        };
+        public void Subscribe(EventType eventType, Action action) => subscribers.Add(new EventSubscriber(eventType, action));
+    }
 
-    //        subscribers.Add(action);
+    internal record EventSubscriber(EventType EventType, Action Action);
 
-    //        foreach (var subscriber in subscribers)
-    //        {
-    //            subscriber();
-    //        }
-    //    }
-    //}
+    public interface IEventSubscriber
+    {
+        void Subscribe(EventType eventType, Action action);
+    }
 
-    //public class Subscriber
-    //{
-    //    private Func<bool> action;
-    //    public EventType 
-    //}
+    public interface IEventRaiser
+    {
+        void Raise(EventType eventType);
+    }
+
+    public enum EventType
+    {
+        CurrentExperimentChanged = 0,
+        SelectedElectrodeChanged = 1
+    }
 }

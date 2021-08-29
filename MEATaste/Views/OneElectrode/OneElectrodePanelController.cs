@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
-using MEATaste.Views.ElectrodesList;
-using MEATaste.Views.FileOpen;
 
 namespace MEATaste.Views.OneElectrode
 {
@@ -13,18 +10,13 @@ namespace MEATaste.Views.OneElectrode
     {
         public OneElectrodePanelModel Model { get; }
 
-        private readonly MeaFileReader meaFileReader;
         private readonly ApplicationState state;
 
-        public OneElectrodePanelController(MeaFileReader meaFileReader, ApplicationState state)
+        public OneElectrodePanelController(ApplicationState state)
         {
-            this.meaFileReader = meaFileReader;
             this.state = state;
 
             Model = new OneElectrodePanelModel();
-
-            FileOpenPanelModel.NewHdf5FileIsLoadedAction += ClearCurrentData;
-            ElectrodesListPanelModel.NewCurrentElectrodeChannelAction += CurrentDataHasChanged();
         }
 
         public void ClearCurrentData()
@@ -44,18 +36,20 @@ namespace MEATaste.Views.OneElectrode
 
         private void UpdateSelectedChannel(Electrode electrode)
         {
-            var fileReader = new FileReader(); // delete this
+            var fileReader = new FileReader(); // todo: delete this and use MeaFileReader
 
             Mouse.OverrideCursor = Cursors.Wait;
+            var currentExperiment = state.CurrentMeaExperiment.Get();
+
             try
             {
-                state.CurrentMeaExperiment.rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrode);
-                ushort[] rawSignal = state.CurrentMeaExperiment.rawSignalFromOneElectrode;
+                currentExperiment.rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrode);
+                var rawSignal = currentExperiment.rawSignalFromOneElectrode;
                 var plt = Model.DataPlot.Plot;
                 plt.Clear();
-                double[] myData = rawSignal.Select(x => (double)x).ToArray();
-                plt.AddSignal(myData, state.CurrentMeaExperiment.Descriptors.SamplingRate);
-                string title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinate}, y={electrode.YCoordinate} µm)";
+                var myData = rawSignal.Select(x => (double)x).ToArray();
+                plt.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
+                var title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinate}, y={electrode.YCoordinate} µm)";
                 plt.Title(title);
 
                 //var plt2 = FilteredSignal.Plot;

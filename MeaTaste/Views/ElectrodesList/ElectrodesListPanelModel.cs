@@ -5,36 +5,33 @@ using System.Collections.ObjectModel;
 using MEATaste.Annotations;
 using MEATaste.DataMEA.Models;
 
-
-
-
 namespace MEATaste.Views.ElectrodesList
 {
     public class ElectrodesListPanelModel : INotifyPropertyChanged
     {
-        private ObservableCollection<Electrode> electrodesTableModel;
+        private ObservableCollection<Electrode> electrodes;
         private int selectedElectrodeChannelNumber;
-        private Electrode selectedElectrodeItem;
+        private Electrode selectedElectrode;
         private int selectedElectrodeIndex;
 
-        public ObservableCollection<Electrode> ElectrodesTableModel
+        public ObservableCollection<Electrode> Electrodes
         {
-            get => electrodesTableModel;
+            get => electrodes;
             set
             {
-                if (electrodesTableModel == value) return;
-                electrodesTableModel = value;
-                OnPropertyChanged(nameof(ElectrodesTableModel));
+                if (electrodes == value) return;
+                electrodes = value;
+                OnPropertyChanged(nameof(Electrodes));
             }
         }
         
-       public Electrode SelectedElectrodeItem
+       public Electrode SelectedElectrode
         {
-            get => selectedElectrodeItem;
+            get => selectedElectrode;
             set
             {
-                selectedElectrodeItem = value;
-                OnPropertyChanged(nameof(SelectedElectrodeItem));
+                selectedElectrode = value;
+                OnPropertyChanged(nameof(SelectedElectrode));
             }
         }
 

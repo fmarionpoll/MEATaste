@@ -25,10 +25,11 @@ namespace MEATaste.Views.FileOpen
             if (openFileDialog.ShowDialog() == true)
             {
                 var fileName = openFileDialog.FileName;
-                state.CurrentMeaExperiment = meaFileReader.ReadFile(fileName);
+                state.CurrentMeaExperiment.Set(meaFileReader.ReadFile(fileName));
 
-                Model.FileNameLabel = state.CurrentMeaExperiment.FileName;
-                Model.FileVersionLabel = state.CurrentMeaExperiment.FileVersion;
+                var currentExperiment = state.CurrentMeaExperiment.Get();
+                Model.FileNameLabel = currentExperiment.FileName;
+                Model.FileVersionLabel = currentExperiment.FileVersion;
             }
         }
 

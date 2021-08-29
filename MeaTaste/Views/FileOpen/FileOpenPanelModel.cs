@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 
@@ -30,12 +29,9 @@ namespace MEATaste.Views.FileOpen
                 if (fileNameLabel == value) return;
                 fileNameLabel = value;
                 OnPropertyChanged(nameof(FileNameLabel));
-                if (NewHdf5FileIsLoadedAction != null)
-                    NewHdf5FileIsLoadedAction();
             }
         }
 
-        public static event Action NewHdf5FileIsLoadedAction;
         public event PropertyChangedEventHandler PropertyChanged;
         
         [NotifyPropertyChangedInvocator]
