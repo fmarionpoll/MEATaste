@@ -7,7 +7,7 @@ namespace MEATaste.Views.OneElectrode
   
     public partial class OneElectrodePanel
     {
-      private readonly OneElectrodePanelController controller;
+        private readonly OneElectrodePanelController controller;
 
         public OneElectrodePanel()
         {
@@ -18,7 +18,9 @@ namespace MEATaste.Views.OneElectrode
 
         private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-
+            var checkBox = sender as CheckBox;
+            bool value = checkBox.IsChecked == true;
+            controller.AuthorizeReading(value);
         }
     }
 

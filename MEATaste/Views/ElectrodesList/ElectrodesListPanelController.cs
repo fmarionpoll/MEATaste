@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -30,7 +28,6 @@ namespace MEATaste.Views.ElectrodesList
         {
             Model.SelectedElectrodeRecord = state.SelectedElectrode.Get();
             Model.MySource.MoveCurrentTo(Model.SelectedElectrodeRecord);
-           
         }
 
         private void LoadElectrodeListItems()

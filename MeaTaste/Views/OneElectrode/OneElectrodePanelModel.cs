@@ -7,6 +7,8 @@ namespace MEATaste.Views.OneElectrode
     public class OneElectrodePanelModel : INotifyPropertyChanged
     {
         private ScottPlot.WpfPlot dataPlot;
+        private bool authorizeReadingNewFile;
+
         public ScottPlot.WpfPlot DataPlot
         {
             get => dataPlot;
@@ -17,7 +19,16 @@ namespace MEATaste.Views.OneElectrode
             }
         }
 
-        
+        public bool AuthorizeReadingNewFile
+        {
+            get => authorizeReadingNewFile;
+            set
+            {
+                authorizeReadingNewFile = value;
+                OnPropertyChanged(nameof(AuthorizeReadingNewFile));
+            }
+        }
+
         public OneElectrodePanelModel()
         {
             DataPlot = new ScottPlot.WpfPlot();
