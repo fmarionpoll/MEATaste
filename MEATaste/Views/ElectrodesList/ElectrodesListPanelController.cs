@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -21,21 +22,16 @@ namespace MEATaste.Views.ElectrodesList
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
         }
 
-        //private void SetCurrentElectrodeIndexFromChannelNumber(int selectedChannel)
-        //{
-        //    var currentExperiment = state.CurrentMeaExperiment.Get();
-
-        //    var selectedElectrode = currentExperiment.Descriptors.Electrodes.FirstOrDefault(x => x.ChannelNumber == selectedChannel);
-        //    if (selectedElectrode == null) return;
-
-        //    state.SelectedElectrode.Set(selectedElectrode);
-        //    Model.SelectedElectrodeChannelNumber = selectedChannel;
-        //}
-
+ 
         public void SelectElectrode(Electrode electrode) => state.SelectedElectrode.Set(electrode);
 
-        private void ChangeSelectedElectrode() => Model.SelectedElectrode = state.SelectedElectrode.Get();
-
+        private void ChangeSelectedElectrode()
+        {
+            Model.SelectedElectrode = state.SelectedElectrode.Get();
+            Trace.WriteLine($"selected electrode is ={Model.SelectedElectrode}");
+            // center row and select in red?
+            Model.ElectedElectrodeIndex =
+        }
 
         private void LoadElectrodeListItems() => 
             Model.Electrodes = new ObservableCollection<Electrode>(state.CurrentMeaExperiment.Get().Descriptors.Electrodes);

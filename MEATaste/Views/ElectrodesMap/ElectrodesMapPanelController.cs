@@ -1,7 +1,6 @@
 ﻿
-using System.Diagnostics;
+using System;
 using System.Linq;
-using System.Windows;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using OxyPlot;
@@ -140,11 +139,10 @@ namespace MEATaste.Views.ElectrodesMap
             var yAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Left);
 
             var dataPointp = Axis.InverseTransform(e.Position, xAxis, yAxis);
-            Trace.WriteLine($"coord ={dataPointp}");
+            var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
 
             var currentExperiment = state.CurrentMeaExperiment.Get();
-            var selectedElectrode = currentExperiment.Descriptors.Electrodes.FirstOrDefault(x => x.XCoordinate == dataPointp.X && x.YCoordinate == dataPointp.Y);
-            Trace.WriteLine($"selected electrode is ={selectedElectrode}");
+            var selectedElectrode = currentExperiment.Descriptors.Electrodes[indexOfNearestPoint];
 
             state.SelectedElectrode.Set(selectedElectrode);
         }
