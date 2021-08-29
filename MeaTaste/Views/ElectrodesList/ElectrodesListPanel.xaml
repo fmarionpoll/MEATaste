@@ -14,8 +14,8 @@
                   AlternationCount="2"
                   AlternatingRowBackground="LightBlue"
                   ItemsSource="{Binding Electrodes}" 
-                  SelectedIndex="{Binding SelectedElectrodeIndex}"
                   SelectedItem="{Binding SelectedElectrode}" 
+                  SelectionUnit="FullRow"
                   SelectionChanged="ElectrodesGrid_SelectionChanged" 
                   HorizontalAlignment ="Stretch" 
                   VerticalAlignment ="Stretch" 
@@ -24,8 +24,7 @@
                   EnableColumnVirtualization="True" 
                   IsReadOnly="True" 
                   CanUserAddRows="False"  
-                  ClipToBounds="True"
-        >
+                  ClipToBounds="True">
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
             </DataGrid.Resources>

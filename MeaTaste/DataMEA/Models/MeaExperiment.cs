@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace MEATaste.DataMEA.Models
 {
@@ -36,18 +35,6 @@ namespace MEATaste.DataMEA.Models
         // mapping
         public Electrode[] Electrodes { get; set; }
 
-        public int[] GetElectrodesChannelNumber() =>
-            Electrodes.Select(electrode => electrode.ChannelNumber).ToArray();
-
-        public int[] GetElectrodesElectrodeNumber() =>
-            Electrodes.Select(electrode => electrode.ElectrodeNumber).ToArray();
-
-        public double[] GetElectrodesXCoordinate() =>
-            Electrodes.Select(electrode => electrode.XCoordinate).ToArray();
-        
-        public double[] GetElectrodesYCoordinate() =>
-            Electrodes.Select(electrode => electrode.YCoordinate).ToArray();
-      
     }
 
     public record Electrode(

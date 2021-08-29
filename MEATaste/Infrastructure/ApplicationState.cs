@@ -4,8 +4,8 @@ namespace MEATaste.Infrastructure
 {
     public class ApplicationState
     {
-        public StateProperty<MeaExperiment> CurrentMeaExperiment;
-        public StateProperty<Electrode> SelectedElectrode;
+        public StateProperty<MeaExperiment> CurrentMeaExperiment { get; }
+        public StateProperty<Electrode> SelectedElectrode { get; }
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {

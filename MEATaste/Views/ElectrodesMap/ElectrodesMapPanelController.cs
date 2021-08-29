@@ -56,18 +56,6 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.InvalidatePlot(true);
         }
 
-        private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
-        {
-            var plotModel = Model.ScatterPlotModel;
-            var axisList = plotModel.Axes;
-
-            var xAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Bottom);
-            var yAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Left);
-
-            var dataPointp = Axis.InverseTransform(e.Position, xAxis, yAxis);
-            Trace.WriteLine($"coord ={dataPointp}");
-        }
-
         private void PlotAddAxes(PlotModel plotModel)
         {
             var xAxis = new LinearAxis { Title = "x (µm)", Position = AxisPosition.Bottom };
@@ -106,9 +94,9 @@ namespace MEATaste.Views.ElectrodesMap
             xAxis.Minimum = electrode.XCoordinate - deltaX;
             xAxis.Maximum = electrode.XCoordinate + deltaX;
 
-            var deltay = deltaX * plotModel.Height / plotModel.Width;
-            yAxis.Minimum = electrode.YCoordinate - deltay;
-            yAxis.Maximum = electrode.YCoordinate + deltay;
+            var deltaY = deltaX; // * plotModel.Height / plotModel.Width;
+            yAxis.Minimum = electrode.YCoordinate - deltaY;
+            yAxis.Maximum = electrode.YCoordinate + deltaY;
         }
 
         private void SuppressSelectedPoint(PlotModel plotModel)
@@ -143,10 +131,21 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.Series.Add(series);
         }
 
-        public void MouseDown(Point p)
+        private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
         {
+            var plotModel = Model.ScatterPlotModel;
+            var axisList = plotModel.Axes;
 
+            var xAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Bottom);
+            var yAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Left);
+
+            var dataPointp = Axis.InverseTransform(e.Position, xAxis, yAxis);
+            Trace.WriteLine($"coord ={dataPointp}");
+
+            var currentExperiment = state.CurrentMeaExperiment.Get();
+            var selectedElectrode = currentExperiment.Descriptors.Electrodes.FirstOrDefault(x => x.XCoordinate == dataPointp.X && x.YCoordinate == dataPointp.Y);
+            state.SelectedElectrode.Set(selectedElectrode);
         }
-        
+
     }
 }

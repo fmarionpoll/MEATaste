@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using MEATaste.Annotations;
@@ -13,6 +12,7 @@ namespace MEATaste.Views.ElectrodesList
         private int selectedElectrodeChannelNumber;
         private Electrode selectedElectrode;
         private int selectedElectrodeIndex;
+
 
         public ObservableCollection<Electrode> Electrodes
         {
@@ -42,22 +42,19 @@ namespace MEATaste.Views.ElectrodesList
             {
                 selectedElectrodeChannelNumber = value;
                 OnPropertyChanged(nameof(SelectedElectrodeChannelNumber));
-                if (NewCurrentElectrodeChannelAction != null)
-                    NewCurrentElectrodeChannelAction();
             }
         }
 
-         public int SelectedElectrodeIndex
-        {
-            get => selectedElectrodeIndex;
-            set
-            {
-                selectedElectrodeIndex = value;
-                OnPropertyChanged(nameof(SelectedElectrodeIndex));
-            }
-        }
+       public int SelectedElectrodeIndex
+       {
+           get => selectedElectrodeIndex;
+           set
+           {
+               selectedElectrodeIndex = value;
+               OnPropertyChanged(nameof(SelectedElectrodeIndex));
+           }
+       }
 
-        public static event Action NewCurrentElectrodeChannelAction;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

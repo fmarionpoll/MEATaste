@@ -23,8 +23,7 @@ namespace MEATaste.Views.ElectrodesList
             if (dg == null) return;
 
             Electrode electrode = (Electrode) dg.SelectedItem;
-            int channelNumber = electrode.ChannelNumber;
-            controller.SetCurrentElectrodeIndexFromChannelNumber(channelNumber);
+            controller.SelectElectrode(electrode);
         }
 
     }
