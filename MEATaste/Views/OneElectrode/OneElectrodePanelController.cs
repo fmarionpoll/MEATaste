@@ -21,7 +21,7 @@ namespace MEATaste.Views.OneElectrode
             this.state = state;
 
             Model = new OneElectrodePanelModel();
-            ElectrodesListPanelModel.SelectedElectrodeChannelChanged += UpdateData();
+           // ElectrodesListPanelModel.SelectedElectrodeChannelChanged += UpdateData();
 
 
 

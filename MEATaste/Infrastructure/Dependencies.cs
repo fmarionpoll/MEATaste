@@ -2,7 +2,7 @@
 using MEATaste.Views.ElectrodesList;
 using MEATaste.Views.ElectrodesMap;
 using MEATaste.Views.FileOpen;
-using MEATaste.Views.MainWindow;
+using MEATaste.Views.MainView;
 using MEATaste.Views.OneElectrode;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +12,7 @@ namespace MEATaste.Infrastructure
     {
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<MainWindow>();
+            services.AddSingleton<MainView>();
             ConfigureHandlers();
             ConfigureControllers();
 
@@ -35,7 +35,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<ElectrodesListPanelController>();
                 services.AddSingleton<ElectrodesMapPanelController>(); 
                 services.AddSingleton<OneElectrodePanelController>();
-                services.AddSingleton<MainWindowModel>();
+                services.AddSingleton<MainViewModel>();
             }
         }
     }

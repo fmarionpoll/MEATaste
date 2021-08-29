@@ -5,13 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:electrodeslist="clr-namespace:MEATaste.Views.ElectrodesList" 
              d:DataContext="{d:DesignInstance Type=electrodeslist:ElectrodesListPanelModel}"
-             mc:Ignorable="d" 
-             d:DesignWidth="450" Height="378" >
+             mc:Ignorable="d">
 
-    <Grid >
         <DataGrid x:Name="ElectrodesGrid" 
-                  Grid.Row="0"
-                  Margin="20"
+                 Margin="20"
                   SelectionMode="Single"
                   CanUserDeleteRows="False" 
                   AlternationCount="2"
@@ -34,6 +31,4 @@
             </DataGrid.Resources>
            
         </DataGrid>
-
-    </Grid>
 </UserControl>

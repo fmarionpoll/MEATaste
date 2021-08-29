@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using MEATaste.Infrastructure;
-using MEATaste.Views.MainWindow;
+using MEATaste.Views.MainView;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -26,7 +26,7 @@ namespace MEATaste
         private void OnStartup(object sender, StartupEventArgs e)
         {
             ServiceProvider = serviceProvider;
-            var mainWindow = serviceProvider.GetService<MainWindow>();
+            var mainWindow = serviceProvider.GetService<MainView>();
             mainWindow!.Show();
         }
     }
