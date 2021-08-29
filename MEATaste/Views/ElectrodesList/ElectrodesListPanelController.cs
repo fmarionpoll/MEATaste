@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 
@@ -28,12 +29,14 @@ namespace MEATaste.Views.ElectrodesList
         private void ChangeSelectedElectrode()
         {
             Model.SelectedElectrode = state.SelectedElectrode.Get();
-            Trace.WriteLine($"selected electrode is ={Model.SelectedElectrode}");
-            // center row and select in red?
-            Model.ElectedElectrodeIndex =
+            Model.MySource.MoveCurrentTo(Model.SelectedElectrode);
+           
         }
 
-        private void LoadElectrodeListItems() => 
+        private void LoadElectrodeListItems()
+        {
             Model.Electrodes = new ObservableCollection<Electrode>(state.CurrentMeaExperiment.Get().Descriptors.Electrodes);
+            Model.MySource = CollectionViewSource.GetDefaultView(Model.Electrodes);
+        }
     }
 }

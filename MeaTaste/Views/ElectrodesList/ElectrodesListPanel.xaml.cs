@@ -19,11 +19,12 @@ namespace MEATaste.Views.ElectrodesList
 
         private void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var dg = sender as DataGrid;
-            if (dg == null) return;
+            var electrodesGrid = sender as DataGrid;
+            if (electrodesGrid == null) return;
 
-            Electrode electrode = (Electrode) dg.SelectedItem;
+            Electrode electrode = (Electrode) electrodesGrid.SelectedItem;
             controller.SelectElectrode(electrode);
+            electrodesGrid.ScrollIntoView(electrodesGrid.SelectedItem);
         }
 
     }

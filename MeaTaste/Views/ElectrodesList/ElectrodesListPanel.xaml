@@ -13,7 +13,7 @@
                   CanUserDeleteRows="False" 
                   AlternationCount="2"
                   AlternatingRowBackground="LightBlue"
-                  ItemsSource="{Binding Electrodes}" 
+                  ItemsSource="{Binding MySource}" 
                   SelectedItem="{Binding SelectedElectrode}" 
                   SelectionUnit="FullRow"
                   SelectionChanged="ElectrodesGrid_SelectionChanged" 
@@ -27,6 +27,7 @@
                   ClipToBounds="True">
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FF0000" />
             </DataGrid.Resources>
            
         </DataGrid>

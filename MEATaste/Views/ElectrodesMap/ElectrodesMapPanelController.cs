@@ -132,18 +132,9 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
         {
-            var plotModel = Model.ScatterPlotModel;
-            var axisList = plotModel.Axes;
-
-            var xAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Bottom);
-            var yAxis = axisList.FirstOrDefault(ax => ax.Position == AxisPosition.Left);
-
-            var dataPointp = Axis.InverseTransform(e.Position, xAxis, yAxis);
             var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
-
             var currentExperiment = state.CurrentMeaExperiment.Get();
             var selectedElectrode = currentExperiment.Descriptors.Electrodes[indexOfNearestPoint];
-
             state.SelectedElectrode.Set(selectedElectrode);
         }
 
