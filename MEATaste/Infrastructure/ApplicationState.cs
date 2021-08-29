@@ -5,12 +5,12 @@ namespace MEATaste.Infrastructure
     public class ApplicationState
     {
         public StateProperty<MeaExperiment> CurrentMeaExperiment { get; }
-        public StateProperty<Electrode> SelectedElectrode { get; }
+        public StateProperty<ElectrodeRecord> SelectedElectrode { get; }
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {
             CurrentMeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.CurrentExperimentChanged);
-            SelectedElectrode = statePropertyFactory.Create<Electrode>(null, EventType.SelectedElectrodeChanged);
+            SelectedElectrode = statePropertyFactory.Create<ElectrodeRecord>(null, EventType.SelectedElectrodeChanged);
         }
     }
 

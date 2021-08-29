@@ -29,12 +29,12 @@ namespace MEATaste.Views.OneElectrode
 
         }
 
-        private void UpdateSelectedElectrode(Electrode electrode)
+        private void UpdateSelectedElectrode(ElectrodeRecord electrodeRecord)
         {
-            UpdateSelectedChannel(electrode);
+            UpdateSelectedChannel(electrodeRecord);
         }
 
-        private void UpdateSelectedChannel(Electrode electrode)
+        private void UpdateSelectedChannel(ElectrodeRecord electrodeRecord)
         {
             var fileReader = new FileReader(); // todo: delete this and use MeaFileReader
 
@@ -43,13 +43,13 @@ namespace MEATaste.Views.OneElectrode
 
             try
             {
-                currentExperiment.rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrode);
+                currentExperiment.rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrodeRecord);
                 var rawSignal = currentExperiment.rawSignalFromOneElectrode;
                 var plt = Model.DataPlot.Plot;
                 plt.Clear();
                 var myData = rawSignal.Select(x => (double)x).ToArray();
                 plt.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
-                var title = $"channel: {electrode.ChannelNumber} electrode: {electrode.ElectrodeNumber} (position : x={electrode.XCoordinate}, y={electrode.YCoordinate} µm)";
+                var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
                 plt.Title(title);
 
                 //var plt2 = FilteredSignal.Plot;

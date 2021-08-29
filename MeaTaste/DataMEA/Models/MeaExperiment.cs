@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace MEATaste.DataMEA.Models
@@ -33,14 +34,14 @@ namespace MEATaste.DataMEA.Models
         public double Hpf { get; set; }
         public double Lsb { get; set; }
         // mapping
-        public Electrode[] Electrodes { get; set; }
+        public ElectrodeRecord[] Electrodes { get; set; }
 
     }
 
-    public record Electrode(
-        int ChannelNumber,
-        int ElectrodeNumber,
-        double XCoordinate,
-        double YCoordinate);
+    public record ElectrodeRecord(
+        int Channel,
+        int Electrode,
+        double X_uM,
+        double Y_uM);
 
 }

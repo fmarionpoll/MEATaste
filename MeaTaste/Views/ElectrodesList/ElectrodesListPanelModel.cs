@@ -8,8 +8,8 @@ namespace MEATaste.Views.ElectrodesList
 {
     public class ElectrodesListPanelModel : INotifyPropertyChanged
     {
-        private ObservableCollection<Electrode> electrodes;
-        private Electrode selectedElectrode;
+        private ObservableCollection<ElectrodeRecord> electrodes;
+        private ElectrodeRecord selectedElectrodeRecord;
         private int selectedElectrodeIndex;
         private ICollectionView mySource;
 
@@ -24,7 +24,7 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-        public ObservableCollection<Electrode> Electrodes
+        public ObservableCollection<ElectrodeRecord> Electrodes
         {
             get => electrodes;
             set
@@ -35,13 +35,13 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
         
-       public Electrode SelectedElectrode
+       public ElectrodeRecord SelectedElectrodeRecord
         {
-            get => selectedElectrode;
+            get => selectedElectrodeRecord;
             set
             {
-                selectedElectrode = value;
-                OnPropertyChanged(nameof(SelectedElectrode));
+                selectedElectrodeRecord = value;
+                OnPropertyChanged(nameof(SelectedElectrodeRecord));
             }
         }
 

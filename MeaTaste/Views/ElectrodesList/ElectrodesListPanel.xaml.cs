@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Views.ElectrodesList
 {
-    public partial class ElectrodesListPanel : UserControl
+    public partial class ElectrodesListPanel
     {
         private readonly ElectrodesListPanelController controller;
         
@@ -22,8 +22,8 @@ namespace MEATaste.Views.ElectrodesList
             var electrodesGrid = sender as DataGrid;
             if (electrodesGrid == null) return;
 
-            Electrode electrode = (Electrode) electrodesGrid.SelectedItem;
-            controller.SelectElectrode(electrode);
+            ElectrodeRecord electrodeRecord = (ElectrodeRecord) electrodesGrid.SelectedItem;
+            controller.SelectElectrode(electrodeRecord);
             electrodesGrid.ScrollIntoView(electrodesGrid.SelectedItem);
         }
 

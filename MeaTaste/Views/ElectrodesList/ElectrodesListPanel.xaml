@@ -7,14 +7,14 @@
              d:DataContext="{d:DesignInstance Type=electrodeslist:ElectrodesListPanelModel}"
              mc:Ignorable="d">
 
-        <DataGrid x:Name="ElectrodesGrid" 
+    <DataGrid x:Name="ElectrodesGrid"
                  Margin="20"
                   SelectionMode="Single"
                   CanUserDeleteRows="False" 
                   AlternationCount="2"
                   AlternatingRowBackground="LightBlue"
                   ItemsSource="{Binding MySource}" 
-                  SelectedItem="{Binding SelectedElectrode}" 
+                  SelectedItem="{Binding SelectedElectrodeRecord}" 
                   SelectionUnit="FullRow"
                   SelectionChanged="ElectrodesGrid_SelectionChanged" 
                   HorizontalAlignment ="Stretch" 
@@ -25,7 +25,8 @@
                   IsReadOnly="True" 
                   CanUserAddRows="False"  
                   ClipToBounds="True">
-            <DataGrid.Resources>
+                  
+        <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FF0000" />
             </DataGrid.Resources>

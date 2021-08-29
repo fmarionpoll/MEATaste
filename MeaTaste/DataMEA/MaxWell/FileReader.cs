@@ -152,10 +152,10 @@ namespace MEATaste.DataMEA.MaxWell
                 H5Dataset dataset = group.Dataset("mapping");
                 Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
 
-                MeaExp.Descriptors.Electrodes = new Electrode[compoundData.Length];
+                MeaExp.Descriptors.Electrodes = new ElectrodeRecord[compoundData.Length];
                 for (int i = 0; i < compoundData.Length; i++)
                 {
-                    Electrode ec = new Electrode(
+                    ElectrodeRecord ec = new ElectrodeRecord(
                         compoundData[i].channel,
                         compoundData[i].electrode,
                         compoundData[i].x,
@@ -171,13 +171,13 @@ namespace MEATaste.DataMEA.MaxWell
             return flag;
         }
 
-        public ushort[] ReadAll_OneElectrodeAsInt(Electrode electrode)
+        public ushort[] ReadAll_OneElectrodeAsInt(ElectrodeRecord electrodeRecord)
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
             ulong nbchannels = dataset.Space.Dimensions[0]; // 1028 expected
             ulong nbdatapoints = dataset.Space.Dimensions[1]; // any size
-            return Read_OneElectrodeDataAsInt(electrode.ChannelNumber, 0, nbdatapoints -1);
+            return Read_OneElectrodeDataAsInt(electrodeRecord.Channel, 0, nbdatapoints -1);
         }
 
         public ushort[] Read_OneElectrodeDataAsInt(int Channel, ulong startsAt, ulong endsAt)

@@ -75,14 +75,14 @@ namespace MEATaste.Views.ElectrodesMap
 
             foreach (var electrode in state.CurrentMeaExperiment.Get().Descriptors.Electrodes)
             {
-                var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
+                var point = new ScatterPoint(electrode.X_uM, electrode.Y_uM);
                 series.Points.Add(point);
             }
 
             plotModel.Series.Add(series);
         }
         
-        private void CenterPlotOnElectrode(PlotModel plotModel, Electrode electrode)
+        private void CenterPlotOnElectrode(PlotModel plotModel, ElectrodeRecord electrodeRecord)
         {
             var xAxis = plotModel.Axes[0];
             var yAxis = plotModel.Axes[1];
@@ -90,12 +90,12 @@ namespace MEATaste.Views.ElectrodesMap
             yAxis.Reset();
 
             const int deltaX = 150;
-            xAxis.Minimum = electrode.XCoordinate - deltaX;
-            xAxis.Maximum = electrode.XCoordinate + deltaX;
+            xAxis.Minimum = electrodeRecord.X_uM - deltaX;
+            xAxis.Maximum = electrodeRecord.X_uM + deltaX;
 
             var deltaY = deltaX; // * plotModel.Height / plotModel.Width;
-            yAxis.Minimum = electrode.YCoordinate - deltaY;
-            yAxis.Maximum = electrode.YCoordinate + deltaY;
+            yAxis.Minimum = electrodeRecord.Y_uM - deltaY;
+            yAxis.Maximum = electrodeRecord.Y_uM + deltaY;
         }
 
         private void SuppressSelectedPoint(PlotModel plotModel)
@@ -104,7 +104,7 @@ namespace MEATaste.Views.ElectrodesMap
                 plotModel.Series.RemoveAt(1);
         }
 
-        private void SetSelectedPoint(PlotModel plotModel, Electrode electrode)
+        private void SetSelectedPoint(PlotModel plotModel, ElectrodeRecord electrodeRecord)
         {
             if (plotModel.Series.Count < 2)
                 AddSelectedSeries(plotModel);
@@ -112,7 +112,7 @@ namespace MEATaste.Views.ElectrodesMap
                 return;
             var series = (ScatterSeries) plotModel.Series[1];
             series.Points.RemoveAt(0);
-            var point = new ScatterPoint(electrode.XCoordinate, electrode.YCoordinate);
+            var point = new ScatterPoint(electrodeRecord.X_uM, electrodeRecord.Y_uM);
             series.Points.Add(point);
 
         }
