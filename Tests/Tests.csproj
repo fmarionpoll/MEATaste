@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MeaTaste\MEATaste.csproj" />
+    <ProjectReference Include="..\Program\MEATaste.csproj" />
   </ItemGroup>
 
 </Project>
