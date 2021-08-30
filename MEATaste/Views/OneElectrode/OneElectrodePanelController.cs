@@ -29,6 +29,11 @@ namespace MEATaste.Views.OneElectrode
             Model.AuthorizeReadingNewFile = value;
         }
 
+        public void AttachControlToModel(WpfPlot wpfControl)
+        {
+            Model.PlotControl = wpfControl;
+        }
+
         private void ChangeSelectedElectrode()
         {
             if (Model.AuthorizeReadingNewFile)
@@ -46,9 +51,10 @@ namespace MEATaste.Views.OneElectrode
             currentExperiment.rawSignalFromOneElectrode = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
             var rawSignal = currentExperiment.rawSignalFromOneElectrode;
 
-            var plot = Model.DataPlot.Plot;
+            var plot = Model.PlotControl.Plot;
             plot.Clear();
-            var myData = rawSignal.Select(x => (double)x).ToArray();
+            var gain = currentExperiment.Descriptors.Gain;
+            var myData = rawSignal.Select(x => (double)x * gain).ToArray();
             plot.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
             var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
             plot.Title(title);
@@ -73,10 +79,10 @@ namespace MEATaste.Views.OneElectrode
             
         }
 
-        private void OnAxesChanged(object sender, EventArgs e)
+        public void OnAxesChanged(object sender, EventArgs e)
         {
             var changedPlot = (WpfPlot)sender;
-            var plot = Model.DataPlot;
+            var plot = Model.PlotControl;
             if (plot == changedPlot)
                 return;
 

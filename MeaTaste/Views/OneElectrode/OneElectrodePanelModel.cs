@@ -7,17 +7,17 @@ namespace MEATaste.Views.OneElectrode
 {
     public class OneElectrodePanelModel : INotifyPropertyChanged
     {
-        private WpfPlot dataPlot;
+        private WpfPlot plotControl;
         private AxisLimits axisLimitsForDataPlot;
         private bool authorizeReadingNewFile;
 
-        public WpfPlot DataPlot
+        public WpfPlot PlotControl
         {
-            get => dataPlot;
+            get => plotControl;
             set
             {
-                dataPlot = value;
-                OnPropertyChanged(nameof(DataPlot));
+                plotControl = value;
+                OnPropertyChanged(nameof(PlotControl));
             }
         }
 
@@ -43,7 +43,7 @@ namespace MEATaste.Views.OneElectrode
 
         public OneElectrodePanelModel()
         {
-            DataPlot = new WpfPlot();
+            PlotControl = new WpfPlot();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

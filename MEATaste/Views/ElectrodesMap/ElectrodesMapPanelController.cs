@@ -132,6 +132,8 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
         {
+            if (e.HitTestResult == null)
+                return;
             var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
             var currentExperiment = state.CurrentMeaExperiment.Get();
             var selectedElectrode = currentExperiment.Descriptors.Electrodes[indexOfNearestPoint];
