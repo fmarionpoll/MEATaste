@@ -4,7 +4,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:oneElectrode="clr-namespace:MEATaste.Views.PlotSignal"
+        xmlns:plotsignal="clr-namespace:MEATaste.Views.PlotSignal"
+        xmlns:plotfilter="clr-namespace:MEATaste.Views.PlotFiltered"
         xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
         xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
@@ -40,7 +41,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <oneElectrode:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <plotfilter:PlotFilteredPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Grid>
 
     </Grid>

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
+using MEATaste.DataMEA.Utilities;
 using MEATaste.Infrastructure;
 using ScottPlot;
 
@@ -11,15 +12,11 @@ namespace MEATaste.Views.PlotFiltered
     public class PlotFilteredPanelController
     {
         public PlotFilteredPanelModel Model { get; }
-
         private readonly ApplicationState state;
-        private readonly MeaFileReader meaFileReader;
 
-        public PlotFilteredPanelController(ApplicationState state, MeaFileReader meaFileReader,
-            IEventSubscriber eventSubscriber)
+        public PlotFilteredPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
             this.state = state;
-            this.meaFileReader = meaFileReader;
 
             Model = new PlotFilteredPanelModel();
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
@@ -50,37 +47,28 @@ namespace MEATaste.Views.PlotFiltered
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
-            currentExperiment.rawSignalFromOneElectrode = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
-            var rawSignal = currentExperiment.rawSignalFromOneElectrode;
+            var rawSignalDouble = currentExperiment.rawSignalDouble;
 
             var plot = Model.PlotControl.Plot;
-            plot.Clear();
-            var gain = currentExperiment.Descriptors.Gain / 1000;
-            var myData = rawSignal.Select(x => (double) x * gain).ToArray();
-            plot.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
-            var title =
-                $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
-            plot.Title(title);
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (mV)");
-            plot.Render();
+            
+            plot.Clear();
 
-            //var plt2 = FilteredSignal.Plot;
-            //plt2.Clear();
-
-            //double[] medianRow = Filter.BMedian(myData, myData.Length, 20);
-            //plt2.AddSignal(medianRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green);
-            //plt2.Title("derivRow + medianRow");
-
-            //double[] derivRow = Filter.BDeriv(myData, myData.Length);
-            //plt2.AddSignal(derivRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange);
-            //plt2.Title("derivRow");
-
+            double[] medianRow = Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20);
+            plot.AddSignal(medianRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green, label: "median");
+            
+            double[] derivRow = Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length);
+            plot.AddSignal(derivRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange, label: "derivative");
+            
             //Model.FormsPlots = new[] { RawSignal, FilteredSignal };
             //foreach (var fp in Model.FormsPlots)
             //    fp.AxesChanged += OnAxesChanged;
 
             Mouse.OverrideCursor = null;
+            var legend = plot.Legend();
+            legend.FontSize = 10; 
+            plot.Render();
 
         }
 

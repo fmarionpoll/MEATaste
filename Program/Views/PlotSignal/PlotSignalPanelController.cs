@@ -48,35 +48,21 @@ namespace MEATaste.Views.PlotSignal
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
-            currentExperiment.rawSignalFromOneElectrode = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
-            var rawSignal = currentExperiment.rawSignalFromOneElectrode;
+            currentExperiment.rawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
+            var rawSignalUShort = currentExperiment.rawSignalUShort;
 
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             var gain = currentExperiment.Descriptors.Gain / 1000;
-            var myData = rawSignal.Select(x => (double)x * gain).ToArray();
-            plot.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
+            currentExperiment.rawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
+
+            plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
             var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
             plot.Render();
-
-            //var plt2 = FilteredSignal.Plot;
-            //plt2.Clear();
-
-            //double[] medianRow = Filter.BMedian(myData, myData.Length, 20);
-            //plt2.AddSignal(medianRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green);
-            //plt2.Title("derivRow + medianRow");
-
-            //double[] derivRow = Filter.BDeriv(myData, myData.Length);
-            //plt2.AddSignal(derivRow, state.CurrentMeaExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange);
-            //plt2.Title("derivRow");
-
-            //Model.FormsPlots = new[] { RawSignal, FilteredSignal };
-            //foreach (var fp in Model.FormsPlots)
-            //    fp.AxesChanged += OnAxesChanged;
-
+            
             Mouse.OverrideCursor = null;
             
         }

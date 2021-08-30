@@ -10,7 +10,8 @@ namespace MEATaste.DataMEA.Models
     {
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
-        public ushort[] rawSignalFromOneElectrode;
+        public ushort[] rawSignalUShort;
+        public double[] rawSignalDouble;
 
         public Descriptors Descriptors;
 
