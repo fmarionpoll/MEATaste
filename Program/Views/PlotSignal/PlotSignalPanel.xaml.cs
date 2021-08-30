@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 using ScottPlot;
@@ -6,8 +6,7 @@ using ScottPlot;
 
 namespace MEATaste.Views.PlotSignal
 {
-  
-    public partial class PlotSignalPanel
+    public partial class PlotSignalPanel: UserControl
     {
         private readonly PlotSignalPanelController controller;
 

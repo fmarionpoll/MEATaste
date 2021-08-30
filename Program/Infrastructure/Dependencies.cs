@@ -4,6 +4,7 @@ using MEATaste.Views.ElectrodesMap;
 using MEATaste.Views.FileOpen;
 using MEATaste.Views.MainView;
 using MEATaste.Views.PlotSignal;
+using MEATaste.Views.PlotFiltered;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Infrastructure
@@ -34,6 +35,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<ElectrodesListPanelController>();
                 services.AddSingleton<ElectrodesMapPanelController>(); 
                 services.AddSingleton<PlotSignalPanelController>();
+                services.AddSingleton<PlotFilteredPanelController>();
                 services.AddSingleton<MainViewModel>();
             }
         }

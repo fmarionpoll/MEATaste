@@ -1,28 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ScottPlot;
 
-namespace MEATaste.Views.OneElectrodeFilter
+
+namespace MEATaste.Views.PlotFiltered
 {
-    /// <summary>
-    /// Interaction logic for ElectrodeSignalFilteredPanel.xaml
-    /// </summary>
-    public partial class ElectrodeSignalFilteredPanel : UserControl
+    public partial class PlotFilteredPanel : UserControl
     {
-        public ElectrodeSignalFilteredPanel()
+        private readonly PlotFilteredPanelController controller;
+        public PlotFilteredPanel()
         {
+            controller = App.ServiceProvider.GetService<PlotFilteredPanelController>();
+            DataContext = controller!.Model;
             InitializeComponent();
+        }
+
+        private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            bool value = checkBox.IsChecked == true;
+            controller.AuthorizeReading(value);
+        }
+
+        private void PlotControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var wpfControl = sender as WpfPlot;
+            controller.AttachControlToModel(wpfControl);
+        }
+
+        private void PlotControl_AxesChanged(object sender, System.EventArgs e)
+        {
+            controller.OnAxesChanged(sender, e);
         }
     }
 }

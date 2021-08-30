@@ -6,23 +6,25 @@ using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using ScottPlot;
 
-namespace MEATaste.Views.PlotSignal
+namespace MEATaste.Views.PlotFiltered
 {
-    public class PlotSignalPanelController
+    public class PlotFilteredPanelController
     {
-        public PlotSignalPanelModel Model { get; }
+        public PlotFilteredPanelModel Model { get; }
 
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
 
-        public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader, IEventSubscriber eventSubscriber)
+        public PlotFilteredPanelController(ApplicationState state, MeaFileReader meaFileReader,
+            IEventSubscriber eventSubscriber)
         {
             this.state = state;
             this.meaFileReader = meaFileReader;
 
-            Model = new PlotSignalPanelModel();
+            Model = new PlotFilteredPanelModel();
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
         }
+
 
         public void AuthorizeReading(bool value)
         {
@@ -54,12 +56,13 @@ namespace MEATaste.Views.PlotSignal
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             var gain = currentExperiment.Descriptors.Gain / 1000;
-            var myData = rawSignal.Select(x => (double)x * gain).ToArray();
+            var myData = rawSignal.Select(x => (double) x * gain).ToArray();
             plot.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
-            var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
+            var title =
+                $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
-            plot.YLabel("Voltage (µV)");
+            plot.YLabel("Voltage (mV)");
             plot.Render();
 
             //var plt2 = FilteredSignal.Plot;
@@ -78,18 +81,18 @@ namespace MEATaste.Views.PlotSignal
             //    fp.AxesChanged += OnAxesChanged;
 
             Mouse.OverrideCursor = null;
-            
+
         }
 
         public void OnAxesChanged(object sender, EventArgs e)
         {
-            var changedPlot = (WpfPlot)sender;
+            var changedPlot = (WpfPlot) sender;
             var plot = Model.PlotControl;
             if (plot == changedPlot)
                 return;
 
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
-          
+
             plot.Configuration.AxesChangedEventEnabled = false;
             plot.Plot.SetAxisLimitsX(newAxisLimits.XMin, newAxisLimits.XMax);
             plot.Render();
@@ -97,6 +100,6 @@ namespace MEATaste.Views.PlotSignal
 
             Model.AxisLimitsForDataPlot = newAxisLimits;
         }
-    
     }
+
 }
