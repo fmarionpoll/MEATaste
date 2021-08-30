@@ -4,16 +4,16 @@ using System.Windows.Controls;
 using ScottPlot;
 
 
-namespace MEATaste.Views.OneElectrode
+namespace MEATaste.Views.PlotSignal
 {
   
-    public partial class OneElectrodePanel
+    public partial class PlotSignalPanel
     {
-        private readonly OneElectrodePanelController controller;
+        private readonly PlotSignalPanelController controller;
 
-        public OneElectrodePanel()
+        public PlotSignalPanel()
         {
-            controller = App.ServiceProvider.GetService<OneElectrodePanelController>();
+            controller = App.ServiceProvider.GetService<PlotSignalPanelController>();
             DataContext = controller!.Model;
             InitializeComponent();
         }

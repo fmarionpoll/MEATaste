@@ -3,9 +3,9 @@ using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 using ScottPlot;
 
-namespace MEATaste.Views.OneElectrode
+namespace MEATaste.Views.PlotSignal
 {
-    public class OneElectrodePanelModel : INotifyPropertyChanged
+    public class PlotSignalPanelModel : INotifyPropertyChanged
     {
         private WpfPlot plotControl;
         private AxisLimits axisLimitsForDataPlot;
@@ -41,7 +41,7 @@ namespace MEATaste.Views.OneElectrode
             }
         }
 
-        public OneElectrodePanelModel()
+        public PlotSignalPanelModel()
         {
             PlotControl = new WpfPlot();
         }

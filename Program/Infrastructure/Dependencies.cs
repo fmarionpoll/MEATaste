@@ -3,7 +3,7 @@ using MEATaste.Views.ElectrodesList;
 using MEATaste.Views.ElectrodesMap;
 using MEATaste.Views.FileOpen;
 using MEATaste.Views.MainView;
-using MEATaste.Views.OneElectrode;
+using MEATaste.Views.PlotSignal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Infrastructure
@@ -33,7 +33,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<FileOpenPanelController>();
                 services.AddSingleton<ElectrodesListPanelController>();
                 services.AddSingleton<ElectrodesMapPanelController>(); 
-                services.AddSingleton<OneElectrodePanelController>();
+                services.AddSingleton<PlotSignalPanelController>();
                 services.AddSingleton<MainViewModel>();
             }
         }

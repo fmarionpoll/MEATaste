@@ -6,21 +6,21 @@ using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using ScottPlot;
 
-namespace MEATaste.Views.OneElectrode
+namespace MEATaste.Views.PlotSignal
 {
-    public class OneElectrodePanelController
+    public class PlotSignalPanelController
     {
-        public OneElectrodePanelModel Model { get; }
+        public PlotSignalPanelModel Model { get; }
 
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
 
-        public OneElectrodePanelController(ApplicationState state, MeaFileReader meaFileReader, IEventSubscriber eventSubscriber)
+        public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader, IEventSubscriber eventSubscriber)
         {
             this.state = state;
             this.meaFileReader = meaFileReader;
 
-            Model = new OneElectrodePanelModel();
+            Model = new PlotSignalPanelModel();
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
         }
 
