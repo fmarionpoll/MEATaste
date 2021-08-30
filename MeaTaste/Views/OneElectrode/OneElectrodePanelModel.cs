@@ -1,21 +1,33 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
+using ScottPlot;
 
 namespace MEATaste.Views.OneElectrode
 {
     public class OneElectrodePanelModel : INotifyPropertyChanged
     {
-        private ScottPlot.WpfPlot dataPlot;
+        private WpfPlot dataPlot;
+        private AxisLimits axisLimitsForDataPlot;
         private bool authorizeReadingNewFile;
 
-        public ScottPlot.WpfPlot DataPlot
+        public WpfPlot DataPlot
         {
             get => dataPlot;
             set
             {
                 dataPlot = value;
                 OnPropertyChanged(nameof(DataPlot));
+            }
+        }
+
+        public AxisLimits AxisLimitsForDataPlot
+        {
+            get => axisLimitsForDataPlot;
+            set
+            {
+                axisLimitsForDataPlot = value;
+                OnPropertyChanged(nameof(AxisLimitsForDataPlot));
             }
         }
 
@@ -31,7 +43,7 @@ namespace MEATaste.Views.OneElectrode
 
         public OneElectrodePanelModel()
         {
-            DataPlot = new ScottPlot.WpfPlot();
+            DataPlot = new WpfPlot();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

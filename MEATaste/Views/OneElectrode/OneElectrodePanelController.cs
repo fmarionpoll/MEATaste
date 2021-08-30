@@ -4,6 +4,7 @@ using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
+using ScottPlot;
 
 namespace MEATaste.Views.OneElectrode
 {
@@ -12,10 +13,12 @@ namespace MEATaste.Views.OneElectrode
         public OneElectrodePanelModel Model { get; }
 
         private readonly ApplicationState state;
+        private readonly MeaFileReader meaFileReader;
 
-        public OneElectrodePanelController(ApplicationState state, IEventSubscriber eventSubscriber)
+        public OneElectrodePanelController(ApplicationState state, MeaFileReader meaFileReader, IEventSubscriber eventSubscriber)
         {
             this.state = state;
+            this.meaFileReader = meaFileReader;
 
             Model = new OneElectrodePanelModel();
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
@@ -26,7 +29,7 @@ namespace MEATaste.Views.OneElectrode
             Model.AuthorizeReadingNewFile = value;
         }
 
-        private void  ChangeSelectedElectrode()
+        private void ChangeSelectedElectrode()
         {
             if (Model.AuthorizeReadingNewFile)
             {
@@ -38,21 +41,18 @@ namespace MEATaste.Views.OneElectrode
 
         private void UpdateSelectedChannel(ElectrodeRecord electrodeRecord)
         {
-            var fileReader = new FileReader(); // todo: delete this and use MeaFileReader
-
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
-
-
-            currentExperiment.rawSignalFromOneElectrode = fileReader.ReadAll_OneElectrodeAsInt(electrodeRecord);
+            currentExperiment.rawSignalFromOneElectrode = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
             var rawSignal = currentExperiment.rawSignalFromOneElectrode;
-            var plt = Model.DataPlot.Plot;
-            plt.Clear();
+
+            var plot = Model.DataPlot.Plot;
+            plot.Clear();
             var myData = rawSignal.Select(x => (double)x).ToArray();
-            plt.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
+            plot.AddSignal(myData, currentExperiment.Descriptors.SamplingRate);
             var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
-            plt.Title(title);
-            plt.Render();
+            plot.Title(title);
+            plot.Render();
 
             //var plt2 = FilteredSignal.Plot;
             //plt2.Clear();
@@ -73,22 +73,22 @@ namespace MEATaste.Views.OneElectrode
             
         }
 
-        //private void OnAxesChanged(object sender, EventArgs e)
-        //{
-        //    ScottPlot.WpfPlot changedPlot = (ScottPlot.WpfPlot)sender;
-        //    var newAxisLimits = changedPlot.Plot.GetAxisLimits();
+        private void OnAxesChanged(object sender, EventArgs e)
+        {
+            var changedPlot = (WpfPlot)sender;
+            var plot = Model.DataPlot;
+            if (plot == changedPlot)
+                return;
 
-        //    foreach (var fp in Model.FormsPlots)
-        //    {
-        //        if (fp == changedPlot)
-        //            continue;
+            var newAxisLimits = changedPlot.Plot.GetAxisLimits();
+          
+            plot.Configuration.AxesChangedEventEnabled = false;
+            plot.Plot.SetAxisLimitsX(newAxisLimits.XMin, newAxisLimits.XMax);
+            plot.Render();
+            plot.Configuration.AxesChangedEventEnabled = true;
 
-        //        // disable events briefly to avoid an infinite loop
-        //        fp.Configuration.AxesChangedEventEnabled = false;
-        //        fp.Plot.SetAxisLimitsX(newAxisLimits.XMin, newAxisLimits.XMax);
-        //        fp.Render();
-        //        fp.Configuration.AxesChangedEventEnabled = true;
-        //    }
-        //}
+            Model.AxisLimitsForDataPlot = newAxisLimits;
+        }
+    
     }
 }

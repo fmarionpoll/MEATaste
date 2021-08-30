@@ -9,10 +9,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="8*"/>
-            <RowDefinition Height="8*"/>
+          
         </Grid.RowDefinitions>
         <WpfPlot x:Name="RawSignal"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row ="1" />
-        <WpfPlot x:Name="FilteredSignal" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.Row ="2"/>
         <CheckBox FlowDirection="RightToLeft" Grid.Row="0" HorizontalAlignment="Right" Margin="0,0,20,0"
                   VerticalAlignment="Top" Checked="CheckBox_Checked" >
             <TextBlock Text="Load data for selected electrode" />

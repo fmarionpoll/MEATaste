@@ -24,6 +24,13 @@ namespace MEATaste.DataMEA.MaxWell
             }
             return null;
         }
+
+        public ushort[] ReadDataForOneElectrode(ElectrodeRecord electrodeRecord)
+        {
+            return fileReader.ReadAll_OneElectrodeAsInt(electrodeRecord);
+        }
+
+
     }
 
     public class FileReader
@@ -47,17 +54,11 @@ namespace MEATaste.DataMEA.MaxWell
 
         public bool IsFileReadableAsMaxWellFile()
         {
-            try
-            {
-                H5Group group = Root.Group("/");
-                H5Dataset dataset = group.Dataset("version");
-                string[] data = dataset.ReadString();
-                FileVersion = data[0];
-            }
-            finally
-            {
-            }
-
+            H5Group group = Root.Group("/");
+            H5Dataset dataset = group.Dataset("version");
+            string[] data = dataset.ReadString();
+            FileVersion = data[0];
+            
             if (FileVersion == "20160704")
             {
                 Trace.WriteLine($"MaxWell file version: legacy ({FileVersion}) or v0");
@@ -84,23 +85,15 @@ namespace MEATaste.DataMEA.MaxWell
 
         public bool ReadTimeDescriptors(MeaExperiment meaExp)
         {
-            bool flag = false;
-            try
-            {
-                H5Group group = Root.Group("/");
-                H5Dataset dataset = group.Dataset("time");
-                string[] data = dataset.ReadString();
-                string lines = data[0];
-                // "start: 2021-07-15 16:54:58;\nstop: 2021-07-15 16:57:54\n"
-                string[] strings = lines.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                meaExp.Descriptors.TimeStart = GetTimeFromString(strings[0], "start: ");
-                meaExp.Descriptors.TimeStop = GetTimeFromString(strings[1], "stop: ");
-                flag = true;
-            }
-            finally
-            {
-            }
-            return flag;
+            H5Group group = Root.Group("/");
+            H5Dataset dataset = group.Dataset("time");
+            string[] data = dataset.ReadString();
+            string lines = data[0];
+            string[] strings = lines.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            meaExp.Descriptors.TimeStart = GetTimeFromString(strings[0], "start: ");
+            meaExp.Descriptors.TimeStop = GetTimeFromString(strings[1], "stop: ");
+
+            return true;
         }
 
         private DateTime GetTimeFromString(string inputString, string pattern)
@@ -116,24 +109,18 @@ namespace MEATaste.DataMEA.MaxWell
 
         public bool ReadSettingsDescriptors(MeaExperiment meaExp)
         {
-            bool flag = false;
-            try
-            {
-                H5Group group = Root.Group("/settings");
+            H5Group group = Root.Group("/settings");
 
-                double[] gainarray = ReadDoubleDataFromGroup(group, "gain");
-                meaExp.Descriptors.Gain = gainarray[0];
+            double[] gainarray = ReadDoubleDataFromGroup(group, "gain");
+            meaExp.Descriptors.Gain = gainarray[0];
 
-                double[] hpfarray = ReadDoubleDataFromGroup(group, "hpf");
-                meaExp.Descriptors.Hpf = hpfarray[0];
+            double[] hpfarray = ReadDoubleDataFromGroup(group, "hpf");
+            meaExp.Descriptors.Hpf = hpfarray[0];
 
-                double[] lsbarray = ReadDoubleDataFromGroup(group, "lsb");
-                meaExp.Descriptors.Lsb = lsbarray[0];
-            }
-            finally
-            {
-            }
-            return flag;
+            double[] lsbarray = ReadDoubleDataFromGroup(group, "lsb");
+            meaExp.Descriptors.Lsb = lsbarray[0];
+            
+            return true;
         }
 
         private double[] ReadDoubleDataFromGroup(H5Group group, string headerName)
@@ -145,30 +132,21 @@ namespace MEATaste.DataMEA.MaxWell
 
         public bool ReadMapElectrodes(MeaExperiment MeaExp)
         {
-            bool flag = false;
-            try
-            {
-                H5Group group = Root.Group("/");
-                H5Dataset dataset = group.Dataset("mapping");
-                Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
+            H5Group group = Root.Group("/");
+            H5Dataset dataset = group.Dataset("mapping");
+            Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
 
-                MeaExp.Descriptors.Electrodes = new ElectrodeRecord[compoundData.Length];
-                for (int i = 0; i < compoundData.Length; i++)
-                {
-                    ElectrodeRecord ec = new ElectrodeRecord(
-                        compoundData[i].channel,
-                        compoundData[i].electrode,
-                        compoundData[i].x,
-                        compoundData[i].y);
-                    MeaExp.Descriptors.Electrodes[i] = ec;
-                }
-
-                flag = true;
-            }
-            finally
+            MeaExp.Descriptors.Electrodes = new ElectrodeRecord[compoundData.Length];
+            for (int i = 0; i < compoundData.Length; i++)
             {
+                ElectrodeRecord ec = new ElectrodeRecord(
+                    compoundData[i].channel,
+                    compoundData[i].electrode,
+                    compoundData[i].x,
+                    compoundData[i].y);
+                MeaExp.Descriptors.Electrodes[i] = ec;
             }
-            return flag;
+            return true;
         }
 
         public ushort[] ReadAll_OneElectrodeAsInt(ElectrodeRecord electrodeRecord)
@@ -183,48 +161,44 @@ namespace MEATaste.DataMEA.MaxWell
         public ushort[] Read_OneElectrodeDataAsInt(int Channel, ulong startsAt, ulong endsAt)
         {
             ushort[] result;
-            try
-            {
-                H5Group group = Root.Group("/");
-                H5Dataset dataset = group.Dataset("sig");
+ 
+            H5Group group = Root.Group("/");
+            H5Dataset dataset = group.Dataset("sig");
 
-                int ndimensions = dataset.Space.Rank;
-                if (ndimensions != 2)
-                    return null;
-                //ulong nbchannels = dataset.Space.Dimensions[0];     // 1028 expected
-                //ulong nbdatapoints = dataset.Space.Dimensions[1];   // any size
-                //var dataType = dataset.Type;
+            int ndimensions = dataset.Space.Rank;
+            if (ndimensions != 2)
+                return null;
+            //ulong nbchannels = dataset.Space.Dimensions[0];     // 1028 expected
+            //ulong nbdatapoints = dataset.Space.Dimensions[1];   // any size
+            //var dataType = dataset.Type;
 
-                ulong nbpoints = endsAt - startsAt + 1;
+            ulong nbpoints = endsAt - startsAt + 1;
 
-                var memoryDims = new ulong[] { nbpoints };
+            var memoryDims = new ulong[] { nbpoints };
 
-                var datasetSelection = new HyperslabSelection(
-                    rank: 2,
-                    starts: new ulong[] { (ulong)Channel, startsAt },   // start at row ElectrodeNumber, column 0
-                    strides: new ulong[] { 1, 1 },                              // don't skip anything
-                    counts: new ulong[] { 1, nbpoints },                        // read 1 row, ndatapoints columns
-                    blocks: new ulong[] { 1, 1 }                                // blocks are single elements
-                );
+            var datasetSelection = new HyperslabSelection(
+                rank: 2,
+                starts: new ulong[] { (ulong)Channel, startsAt },   // start at row ElectrodeNumber, column 0
+                strides: new ulong[] { 1, 1 },                      // don't skip anything
+                counts: new ulong[] { 1, nbpoints },                // read 1 row, ndatapoints columns
+                blocks: new ulong[] { 1, 1 }                        // blocks are single elements
+            );
 
-                var memorySelection = new HyperslabSelection(
-                    rank: 1,
-                    starts: new ulong[] { 0 },
-                    strides: new ulong[] { 1 },
-                    counts: new ulong[] { nbpoints },
-                    blocks: new ulong[] { 1 }
-                );
+            var memorySelection = new HyperslabSelection(
+                rank: 1,
+                starts: new ulong[] { 0 },
+                strides: new ulong[] { 1 },
+                counts: new ulong[] { nbpoints },
+                blocks: new ulong[] { 1 }
+            );
 
-                result = dataset
-                    .Read<ushort>(
-                        fileSelection: datasetSelection,
-                        memorySelection: memorySelection,
-                        memoryDims: memoryDims
-                    );  
-            }
-            finally
-            {
-            }
+            result = dataset
+                .Read<ushort>(
+                    fileSelection: datasetSelection,
+                    memorySelection: memorySelection,
+                    memoryDims: memoryDims
+                );  
+
             return result;
         }
 
