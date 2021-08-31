@@ -12,6 +12,7 @@ namespace MEATaste.DataMEA.Models
         public string FileVersion { get; set; } = "unknown";
         public ushort[] rawSignalUShort;
         public double[] rawSignalDouble;
+        public AxesMaxMin axesMaxMin;
 
         public Descriptors Descriptors;
 
@@ -45,4 +46,9 @@ namespace MEATaste.DataMEA.Models
         double X_uM,
         double Y_uM);
 
+    public record AxesMaxMin(
+        double XMin,
+        double XMax,
+        double YMin,
+        double YMax);
 }

@@ -20,12 +20,13 @@ namespace MEATaste.Views.PlotFiltered
 
             Model = new PlotFilteredPanelModel();
             eventSubscriber.Subscribe(EventType.ElectrodeRecordLoaded, ChangeSelectedElectrode);
+            eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
         }
 
 
         public void AuthorizeReading(bool value)
         {
-            Model.DisplayFilteredData = value;
+            Model.PlotFilteredData = value;
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -35,9 +36,9 @@ namespace MEATaste.Views.PlotFiltered
 
         private void ChangeSelectedElectrode()
         {
-            if (Model.DisplayFilteredData)
+            if (Model.PlotFilteredData)
             {
-                ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
+                var electrodeRecord = state.SelectedElectrode.Get();
                 if (electrodeRecord != null)
                     UpdateSelectedChannel(electrodeRecord);
             }
@@ -74,20 +75,41 @@ namespace MEATaste.Views.PlotFiltered
 
         public void OnAxesChanged(object sender, EventArgs e)
         {
-            var changedPlot = (WpfPlot) sender;
+            var changedPlot = (WpfPlot)sender;
             var plot = Model.PlotControl;
-            if (plot == changedPlot)
-                return;
+            if (plot != changedPlot)
+            {
+                var newAxisLimits = changedPlot.Plot.GetAxisLimits();
+                ChangeXAxes(Model.PlotControl, newAxisLimits.XMin, newAxisLimits.XMax);
+            }
+            UpdateAxesMaxMinFromScottPlot(plot.Plot.GetAxisLimits());
+        }
 
-            var newAxisLimits = changedPlot.Plot.GetAxisLimits();
+        private void UpdateAxesMaxMinFromScottPlot(AxisLimits axisLimits)
+        {
+            state.AxesMaxMin.Set(new AxesMaxMin(axisLimits.XMin, axisLimits.XMax, axisLimits.YMin, axisLimits.YMax));
+        }
 
+        private void ChangeXAxes(WpfPlot plot, double XMin, double XMax)
+        {
             plot.Configuration.AxesChangedEventEnabled = false;
-            plot.Plot.SetAxisLimitsX(newAxisLimits.XMin, newAxisLimits.XMax);
+            plot.Plot.SetAxisLimitsX(XMin, XMax);
             plot.Render();
             plot.Configuration.AxesChangedEventEnabled = true;
 
-            Model.AxisLimitsForDataPlot = newAxisLimits;
+            Model.AxisLimitsForDataPlot = plot.Plot.GetAxisLimits();
         }
+
+        private void AxesChanged()
+        {
+            if (Model.PlotFilteredData)
+            {
+                var axesMaxMin = state.AxesMaxMin.Get();
+                if (axesMaxMin != null)
+                    ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
+            }
+        }
+
     }
 
 }
