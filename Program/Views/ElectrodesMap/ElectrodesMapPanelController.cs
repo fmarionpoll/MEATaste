@@ -142,7 +142,7 @@ namespace MEATaste.Views.ElectrodesMap
 
         public void SelectElectrode(ElectrodeRecord electrodeRecord)
         {
-            if (electrodeRecord == state.SelectedElectrode.Get()) return;
+            if (state.SelectedElectrode.Get() != null && electrodeRecord.Electrode == state.SelectedElectrode.Get().Electrode) return;
             state.SelectedElectrode.Set(electrodeRecord);
         }
 
