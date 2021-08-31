@@ -22,7 +22,11 @@ namespace MEATaste.Views.ElectrodesList
         }
 
  
-        public void SelectElectrode(ElectrodeRecord electrodeRecord) => state.SelectedElectrode.Set(electrodeRecord);
+        public void SelectElectrode(ElectrodeRecord electrodeRecord)
+        {
+            if (electrodeRecord == state.SelectedElectrode.Get()) return;
+            state.SelectedElectrode.Set(electrodeRecord);
+        }
 
         private void ChangeSelectedElectrode()
         {

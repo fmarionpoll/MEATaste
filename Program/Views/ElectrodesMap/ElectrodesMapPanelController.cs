@@ -137,7 +137,13 @@ namespace MEATaste.Views.ElectrodesMap
             var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
             var currentExperiment = state.CurrentMeaExperiment.Get();
             var selectedElectrode = currentExperiment.Descriptors.Electrodes[indexOfNearestPoint];
-            state.SelectedElectrode.Set(selectedElectrode);
+            SelectElectrode(selectedElectrode);
+        }
+
+        public void SelectElectrode(ElectrodeRecord electrodeRecord)
+        {
+            if (electrodeRecord == state.SelectedElectrode.Get()) return;
+            state.SelectedElectrode.Set(electrodeRecord);
         }
 
     }

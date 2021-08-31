@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
@@ -26,7 +27,7 @@ namespace MEATaste.Views.PlotSignal
 
         public void AuthorizeReading(bool value)
         {
-            Model.AuthorizeReadingNewFile = value;
+            Model.CheckDisplayDataSlectedElectrode = value;
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -36,11 +37,13 @@ namespace MEATaste.Views.PlotSignal
 
         private void ChangeSelectedElectrode()
         {
-            if (Model.AuthorizeReadingNewFile)
+            if (Model.CheckDisplayDataSlectedElectrode)
             {
                 ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
                 if (electrodeRecord != null)
+                {
                     UpdateSelectedChannel(electrodeRecord);
+                }
             }
         }
 
@@ -55,6 +58,8 @@ namespace MEATaste.Views.PlotSignal
             plot.Clear();
             var gain = currentExperiment.Descriptors.Gain / 1000;
             currentExperiment.rawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
+            state.ElectrodeDataBuffer.Set(currentExperiment.rawSignalDouble);
+            Trace.WriteLine("data loaded");
 
             plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
             var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";

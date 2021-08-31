@@ -19,13 +19,13 @@ namespace MEATaste.Views.PlotFiltered
             this.state = state;
 
             Model = new PlotFilteredPanelModel();
-            eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
+            eventSubscriber.Subscribe(EventType.ElectrodeRecordLoaded, ChangeSelectedElectrode);
         }
 
 
         public void AuthorizeReading(bool value)
         {
-            Model.AuthorizeReadingNewFile = value;
+            Model.CheckDisplayFilteredData = value;
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -35,7 +35,7 @@ namespace MEATaste.Views.PlotFiltered
 
         private void ChangeSelectedElectrode()
         {
-            if (Model.AuthorizeReadingNewFile)
+            if (Model.CheckDisplayFilteredData)
             {
                 ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
                 if (electrodeRecord != null)

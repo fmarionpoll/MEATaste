@@ -173,7 +173,7 @@ namespace MEATaste.DataMEA.MaxWell
             //var dataType = dataset.Type;
 
             ulong nbpoints = endsAt - startsAt + 1;
-
+            Trace.WriteLine($"Read nbpoints = {nbpoints}");
             var memoryDims = new ulong[] { nbpoints };
 
             var datasetSelection = new HyperslabSelection(

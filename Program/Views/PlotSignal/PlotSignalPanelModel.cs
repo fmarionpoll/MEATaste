@@ -9,7 +9,7 @@ namespace MEATaste.Views.PlotSignal
     {
         private WpfPlot plotControl;
         private AxisLimits axisLimitsForDataPlot;
-        private bool authorizeReadingNewFile;
+        private bool checkDisplayDataSlectedElectrode;
 
         public WpfPlot PlotControl
         {
@@ -31,13 +31,13 @@ namespace MEATaste.Views.PlotSignal
             }
         }
 
-        public bool AuthorizeReadingNewFile
+        public bool CheckDisplayDataSlectedElectrode
         {
-            get => authorizeReadingNewFile;
+            get => checkDisplayDataSlectedElectrode;
             set
             {
-                authorizeReadingNewFile = value;
-                OnPropertyChanged(nameof(AuthorizeReadingNewFile));
+                checkDisplayDataSlectedElectrode = value;
+                OnPropertyChanged(nameof(CheckDisplayDataSlectedElectrode));
             }
         }
 

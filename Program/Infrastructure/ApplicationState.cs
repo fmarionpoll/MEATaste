@@ -6,11 +6,16 @@ namespace MEATaste.Infrastructure
     {
         public StateProperty<MeaExperiment> CurrentMeaExperiment { get; }
         public StateProperty<ElectrodeRecord> SelectedElectrode { get; }
+        public StateProperty<double[]> ElectrodeDataBuffer { get; }
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {
-            CurrentMeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.CurrentExperimentChanged);
-            SelectedElectrode = statePropertyFactory.Create<ElectrodeRecord>(null, EventType.SelectedElectrodeChanged);
+            CurrentMeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, 
+                EventType.CurrentExperimentChanged);
+            SelectedElectrode = statePropertyFactory.Create<ElectrodeRecord>(null, 
+                EventType.SelectedElectrodeChanged);
+            ElectrodeDataBuffer = statePropertyFactory.Create<double[]>(null,
+                EventType.ElectrodeRecordLoaded);
         }
     }
 
