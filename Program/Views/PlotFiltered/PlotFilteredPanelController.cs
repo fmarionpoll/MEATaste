@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
@@ -40,11 +41,14 @@ namespace MEATaste.Views.PlotFiltered
             {
                 var electrodeRecord = state.SelectedElectrode.Get();
                 if (electrodeRecord != null)
-                    UpdateSelectedChannel(electrodeRecord);
+                {
+                    Trace.WriteLine("------------------call UpdateSelectedElectrode");
+                    UpdateSelectedElectrodeFilteredData(electrodeRecord);
+                }
             }
         }
 
-        private void UpdateSelectedChannel(ElectrodeRecord electrodeRecord)
+        private void UpdateSelectedElectrodeFilteredData(ElectrodeRecord electrodeRecord)
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
@@ -52,20 +56,16 @@ namespace MEATaste.Views.PlotFiltered
 
             var plot = Model.PlotControl.Plot;
             plot.XLabel("Time (s)");
-            plot.YLabel("Voltage (mV)");
+            plot.YLabel("Voltage (µV)");
             
             plot.Clear();
-
+            Trace.WriteLine("------------------compute filtered data");
             double[] medianRow = Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20);
             plot.AddSignal(medianRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green, label: "median");
             
             double[] derivRow = Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length);
             plot.AddSignal(derivRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange, label: "derivative");
-            
-            //Model.FormsPlots = new[] { RawSignal, FilteredSignal };
-            //foreach (var fp in Model.FormsPlots)
-            //    fp.AxesChanged += OnAxesChanged;
-
+ 
             Mouse.OverrideCursor = null;
             var legend = plot.Legend();
             legend.FontSize = 10; 

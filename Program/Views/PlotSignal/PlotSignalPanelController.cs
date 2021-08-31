@@ -43,12 +43,12 @@ namespace MEATaste.Views.PlotSignal
                 ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
                 if (electrodeRecord != null)
                 {
-                    UpdateSelectedChannel(electrodeRecord);
+                    UpdateSelectedElectrodeData(electrodeRecord);
                 }
             }
         }
 
-        private void UpdateSelectedChannel(ElectrodeRecord electrodeRecord)
+        private void UpdateSelectedElectrodeData(ElectrodeRecord electrodeRecord)
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
@@ -59,19 +59,19 @@ namespace MEATaste.Views.PlotSignal
                 currentExperiment.rawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
                 var rawSignalUShort = currentExperiment.rawSignalUShort;
                 var gain = currentExperiment.Descriptors.Gain / 1000;
+
                 currentExperiment.rawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
                 state.LoadedElectrode.Set(electrodeRecord);
+                var plot = Model.PlotControl.Plot;
+                plot.Clear();
+                plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
+                var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
+                plot.Title(title);
+                plot.XLabel("Time (s)");
+                plot.YLabel("Voltage (µV)");
             }
 
-            var plot = Model.PlotControl.Plot;
-            plot.Clear();
-            plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
-            var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
-            plot.Title(title);
-            plot.XLabel("Time (s)");
-            plot.YLabel("Voltage (µV)");
-            plot.Render();
-            
+            Model.PlotControl.Plot.Render();
             Mouse.OverrideCursor = null;
             
         }
