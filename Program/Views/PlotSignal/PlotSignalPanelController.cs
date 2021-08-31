@@ -27,7 +27,7 @@ namespace MEATaste.Views.PlotSignal
 
         public void AuthorizeReading(bool value)
         {
-            Model.CheckDisplayDataSlectedElectrode = value;
+            Model.PlotDataForSelectedElectrode = value;
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -37,7 +37,7 @@ namespace MEATaste.Views.PlotSignal
 
         private void ChangeSelectedElectrode()
         {
-            if (Model.CheckDisplayDataSlectedElectrode)
+            if (Model.PlotDataForSelectedElectrode)
             {
                 ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
                 if (electrodeRecord != null)
@@ -57,7 +57,7 @@ namespace MEATaste.Views.PlotSignal
             {
                 currentExperiment.rawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
                 var rawSignalUShort = currentExperiment.rawSignalUShort;
-
+                Trace.WriteLine("Transform data--------------");
                 var gain = currentExperiment.Descriptors.Gain / 1000;
                 currentExperiment.rawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
                 state.LoadedElectrode.Set(electrodeRecord);

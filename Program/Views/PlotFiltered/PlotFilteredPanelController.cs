@@ -25,7 +25,7 @@ namespace MEATaste.Views.PlotFiltered
 
         public void AuthorizeReading(bool value)
         {
-            Model.CheckDisplayFilteredData = value;
+            Model.DisplayFilteredData = value;
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -35,7 +35,7 @@ namespace MEATaste.Views.PlotFiltered
 
         private void ChangeSelectedElectrode()
         {
-            if (Model.CheckDisplayFilteredData)
+            if (Model.DisplayFilteredData)
             {
                 ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
                 if (electrodeRecord != null)

@@ -10,9 +10,9 @@
             <RowDefinition Height="26"/>
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
-        <WpfPlot x:Name="PlotControl" Margin="0,26,0,0" Grid.Row="1" />
+        <WpfPlot x:Name="PlotControl" Margin="0,26,0,0" Grid.Row="1" Loaded="PlotControl_Loaded_1" AxesChanged="PlotControl_AxesChanged_1" />
         <CheckBox Grid.Row="0" HorizontalAlignment="Left" Margin="10,0,0,0"
-                  VerticalAlignment="Top"  >
+                  VerticalAlignment="Top" Checked="CheckBox_Checked_1"  >
             <TextBlock Text="Filter data buffer" />
         </CheckBox>
         <ComboBox Grid.Row="0" HorizontalAlignment="Left" Margin="140,0,0,0" VerticalAlignment="Top" Width="120">

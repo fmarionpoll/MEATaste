@@ -10,7 +10,7 @@ namespace MEATaste.Views.PlotFiltered
     {
         private WpfPlot plotControl;
         private AxisLimits axisLimitsForDataPlot;
-        private bool checkDisplayFilteredData;
+        private bool displayFilteredData;
 
         public WpfPlot PlotControl
         {
@@ -32,13 +32,13 @@ namespace MEATaste.Views.PlotFiltered
             }
         }
 
-        public bool CheckDisplayFilteredData
+        public bool DisplayFilteredData
         {
-            get => checkDisplayFilteredData;
+            get => displayFilteredData;
             set
             {
-                checkDisplayFilteredData = value;
-                OnPropertyChanged(nameof(CheckDisplayFilteredData));
+                displayFilteredData = value;
+                OnPropertyChanged(nameof(DisplayFilteredData));
             }
         }
 

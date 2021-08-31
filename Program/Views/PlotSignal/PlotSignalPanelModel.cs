@@ -9,7 +9,7 @@ namespace MEATaste.Views.PlotSignal
     {
         private WpfPlot plotControl;
         private AxisLimits axisLimitsForDataPlot;
-        private bool checkDisplayDataSelectedElectrode;
+        private bool plotDataForSelectedElectrode;
 
         public WpfPlot PlotControl
         {
@@ -31,13 +31,13 @@ namespace MEATaste.Views.PlotSignal
             }
         }
 
-        public bool CheckDisplayDataSlectedElectrode
+        public bool PlotDataForSelectedElectrode
         {
-            get => checkDisplayDataSelectedElectrode;
+            get => plotDataForSelectedElectrode;
             set
             {
-                checkDisplayDataSelectedElectrode = value;
-                OnPropertyChanged(nameof(CheckDisplayDataSlectedElectrode));
+                plotDataForSelectedElectrode = value;
+                OnPropertyChanged(nameof(PlotDataForSelectedElectrode));
             }
         }
 
