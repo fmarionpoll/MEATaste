@@ -51,16 +51,22 @@ namespace MEATaste.Views.PlotSignal
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
-            currentExperiment.rawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
-            var rawSignalUShort = currentExperiment.rawSignalUShort;
+
+            ElectrodeRecord loadedElectrode = state.LoadedElectrode.Get();
+            if (loadedElectrode == null || electrodeRecord.Electrode != loadedElectrode.Electrode)
+            {
+                currentExperiment.rawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
+                var rawSignalUShort = currentExperiment.rawSignalUShort;
+
+                var gain = currentExperiment.Descriptors.Gain / 1000;
+                currentExperiment.rawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
+                state.LoadedElectrode.Set(electrodeRecord);
+            }
+
+            Trace.WriteLine("plot data--------------");
 
             var plot = Model.PlotControl.Plot;
             plot.Clear();
-            var gain = currentExperiment.Descriptors.Gain / 1000;
-            currentExperiment.rawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
-            state.ElectrodeDataBuffer.Set(currentExperiment.rawSignalDouble);
-            Trace.WriteLine("data loaded");
-
             plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
             var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
             plot.Title(title);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MEATaste.Infrastructure
 {
@@ -28,6 +29,6 @@ namespace MEATaste.Infrastructure
     {
         CurrentExperimentChanged = 0,
         SelectedElectrodeChanged = 1,
-        ElectrodeRecordLoaded = 3,
+        ElectrodeRecordLoaded = 2,
     }
 }
