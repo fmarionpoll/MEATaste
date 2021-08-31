@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Linq;
+using System.Windows;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using OxyPlot;
@@ -41,15 +42,15 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void ChangeSelectedElectrode()
         {
-            var selectedElectode = state.SelectedElectrode.Get();
+            var selectedElectrode = state.SelectedElectrode.Get();
             var plotModel = Model.ScatterPlotModel;
 
-            if (selectedElectode == null)
+            if (selectedElectrode == null)
                 SuppressSelectedPoint(plotModel);
-            else
+            else 
             {
-                SetSelectedPoint(plotModel, selectedElectode);
-                CenterPlotOnElectrode(plotModel, selectedElectode);
+                SetSelectedPoint(plotModel, selectedElectrode);
+                CenterPlotOnElectrode(plotModel, selectedElectrode);
             }
 
             plotModel.InvalidatePlot(true);

@@ -13,7 +13,7 @@
                   CanUserDeleteRows="False" 
                   AlternationCount="2"
                   AlternatingRowBackground="LightBlue"
-                  ItemsSource="{Binding MySource}" 
+                  ItemsSource="{Binding ElectrodeListView}" 
                   SelectedItem="{Binding SelectedElectrodeRecord}" 
                   SelectionUnit="FullRow"
                   SelectionChanged="ElectrodesGrid_SelectionChanged" 

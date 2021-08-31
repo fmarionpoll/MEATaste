@@ -8,19 +8,10 @@ namespace MEATaste.Views.PlotFiltered
 {
     public class PlotFilteredPanelModel : INotifyPropertyChanged
     {
-        private WpfPlot plotControl;
         private AxisLimits axisLimitsForDataPlot;
         private bool plotFilteredData;
 
-        public WpfPlot PlotControl
-        {
-            get => plotControl;
-            set
-            {
-                plotControl = value;
-                OnPropertyChanged(nameof(PlotControl));
-            }
-        }
+        public WpfPlot PlotControl { get; set; }
 
         public AxisLimits AxisLimitsForDataPlot
         {

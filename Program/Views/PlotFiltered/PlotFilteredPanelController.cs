@@ -77,11 +77,8 @@ namespace MEATaste.Views.PlotFiltered
         {
             var changedPlot = (WpfPlot)sender;
             var plot = Model.PlotControl;
-            if (plot != changedPlot)
-            {
-                var newAxisLimits = changedPlot.Plot.GetAxisLimits();
-                ChangeXAxes(Model.PlotControl, newAxisLimits.XMin, newAxisLimits.XMax);
-            }
+            var newAxisLimits = changedPlot.Plot.GetAxisLimits();
+            ChangeXAxes(Model.PlotControl, newAxisLimits.XMin, newAxisLimits.XMax);
             UpdateAxesMaxMinFromScottPlot(plot.Plot.GetAxisLimits());
         }
 

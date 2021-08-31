@@ -11,16 +11,16 @@ namespace MEATaste.Views.ElectrodesList
         private ObservableCollection<ElectrodeRecord> electrodes;
         private ElectrodeRecord selectedElectrodeRecord;
         private int selectedElectrodeIndex;
-        private ICollectionView mySource;
+        private ICollectionView electrodeListView;
 
-        public ICollectionView MySource
+        public ICollectionView ElectrodeListView
         {
-            get => mySource;
+            get => electrodeListView;
             set
             {
-                if (mySource == value) return;
-                mySource = value;
-                OnPropertyChanged(nameof(MySource));
+                if (electrodeListView == value) return;
+                electrodeListView = value;
+                OnPropertyChanged(nameof(ElectrodeListView));
             }
         }
 
@@ -40,6 +40,7 @@ namespace MEATaste.Views.ElectrodesList
             get => selectedElectrodeRecord;
             set
             {
+                if (selectedElectrodeRecord == value) return;
                 selectedElectrodeRecord = value;
                 OnPropertyChanged(nameof(SelectedElectrodeRecord));
             }
@@ -50,6 +51,7 @@ namespace MEATaste.Views.ElectrodesList
            get => selectedElectrodeIndex;
            set
            {
+               if (selectedElectrodeIndex == value) return;
                selectedElectrodeIndex = value;
                OnPropertyChanged(nameof(SelectedElectrodeIndex));
            }

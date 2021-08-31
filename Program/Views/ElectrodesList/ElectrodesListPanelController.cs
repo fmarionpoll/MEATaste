@@ -24,20 +24,19 @@ namespace MEATaste.Views.ElectrodesList
  
         public void SelectElectrode(ElectrodeRecord electrodeRecord)
         {
-            if (state.SelectedElectrode.Get() != null && electrodeRecord.Electrode == state.SelectedElectrode.Get().Electrode) return;
             state.SelectedElectrode.Set(electrodeRecord);
         }
 
         private void ChangeSelectedElectrode()
         {
-            Model.SelectedElectrodeRecord = state.SelectedElectrode.Get();
-            Model.MySource.MoveCurrentTo(Model.SelectedElectrodeRecord);
+           var selectedElectrodeRecord = state.SelectedElectrode.Get();
+           Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeRecord);
         }
 
         private void LoadElectrodeListItems()
         {
             Model.Electrodes = new ObservableCollection<ElectrodeRecord>(state.CurrentMeaExperiment.Get().Descriptors.Electrodes);
-            Model.MySource = CollectionViewSource.GetDefaultView(Model.Electrodes);
+            Model.ElectrodeListView = CollectionViewSource.GetDefaultView(Model.Electrodes);
         }
     }
 }
