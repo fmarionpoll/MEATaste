@@ -7,19 +7,7 @@ namespace MEATaste.Views.FileOpen
 {
     public class FileOpenPanelModel : INotifyPropertyChanged
     {
-        private string fileVersionLabel = string.Empty;
         private string fileNameLabel = string.Empty;
-
-        public string FileVersionLabel
-        {
-            get => fileVersionLabel;
-            set
-            {
-                if (fileVersionLabel == value) return;
-                fileVersionLabel = value;
-                OnPropertyChanged(nameof(FileVersionLabel));
-            }
-        }
 
         public string FileNameLabel
         {

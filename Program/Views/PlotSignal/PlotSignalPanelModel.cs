@@ -60,7 +60,7 @@ namespace MEATaste.Views.PlotSignal
                 OnPropertyChanged(nameof(SelectedElectrodeRecord));
             }
         }
-
+        
         public PlotSignalPanelModel()
         {
             PlotControl = new WpfPlot();

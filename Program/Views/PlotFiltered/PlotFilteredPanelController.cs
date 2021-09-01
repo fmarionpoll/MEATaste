@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows.Input;
-using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.DataMEA.Utilities;
 using MEATaste.Infrastructure;
@@ -24,10 +21,17 @@ namespace MEATaste.Views.PlotFiltered
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
         }
 
-
         public void AuthorizeReading(bool value)
         {
             Model.PlotFilteredData = value;
+            if (value)
+                ChangeSelectedElectrode();
+            else
+            {
+                Model.SelectedElectrodeRecord = null; 
+                var plotControl = Model.PlotControl;
+                plotControl.Plot.Clear();
+            }
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -37,19 +41,18 @@ namespace MEATaste.Views.PlotFiltered
 
         private void ChangeSelectedElectrode()
         {
-            if (Model.PlotFilteredData)
-            {
-                var electrodeRecord = state.SelectedElectrode.Get();
-                if (electrodeRecord != null && electrodeRecord == Model.SelectedElectrodeRecord)
-                    return;
-                Model.SelectedElectrodeRecord = electrodeRecord;
-                Trace.WriteLine("------------------call UpdateSelectedElectrode");
-                UpdateSelectedElectrodeFilteredData(electrodeRecord);
-            }
+            if (!Model.PlotFilteredData) return;
+            var electrodeRecord = state.SelectedElectrode.Get();
+            if (electrodeRecord != null && electrodeRecord == Model.SelectedElectrodeRecord)
+                return;
+            Model.SelectedElectrodeRecord = electrodeRecord;
+            UpdateSelectedElectrodeFilteredData(electrodeRecord);
         }
 
         private void UpdateSelectedElectrodeFilteredData(ElectrodeRecord electrodeRecord)
         {
+            if (electrodeRecord == null) return;
+
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
             var rawSignalDouble = currentExperiment.rawSignalDouble;
@@ -59,18 +62,22 @@ namespace MEATaste.Views.PlotFiltered
             plot.YLabel("Voltage (µV)");
             
             plot.Clear();
-            Trace.WriteLine("------------------compute filtered data");
-            double[] medianRow = Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20);
-            plot.AddSignal(medianRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green, label: "median");
+            switch (Model.SelectedFilterIndex)
+            {
+            case 1:
+                var medianRow = Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20);
+                plot.AddSignal(medianRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green, label: "median");
+                break;
+            default:
+                var derivRow = Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length);
+                plot.AddSignal(derivRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange, label: "derivative");
+                break;
+            }
             
-            double[] derivRow = Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length);
-            plot.AddSignal(derivRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange, label: "derivative");
- 
             Mouse.OverrideCursor = null;
             var legend = plot.Legend();
             legend.FontSize = 10; 
             plot.Render();
-
         }
 
         public void OnAxesChanged(object sender, EventArgs e)
@@ -99,12 +106,17 @@ namespace MEATaste.Views.PlotFiltered
 
         private void AxesChanged()
         {
-            if (Model.PlotFilteredData)
-            {
-                var axesMaxMin = state.AxesMaxMin.Get();
-                if (axesMaxMin != null)
-                    ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
-            }
+            if (!Model.PlotFilteredData) return;
+
+            var axesMaxMin = state.AxesMaxMin.Get();
+            if (axesMaxMin != null)
+                ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
+        }
+
+        public void ChangeFilter(int selectedFilterIndex)
+        {
+            Model.SelectedFilterIndex = selectedFilterIndex;
+            UpdateSelectedElectrodeFilteredData(Model.SelectedElectrodeRecord);
         }
 
     }

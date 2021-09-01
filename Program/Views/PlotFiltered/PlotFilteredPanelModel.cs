@@ -13,6 +13,7 @@ namespace MEATaste.Views.PlotFiltered
         private bool plotFilteredData;
         private WpfPlot plotControl;
         private ElectrodeRecord selectedElectrodeRecord;
+        private int selectedFilterIndex = 0;
 
         public WpfPlot PlotControl
         {
@@ -44,12 +45,7 @@ namespace MEATaste.Views.PlotFiltered
                 OnPropertyChanged(nameof(PlotFilteredData));
             }
         }
-
-        public PlotFilteredPanelModel()
-        {
-            PlotControl = new WpfPlot();
-        }
-
+        
         public ElectrodeRecord SelectedElectrodeRecord
         {
             get => selectedElectrodeRecord;
@@ -59,6 +55,22 @@ namespace MEATaste.Views.PlotFiltered
                 selectedElectrodeRecord = value;
                 OnPropertyChanged(nameof(SelectedElectrodeRecord));
             }
+        }
+
+        public int SelectedFilterIndex
+        {
+            get => selectedFilterIndex;
+            set
+            {
+                if (selectedFilterIndex == value) return;
+                selectedFilterIndex = value;
+                OnPropertyChanged(nameof(SelectedFilterIndex));
+            }
+        }
+
+        public PlotFilteredPanelModel()
+        {
+            PlotControl = new WpfPlot();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

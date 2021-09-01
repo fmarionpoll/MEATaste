@@ -76,7 +76,7 @@ namespace MEATaste.Views.ElectrodesMap
 
             foreach (var electrode in state.CurrentMeaExperiment.Get().Descriptors.Electrodes)
             {
-                var point = new ScatterPoint(electrode.X_uM, electrode.Y_uM);
+                var point = new ScatterPoint(electrode.XuM, electrode.YuM);
                 series.Points.Add(point);
             }
 
@@ -91,12 +91,12 @@ namespace MEATaste.Views.ElectrodesMap
             yAxis.Reset();
 
             const int deltaX = 150;
-            xAxis.Minimum = electrodeRecord.X_uM - deltaX;
-            xAxis.Maximum = electrodeRecord.X_uM + deltaX;
+            xAxis.Minimum = electrodeRecord.XuM - deltaX;
+            xAxis.Maximum = electrodeRecord.XuM + deltaX;
 
             var deltaY = deltaX; // * plotModel.Height / plotModel.Width;
-            yAxis.Minimum = electrodeRecord.Y_uM - deltaY;
-            yAxis.Maximum = electrodeRecord.Y_uM + deltaY;
+            yAxis.Minimum = electrodeRecord.YuM - deltaY;
+            yAxis.Maximum = electrodeRecord.YuM + deltaY;
         }
 
         private void SuppressSelectedPoint(PlotModel plotModel)
@@ -113,7 +113,7 @@ namespace MEATaste.Views.ElectrodesMap
                 return;
             var series = (ScatterSeries) plotModel.Series[1];
             series.Points.RemoveAt(0);
-            var point = new ScatterPoint(electrodeRecord.X_uM, electrodeRecord.Y_uM);
+            var point = new ScatterPoint(electrodeRecord.XuM, electrodeRecord.YuM);
             series.Points.Add(point);
 
         }

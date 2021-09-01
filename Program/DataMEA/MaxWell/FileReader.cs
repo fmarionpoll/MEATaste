@@ -130,13 +130,13 @@ namespace MEATaste.DataMEA.MaxWell
             return results;
         }
 
-        public bool ReadMapElectrodes(MeaExperiment MeaExp)
+        public bool ReadMapElectrodes(MeaExperiment meaExp)
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("mapping");
             Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
 
-            MeaExp.Descriptors.Electrodes = new ElectrodeRecord[compoundData.Length];
+            meaExp.Descriptors.Electrodes = new ElectrodeRecord[compoundData.Length];
             for (int i = 0; i < compoundData.Length; i++)
             {
                 ElectrodeRecord ec = new ElectrodeRecord(
@@ -144,7 +144,7 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].electrode,
                     compoundData[i].x,
                     compoundData[i].y);
-                MeaExp.Descriptors.Electrodes[i] = ec;
+                meaExp.Descriptors.Electrodes[i] = ec;
             }
             return true;
         }
@@ -153,15 +153,12 @@ namespace MEATaste.DataMEA.MaxWell
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
-            ulong nbchannels = dataset.Space.Dimensions[0]; // 1028 expected
-            ulong nbdatapoints = dataset.Space.Dimensions[1]; // any size
+            var nbdatapoints = dataset.Space.Dimensions[1]; // any size
             return Read_OneElectrodeDataAsInt(electrodeRecord.Channel, 0, nbdatapoints -1);
         }
 
-        public ushort[] Read_OneElectrodeDataAsInt(int Channel, ulong startsAt, ulong endsAt)
+        public ushort[] Read_OneElectrodeDataAsInt(int channel, ulong startsAt, ulong endsAt)
         {
-            ushort[] result;
- 
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
 
@@ -172,12 +169,12 @@ namespace MEATaste.DataMEA.MaxWell
             //ulong nbdatapoints = dataset.Space.Dimensions[1];   // any size
             //var dataType = dataset.Type;
 
-            ulong nbpoints = endsAt - startsAt + 1;
-            var memoryDims = new ulong[] { nbpoints };
+            var nbpoints = endsAt - startsAt + 1;
+            var memoryDims = new[] { nbpoints };
 
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
-                starts: new ulong[] { (ulong)Channel, startsAt },   // start at row ElectrodeNumber, column 0
+                starts: new[] { (ulong)channel, startsAt },   // start at row ElectrodeNumber, column 0
                 strides: new ulong[] { 1, 1 },                      // don't skip anything
                 counts: new ulong[] { 1, nbpoints },                // read 1 row, ndatapoints columns
                 blocks: new ulong[] { 1, 1 }                        // blocks are single elements
@@ -187,11 +184,11 @@ namespace MEATaste.DataMEA.MaxWell
                 rank: 1,
                 starts: new ulong[] { 0 },
                 strides: new ulong[] { 1 },
-                counts: new ulong[] { nbpoints },
+                counts: new[] { nbpoints },
                 blocks: new ulong[] { 1 }
             );
 
-            result = dataset
+            var result = dataset
                 .Read<ushort>(
                     fileSelection: datasetSelection,
                     memorySelection: memorySelection,

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
@@ -38,22 +37,18 @@ namespace MEATaste.Views.PlotSignal
 
         private void ChangeSelectedElectrode()
         {
-            if (Model.PlotDataForSelectedElectrode)
-            {
-                ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
-                if (electrodeRecord != null && electrodeRecord == Model.SelectedElectrodeRecord)
-                    return;
-                Model.SelectedElectrodeRecord = electrodeRecord;
-                UpdateSelectedElectrodeData(electrodeRecord);
-            }
+            if (!Model.PlotDataForSelectedElectrode) return;
+
+            ElectrodeRecord electrodeRecord = state.SelectedElectrode.Get();
+            if (electrodeRecord == null || electrodeRecord == Model.SelectedElectrodeRecord)
+                return;
+            Model.SelectedElectrodeRecord = electrodeRecord;
+            UpdateSelectedElectrodeData(electrodeRecord);
         }
 
         private void UpdateSelectedElectrodeData(ElectrodeRecord electrodeRecord)
         {
-
             Mouse.OverrideCursor = Cursors.Wait;
-            Trace.WriteLine("------------------>updatePlotData-enter...");
-            
             var currentExperiment = state.CurrentMeaExperiment.Get();
             currentExperiment.rawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
             var rawSignalUShort = currentExperiment.rawSignalUShort;
@@ -64,14 +59,12 @@ namespace MEATaste.Views.PlotSignal
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
-            var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.X_uM}, y={electrodeRecord.Y_uM} µm)";
+            var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.XuM}, y={electrodeRecord.YuM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
             
             Model.PlotControl.Plot.Render();
-
-            Trace.WriteLine("------------------>updatePlotData-exit");
             Mouse.OverrideCursor = null;
         }
 
@@ -89,10 +82,10 @@ namespace MEATaste.Views.PlotSignal
             state.AxesMaxMin.Set(new AxesMaxMin(axisLimits.XMin, axisLimits.XMax, axisLimits.YMin, axisLimits.YMax));
         }
 
-        private void ChangeXAxes(WpfPlot plot, double XMin, double XMax)
+        private void ChangeXAxes(WpfPlot plot, double xMin, double xMax)
         {
             plot.Configuration.AxesChangedEventEnabled = false;
-            plot.Plot.SetAxisLimitsX(XMin, XMax);
+            plot.Plot.SetAxisLimitsX(xMin, xMax);
             plot.Render();
             plot.Configuration.AxesChangedEventEnabled = true;
 

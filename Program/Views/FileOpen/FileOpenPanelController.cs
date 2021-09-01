@@ -22,15 +22,13 @@ namespace MEATaste.Views.FileOpen
         public void OpenFile()
         {
             var openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-            {
-                var fileName = openFileDialog.FileName;
-                state.CurrentMeaExperiment.Set(meaFileReader.ReadFile(fileName));
+            if (openFileDialog.ShowDialog() != true) return;
 
-                var currentExperiment = state.CurrentMeaExperiment.Get();
-                Model.FileNameLabel = currentExperiment.FileName;
-                Model.FileVersionLabel = currentExperiment.FileVersion;
-            }
+            var fileName = openFileDialog.FileName;
+            state.CurrentMeaExperiment.Set(meaFileReader.ReadFile(fileName));
+
+            var currentExperiment = state.CurrentMeaExperiment.Get();
+            Model.FileNameLabel = currentExperiment.FileName + " version="+ currentExperiment.FileVersion;
         }
 
     }

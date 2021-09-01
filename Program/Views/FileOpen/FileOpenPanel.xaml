@@ -4,16 +4,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="MEATaste.Views.FileOpen.FileOpenPanel"
-    mc:Ignorable="d" Height="28" Width="700">
+    mc:Ignorable="d" Height="28" Width="700" Background="White">
 
     <Grid>
         <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" VerticalAlignment="Top"
                 Margin="20,0,0,0" Height="26" Click="OpenDialogButton_Click" />
-        <Label x:Name="FileVersionLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{Binding FileVersionLabel, Mode = OneWay}"
-               Visibility="Visible" Margin="101,0,0,0" Height="26" >
-        </Label>
+
         <Label x:Name="FileNameLabel" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding FileNameLabel, Mode = OneWay}"
-               Visibility="Visible" Margin="173,0,0,0" Height="26" >
+               Visibility="Visible" Margin="98,0,0,0" Height="26" >
         </Label>
     </Grid>
 

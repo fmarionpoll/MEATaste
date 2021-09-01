@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-
+using System.Linq;
 
 namespace MEATaste.DataMEA.Models
 {
@@ -37,14 +37,13 @@ namespace MEATaste.DataMEA.Models
         public double Lsb { get; set; }
         // mapping
         public ElectrodeRecord[] Electrodes { get; set; }
-
     }
 
     public record ElectrodeRecord(
         int Channel,
         int Electrode,
-        double X_uM,
-        double Y_uM);
+        double XuM,
+        double YuM);
 
     public record AxesMaxMin(
         double XMin,
