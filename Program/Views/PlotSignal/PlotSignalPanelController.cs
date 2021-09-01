@@ -48,6 +48,10 @@ namespace MEATaste.Views.PlotSignal
 
         private void UpdateSelectedElectrodeData(ElectrodeRecord electrodeRecord)
         {
+            if (electrodeRecord == Model.SelectedElectrodeRecord)
+                return;
+            Model.SelectedElectrodeRecord = electrodeRecord;
+
             Mouse.OverrideCursor = Cursors.Wait;
             Trace.WriteLine("------------------>updatePlotData-enter...");
             

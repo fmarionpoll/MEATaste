@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
+using MEATaste.DataMEA.Models;
 using ScottPlot;
 
 namespace MEATaste.Views.PlotSignal
@@ -10,6 +11,7 @@ namespace MEATaste.Views.PlotSignal
         private AxisLimits axisLimitsForDataPlot;
         private bool plotDataForSelectedElectrode;
         private WpfPlot plotControl;
+        private ElectrodeRecord selectedElectrodeRecord;
 
         public WpfPlot PlotControl
         {
@@ -45,6 +47,17 @@ namespace MEATaste.Views.PlotSignal
                 if (plotDataForSelectedElectrode == value) return;
                 plotDataForSelectedElectrode = value;
                 OnPropertyChanged(nameof(PlotDataForSelectedElectrode));
+            }
+        }
+
+        public ElectrodeRecord SelectedElectrodeRecord
+        {
+            get => selectedElectrodeRecord;
+            set
+            {
+                if (selectedElectrodeRecord == value) return;
+                selectedElectrodeRecord = value;
+                OnPropertyChanged(nameof(SelectedElectrodeRecord));
             }
         }
 

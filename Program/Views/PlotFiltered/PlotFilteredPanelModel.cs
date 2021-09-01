@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
+using MEATaste.DataMEA.Models;
 using ScottPlot;
 
 namespace MEATaste.Views.PlotFiltered
@@ -10,8 +11,19 @@ namespace MEATaste.Views.PlotFiltered
     {
         private AxisLimits axisLimitsForDataPlot;
         private bool plotFilteredData;
+        private WpfPlot plotControl;
+        private ElectrodeRecord selectedElectrodeRecord;
 
-        public WpfPlot PlotControl { get; set; }
+        public WpfPlot PlotControl
+        {
+            get => plotControl;
+            set
+            {
+                if (plotControl == value) return;
+                plotControl = value;
+                OnPropertyChanged(nameof(PlotControl));
+            }
+        }
 
         public AxisLimits AxisLimitsForDataPlot
         {
@@ -36,6 +48,17 @@ namespace MEATaste.Views.PlotFiltered
         public PlotFilteredPanelModel()
         {
             PlotControl = new WpfPlot();
+        }
+
+        public ElectrodeRecord SelectedElectrodeRecord
+        {
+            get => selectedElectrodeRecord;
+            set
+            {
+                if (selectedElectrodeRecord == value) return;
+                selectedElectrodeRecord = value;
+                OnPropertyChanged(nameof(SelectedElectrodeRecord));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
