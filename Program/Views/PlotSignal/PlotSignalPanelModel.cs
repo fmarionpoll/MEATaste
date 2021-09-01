@@ -9,14 +9,29 @@ namespace MEATaste.Views.PlotSignal
     {
         private AxisLimits axisLimitsForDataPlot;
         private bool plotDataForSelectedElectrode;
+        private WpfPlot plotControl;
 
-        public WpfPlot PlotControl { get; set; }
+        public WpfPlot PlotControl
+        {
+            get => plotControl;
+            set
+            {
+                if (plotControl == value) return;
+                plotControl = value;
+                OnPropertyChanged(nameof(PlotControl));
+            }
+        }
 
         public AxisLimits AxisLimitsForDataPlot
         {
             get => axisLimitsForDataPlot;
             set
             {
+                if (axisLimitsForDataPlot.XMin == value.XMin
+                && AxisLimitsForDataPlot.XMax == value.XMax
+                && AxisLimitsForDataPlot.YMin == value.YMin
+                && AxisLimitsForDataPlot.YMax == value.YMax
+                ) return;
                 axisLimitsForDataPlot = value;
                 OnPropertyChanged(nameof(AxisLimitsForDataPlot));
             }
@@ -27,11 +42,9 @@ namespace MEATaste.Views.PlotSignal
             get => plotDataForSelectedElectrode;
             set
             {
-                if (plotDataForSelectedElectrode != value)
-                {
-                    plotDataForSelectedElectrode = value;
-                    OnPropertyChanged(nameof(PlotDataForSelectedElectrode));
-                }
+                if (plotDataForSelectedElectrode == value) return;
+                plotDataForSelectedElectrode = value;
+                OnPropertyChanged(nameof(PlotDataForSelectedElectrode));
             }
         }
 
