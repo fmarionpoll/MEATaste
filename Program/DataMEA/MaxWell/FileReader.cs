@@ -140,8 +140,8 @@ namespace MEATaste.DataMEA.MaxWell
             for (int i = 0; i < compoundData.Length; i++)
             {
                 ElectrodeRecord ec = new ElectrodeRecord(
-                    compoundData[i].channel,
                     compoundData[i].electrode,
+                    compoundData[i].channel,
                     compoundData[i].x,
                     compoundData[i].y);
                 meaExp.Descriptors.Electrodes[i] = ec;

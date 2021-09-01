@@ -30,8 +30,8 @@ namespace MEATaste.Views.ElectrodesList
 
         private void ChangeSelectedElectrode()
         {
-           var selectedElectrodeRecord = state.SelectedElectrode.Get();
-           Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeRecord);
+            Model.SelectedElectrodeRecord = state.SelectedElectrode.Get();
+            Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeRecord);
         }
 
         private void LoadElectrodeListItems()

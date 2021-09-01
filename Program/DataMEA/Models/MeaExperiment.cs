@@ -40,8 +40,8 @@ namespace MEATaste.DataMEA.Models
     }
 
     public record ElectrodeRecord(
-        int Channel,
         int Electrode,
+        int Channel,
         double XuM,
         double YuM);
 

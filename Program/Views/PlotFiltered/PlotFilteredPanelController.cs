@@ -43,20 +43,23 @@ namespace MEATaste.Views.PlotFiltered
         {
             if (!Model.PlotFilteredData) return;
             var electrodeRecord = state.SelectedElectrode.Get();
-            if (electrodeRecord != null && electrodeRecord == Model.SelectedElectrodeRecord)
+            if (electrodeRecord == null) return;
+            if (electrodeRecord == Model.SelectedElectrodeRecord)
                 return;
             Model.SelectedElectrodeRecord = electrodeRecord;
-            UpdateSelectedElectrodeFilteredData(electrodeRecord);
+            UpdateSelectedElectrodeFilteredData();
         }
 
-        private void UpdateSelectedElectrodeFilteredData(ElectrodeRecord electrodeRecord)
+        private void UpdateSelectedElectrodeFilteredData()
         {
-            if (electrodeRecord == null) return;
+            var currentExperiment = state.CurrentMeaExperiment.Get();
+            if (currentExperiment == null) 
+                return;
+            var rawSignalDouble = currentExperiment.rawSignalDouble;
+            if (rawSignalDouble == null) 
+                return;
 
             Mouse.OverrideCursor = Cursors.Wait;
-            var currentExperiment = state.CurrentMeaExperiment.Get();
-            var rawSignalDouble = currentExperiment.rawSignalDouble;
-
             var plot = Model.PlotControl.Plot;
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
@@ -94,10 +97,10 @@ namespace MEATaste.Views.PlotFiltered
             state.AxesMaxMin.Set(new AxesMaxMin(axisLimits.XMin, axisLimits.XMax, axisLimits.YMin, axisLimits.YMax));
         }
 
-        private void ChangeXAxes(WpfPlot plot, double XMin, double XMax)
+        private void ChangeXAxes(WpfPlot plot, double xMin, double xMax)
         {
             plot.Configuration.AxesChangedEventEnabled = false;
-            plot.Plot.SetAxisLimitsX(XMin, XMax);
+            plot.Plot.SetAxisLimitsX(xMin, xMax);
             plot.Render();
             plot.Configuration.AxesChangedEventEnabled = true;
 
@@ -116,7 +119,8 @@ namespace MEATaste.Views.PlotFiltered
         public void ChangeFilter(int selectedFilterIndex)
         {
             Model.SelectedFilterIndex = selectedFilterIndex;
-            UpdateSelectedElectrodeFilteredData(Model.SelectedElectrodeRecord);
+            if (Model.SelectedElectrodeRecord != null)
+                UpdateSelectedElectrodeFilteredData();
         }
 
     }

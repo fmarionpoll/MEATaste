@@ -9,6 +9,7 @@
         xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
         xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
+        xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
         mc:Ignorable="d"
         Title="MainWindow" Width="1024" Height="500">
 
@@ -40,9 +41,11 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="26"/>
             </Grid.RowDefinitions>
             <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <plotfilter:PlotFilteredPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Grid>
 
     </Grid>

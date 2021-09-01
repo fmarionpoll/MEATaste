@@ -59,7 +59,7 @@ namespace MEATaste.Views.PlotSignal
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
-            var title = $"channel: {electrodeRecord.Channel} electrode: {electrodeRecord.Electrode} (position : x={electrodeRecord.XuM}, y={electrodeRecord.YuM} µm)";
+            var title = $"electrode: {electrodeRecord.Electrode} channel: {electrodeRecord.Channel} (position : x={electrodeRecord.XuM}, y={electrodeRecord.YuM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
@@ -94,12 +94,10 @@ namespace MEATaste.Views.PlotSignal
 
         private void AxesChanged()
         {
-            if (Model.PlotDataForSelectedElectrode)
-            {
-                var axesMaxMin = state.AxesMaxMin.Get();
-                if (axesMaxMin != null)
-                    ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
-            }
+            if (!Model.PlotDataForSelectedElectrode) return;
+            var axesMaxMin = state.AxesMaxMin.Get();
+            if (axesMaxMin != null)
+                ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
 
 

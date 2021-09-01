@@ -19,8 +19,7 @@ namespace MEATaste.Views.ElectrodesList
 
         private void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var electrodesGrid = sender as DataGrid;
-            if (electrodesGrid == null) return;
+            if (sender is not DataGrid electrodesGrid) return;
 
             ElectrodeRecord electrodeRecord = (ElectrodeRecord) electrodesGrid.SelectedItem;
             controller.SelectElectrode(electrodeRecord);
