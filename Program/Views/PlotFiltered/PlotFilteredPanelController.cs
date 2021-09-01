@@ -40,11 +40,11 @@ namespace MEATaste.Views.PlotFiltered
             if (Model.PlotFilteredData)
             {
                 var electrodeRecord = state.SelectedElectrode.Get();
-                if (electrodeRecord != null)
-                {
-                    Trace.WriteLine("------------------call UpdateSelectedElectrode");
-                    UpdateSelectedElectrodeFilteredData(electrodeRecord);
-                }
+                if (electrodeRecord != null && electrodeRecord == Model.SelectedElectrodeRecord)
+                    return;
+                Model.SelectedElectrodeRecord = electrodeRecord;
+                Trace.WriteLine("------------------call UpdateSelectedElectrode");
+                UpdateSelectedElectrodeFilteredData(electrodeRecord);
             }
         }
 
