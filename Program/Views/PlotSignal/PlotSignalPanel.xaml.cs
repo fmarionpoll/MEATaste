@@ -6,7 +6,7 @@ using ScottPlot;
 
 namespace MEATaste.Views.PlotSignal
 {
-    public partial class PlotSignalPanel: UserControl
+    public partial class PlotSignalPanel
     {
         private readonly PlotSignalPanelController controller;
 
