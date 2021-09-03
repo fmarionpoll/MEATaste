@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MEATaste.DataMEA.MaxWell;
+using System.Diagnostics;
+using System.Windows.Controls.Primitives;
+using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
-using MEATaste.Views.PlotSignal;
+
 
 namespace MEATaste.Views.PlotScrollBar
 {
@@ -14,6 +12,7 @@ namespace MEATaste.Views.PlotScrollBar
         public PlotScrollBarPanelModel Model { get; }
 
         private readonly ApplicationState state;
+   
 
 
         public PlotScrollBarPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
@@ -27,17 +26,38 @@ namespace MEATaste.Views.PlotScrollBar
         private void AxesChanged()
         {
             var axesMaxMin = state.AxesMaxMin.Get();
+            if (axesMaxMin == null) return;
 
+            Model.XFirst = axesMaxMin.XMin.ToString("0.###");
+            Model.XLast = axesMaxMin.XMax.ToString("0.###");
         }
 
-        public void Slider_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        public void UpdateXAxisLimitsFromModelValues()
         {
-
+            var xLast = Convert.ToDouble(Model.XLast);
+            var xFirst = Convert.ToDouble(Model.XFirst);
+            var axesMaxMin = state.AxesMaxMin.Get();
+            state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
         }
 
-        public void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        public void LeftLeftClick()
         {
+            var axesMaxMin = state.AxesMaxMin.Get();
+            var delta = axesMaxMin.XMax - axesMaxMin.XMin;
+            MoveXAxis(-delta);
+        }
 
+        public void RightRightClick()
+        {
+            var axesMaxMin = state.AxesMaxMin.Get();
+            var delta = axesMaxMin.XMax - axesMaxMin.XMin;
+            MoveXAxis(delta);
+        }
+
+        public void MoveXAxis(double delta)
+        {
+            var axesMaxMin = state.AxesMaxMin.Get();
+            state.AxesMaxMin.Set(new AxesExtrema(axesMaxMin.XMin + delta, axesMaxMin.XMax + delta, axesMaxMin.YMin, axesMaxMin.YMax));
         }
     }
 }

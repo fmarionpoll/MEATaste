@@ -1,6 +1,5 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+
 
 namespace MEATaste.DataMEA.Models
 {
@@ -10,9 +9,9 @@ namespace MEATaste.DataMEA.Models
     {
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
-        public ushort[] RawSignalUShort;
-        public double[] RawSignalDouble;
-        public AxesMaxMin AxesMaxMin;
+        public ushort[] RawSignalUShort { get; set; }
+        public double[] RawSignalDouble { get; set; }
+        public AxesExtrema AxesExtremaValues { get; set; }  // how to monitor this?
 
         public Descriptors Descriptors;
 
@@ -45,7 +44,7 @@ namespace MEATaste.DataMEA.Models
         double XuM,
         double YuM);
 
-    public record AxesMaxMin(
+    public record AxesExtrema(
         double XMin,
         double XMax,
         double YMin,

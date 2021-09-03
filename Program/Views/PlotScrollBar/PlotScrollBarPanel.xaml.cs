@@ -1,11 +1,14 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 
 
 namespace MEATaste.Views.PlotScrollBar
 {
     
-    public partial class PlotScrollBarPanel : UserControl
+    public partial class PlotScrollBarPanel
     {
         private readonly PlotScrollBarPanelController controller;
 
@@ -17,14 +20,40 @@ namespace MEATaste.Views.PlotScrollBar
             InitializeComponent();
         }
 
-        private void Slider_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        private void TextBox_KeyEnterUpdate(object sender, KeyEventArgs e)
         {
-            controller.Slider_ValueChanged(sender, e);
+            if (e.Key == Key.Enter)
+            {
+                TextBox tBox = (TextBox)sender;
+                DependencyProperty prop = TextBox.TextProperty;
+
+                BindingExpression binding = BindingOperations.GetBindingExpression(tBox, prop);
+                if (binding != null)
+                {
+                    binding.UpdateSource();
+                    controller.UpdateXAxisLimitsFromModelValues();
+                }
+            }
         }
 
-        private void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        private void LeftLeft_Click(object sender, RoutedEventArgs e)
         {
-            controller.SliderBar_Scroll(sender, e);
+            controller.LeftLeftClick();
+        }
+
+        private void RightRight_Click(object sender, RoutedEventArgs e)
+        {
+            controller.RightRightClick();
+        }
+
+        private void Left_Click(object sender, RoutedEventArgs e)
+        {
+            controller.MoveXAxis(-1);
+        }
+
+        private void Right_Click(object sender, RoutedEventArgs e)
+        {
+            controller.MoveXAxis(+1);
         }
     }
 }

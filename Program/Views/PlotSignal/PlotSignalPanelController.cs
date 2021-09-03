@@ -79,7 +79,7 @@ namespace MEATaste.Views.PlotSignal
 
         private void UpdateAxesMaxMinFromScottPlot(AxisLimits axisLimits)
         {
-            state.AxesMaxMin.Set(new AxesMaxMin(axisLimits.XMin, axisLimits.XMax, axisLimits.YMin, axisLimits.YMax));
+            state.AxesMaxMin.Set(new AxesExtrema(axisLimits.XMin, axisLimits.XMax, axisLimits.YMin, axisLimits.YMax));
         }
 
         private void ChangeXAxes(WpfPlot plot, double xMin, double xMax)
