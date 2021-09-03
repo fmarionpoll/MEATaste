@@ -55,7 +55,7 @@ namespace MEATaste.Views.PlotFiltered
             var currentExperiment = state.CurrentMeaExperiment.Get();
             if (currentExperiment == null) 
                 return;
-            var rawSignalDouble = currentExperiment.rawSignalDouble;
+            var rawSignalDouble = currentExperiment.RawSignalDouble;
             if (rawSignalDouble == null) 
                 return;
 

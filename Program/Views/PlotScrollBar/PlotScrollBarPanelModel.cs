@@ -16,6 +16,9 @@ namespace MEATaste.Views.PlotScrollBar
     public class PlotScrollBarPanelModel : INotifyPropertyChanged
     {
         private AxisLimits axisLimitsForDataPlot;
+        private double _scrollValue;
+        
+        
         public AxisLimits AxisLimitsForDataPlot
         {
             get => axisLimitsForDataPlot;
@@ -28,6 +31,17 @@ namespace MEATaste.Views.PlotScrollBar
                 ) return;
                 axisLimitsForDataPlot = value;
                 OnPropertyChanged(nameof(AxisLimitsForDataPlot));
+            }
+        }
+
+        public double ScrollValue
+        {
+            get => _scrollValue;
+            set
+            {
+                if (_scrollValue == value) return;
+                _scrollValue = value;
+                OnPropertyChanged(nameof(ScrollValue));
             }
         }
 

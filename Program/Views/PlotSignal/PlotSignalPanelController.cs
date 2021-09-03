@@ -50,15 +50,15 @@ namespace MEATaste.Views.PlotSignal
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var currentExperiment = state.CurrentMeaExperiment.Get();
-            currentExperiment.rawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
-            var rawSignalUShort = currentExperiment.rawSignalUShort;
+            currentExperiment.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeRecord);
+            var rawSignalUShort = currentExperiment.RawSignalUShort;
             var gain = currentExperiment.Descriptors.Gain / 1000;
 
-            currentExperiment.rawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
+            currentExperiment.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
             state.LoadedElectrode.Set(electrodeRecord);
             var plot = Model.PlotControl.Plot;
             plot.Clear();
-            plot.AddSignal(currentExperiment.rawSignalDouble, currentExperiment.Descriptors.SamplingRate);
+            plot.AddSignal(currentExperiment.RawSignalDouble, currentExperiment.Descriptors.SamplingRate);
             var title = $"electrode: {electrodeRecord.Electrode} channel: {electrodeRecord.Channel} (position : x={electrodeRecord.XuM}, y={electrodeRecord.YuM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");

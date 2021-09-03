@@ -29,5 +29,15 @@ namespace MEATaste.Views.PlotScrollBar
             var axesMaxMin = state.AxesMaxMin.Get();
 
         }
+
+        public void Slider_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+
+        }
+
+        public void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+
+        }
     }
 }

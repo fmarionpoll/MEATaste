@@ -19,7 +19,12 @@ namespace MEATaste.Views.PlotScrollBar
 
         private void Slider_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
         {
+            controller.Slider_ValueChanged(sender, e);
+        }
 
+        private void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+            controller.SliderBar_Scroll(sender, e);
         }
     }
 }

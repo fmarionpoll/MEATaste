@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:MEATaste.Views.PlotScrollBar"
              mc:Ignorable="d" 
              d:DesignHeight="26" d:DesignWidth="800">
-    <Grid Margin="0,0,0,0
-          ">
-        <ScrollBar x:Name="ScrollBar" Height="26" Margin="150,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Orientation="Horizontal"/>
+    <Grid Margin="0,0,0,0">
+        <ScrollBar x:Name="ScrollBar" Height="26" Margin="150,0,20,0" VerticalAlignment="Center"
+                   HorizontalAlignment="Stretch" Orientation="Horizontal" Value="{Binding ScrollValue}" Scroll="ScrollBar_Scroll" />
         <Slider HorizontalAlignment="Left" Margin="50,0,0,0" VerticalAlignment="Center" Width="100" ValueChanged="Slider_ValueChanged"/>
 
     </Grid>

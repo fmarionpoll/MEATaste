@@ -10,9 +10,9 @@ namespace MEATaste.DataMEA.Models
     {
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
-        public ushort[] rawSignalUShort;
-        public double[] rawSignalDouble;
-        public AxesMaxMin axesMaxMin;
+        public ushort[] RawSignalUShort;
+        public double[] RawSignalDouble;
+        public AxesMaxMin AxesMaxMin;
 
         public Descriptors Descriptors;
 
