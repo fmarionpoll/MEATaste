@@ -20,5 +20,7 @@
         <Button Name ="Right"  Content="&gt;"   VerticalAlignment="Center" Height="20" Width="20" Grid.Column="2" Margin="15,0,162,0" RenderTransformOrigin="1.506,0.417" Click="Right_Click"/>
         <Button Name="RightRight" Content="&gt;&gt;"  VerticalAlignment="Center" Height="20" Width="20" Grid.Column="2" Margin="22,0,118,0" Click="RightRight_Click" />
 
+        <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Disabled"/>
+
     </Grid>
 </UserControl>

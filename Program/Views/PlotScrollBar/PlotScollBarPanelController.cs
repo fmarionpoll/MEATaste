@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Windows.Controls.Primitives;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 
@@ -12,7 +10,8 @@ namespace MEATaste.Views.PlotScrollBar
         public PlotScrollBarPanelModel Model { get; }
 
         private readonly ApplicationState state;
-   
+        private double fileDuration;
+        public double Delta;
 
 
         public PlotScrollBarPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
@@ -21,6 +20,7 @@ namespace MEATaste.Views.PlotScrollBar
 
             Model = new PlotScrollBarPanelModel();
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
+            eventSubscriber.Subscribe(EventType.ElectrodeRecordLoaded, FileHasChanged);
         }
 
         private void AxesChanged()
@@ -32,31 +32,48 @@ namespace MEATaste.Views.PlotScrollBar
             Model.XLast = axesMaxMin.XMax.ToString("0.###");
         }
 
+        private void FileHasChanged()
+        {
+            MeaExperiment meaExperiment = state.CurrentMeaExperiment.Get();
+            if (meaExperiment.RawSignalDouble != null)
+                fileDuration = meaExperiment.RawSignalDouble.Length / meaExperiment.Descriptors.SamplingRate;
+        }
+
         public void UpdateXAxisLimitsFromModelValues()
         {
             var xLast = Convert.ToDouble(Model.XLast);
             var xFirst = Convert.ToDouble(Model.XFirst);
             var axesMaxMin = state.AxesMaxMin.Get();
+            Delta = xLast - xFirst;
             state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
         }
 
         public void LeftLeftClick()
         {
             var axesMaxMin = state.AxesMaxMin.Get();
-            var delta = axesMaxMin.XMax - axesMaxMin.XMin;
-            MoveXAxis(-delta);
+            Delta = axesMaxMin.XMax - axesMaxMin.XMin;
+            MoveXAxis(-Delta);
         }
 
         public void RightRightClick()
         {
             var axesMaxMin = state.AxesMaxMin.Get();
-            var delta = axesMaxMin.XMax - axesMaxMin.XMin;
-            MoveXAxis(delta);
+            Delta = axesMaxMin.XMax - axesMaxMin.XMin;
+            MoveXAxis(Delta);
         }
 
         public void MoveXAxis(double delta)
         {
             var axesMaxMin = state.AxesMaxMin.Get();
+            if (axesMaxMin.XMin + delta < 0)
+            {
+                delta = - axesMaxMin.XMin;
+            }
+
+            if (axesMaxMin.XMax + delta > fileDuration)
+            {
+                delta = fileDuration - axesMaxMin.XMax;
+            }
             state.AxesMaxMin.Set(new AxesExtrema(axesMaxMin.XMin + delta, axesMaxMin.XMax + delta, axesMaxMin.YMin, axesMaxMin.YMax));
         }
     }

@@ -20,7 +20,7 @@ namespace MEATaste.Views.PlotSignal
         private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;
-            bool value = checkBox.IsChecked == true;
+            bool value = checkBox != null && checkBox.IsChecked == true;
             controller.AuthorizeReading(value);
         }
 

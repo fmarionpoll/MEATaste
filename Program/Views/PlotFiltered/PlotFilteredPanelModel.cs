@@ -11,22 +11,10 @@ namespace MEATaste.Views.PlotFiltered
     {
         private AxisLimits axisLimitsForDataPlot;
         private bool plotFilteredData;
-        private WpfPlot plotControl;
         private ElectrodeRecord selectedElectrodeRecord;
         private int selectedFilterIndex = 0;
 
-        public WpfPlot PlotControl
-        {
-            get => plotControl;
-            set
-            {
-                if (plotControl == value) return;
-                plotControl = value;
-                OnPropertyChanged(nameof(PlotControl));
-            }
-        }
-
-        public AxisLimits AxisLimitsForDataPlot
+         public AxisLimits AxisLimitsForDataPlot
         {
             get => axisLimitsForDataPlot;
             set
@@ -70,7 +58,6 @@ namespace MEATaste.Views.PlotFiltered
 
         public PlotFilteredPanelModel()
         {
-            PlotControl = new WpfPlot();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

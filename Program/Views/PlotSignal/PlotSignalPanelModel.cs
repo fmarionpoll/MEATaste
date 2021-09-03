@@ -10,19 +10,7 @@ namespace MEATaste.Views.PlotSignal
     {
         private AxisLimits axisLimitsForDataPlot;
         private bool plotDataForSelectedElectrode;
-        private WpfPlot plotControl;
         private ElectrodeRecord selectedElectrodeRecord;
-
-        public WpfPlot PlotControl
-        {
-            get => plotControl;
-            set
-            {
-                if (plotControl == value) return;
-                plotControl = value;
-                OnPropertyChanged(nameof(PlotControl));
-            }
-        }
 
         public AxisLimits AxisLimitsForDataPlot
         {
@@ -63,7 +51,6 @@ namespace MEATaste.Views.PlotSignal
         
         public PlotSignalPanelModel()
         {
-            PlotControl = new WpfPlot();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

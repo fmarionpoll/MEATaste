@@ -14,6 +14,7 @@ namespace MEATaste.Views.PlotSignal
 
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
+        private WpfPlot plotControl;
 
         public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader, IEventSubscriber eventSubscriber)
         {
@@ -32,7 +33,7 @@ namespace MEATaste.Views.PlotSignal
 
         public void AttachControlToModel(WpfPlot wpfControl)
         {
-            Model.PlotControl = wpfControl;
+            plotControl = wpfControl;
         }
 
         private void ChangeSelectedElectrode()
@@ -56,7 +57,7 @@ namespace MEATaste.Views.PlotSignal
 
             currentExperiment.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
             state.LoadedElectrode.Set(electrodeRecord);
-            var plot = Model.PlotControl.Plot;
+            var plot = plotControl.Plot;
             plot.Clear();
             plot.AddSignal(currentExperiment.RawSignalDouble, currentExperiment.Descriptors.SamplingRate);
             var title = $"electrode: {electrodeRecord.Electrode} channel: {electrodeRecord.Channel} (position : x={electrodeRecord.XuM}, y={electrodeRecord.YuM} µm)";
@@ -64,17 +65,16 @@ namespace MEATaste.Views.PlotSignal
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
             
-            Model.PlotControl.Plot.Render();
+            plotControl.Plot.Render();
             Mouse.OverrideCursor = null;
         }
 
         public void OnAxesChanged(object sender, EventArgs e)
         {
             var changedPlot = (WpfPlot)sender;
-            var plot = Model.PlotControl;
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
-            ChangeXAxes(Model.PlotControl, newAxisLimits.XMin, newAxisLimits.XMax);
-            UpdateAxesMaxMinFromScottPlot(plot.Plot.GetAxisLimits());
+            ChangeXAxes(plotControl, newAxisLimits.XMin, newAxisLimits.XMax);
+            UpdateAxesMaxMinFromScottPlot(plotControl.Plot.GetAxisLimits());
         }
 
         private void UpdateAxesMaxMinFromScottPlot(AxisLimits axisLimits)
@@ -97,7 +97,7 @@ namespace MEATaste.Views.PlotSignal
             if (!Model.PlotDataForSelectedElectrode) return;
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
-                ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
+                ChangeXAxes(plotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
 
 

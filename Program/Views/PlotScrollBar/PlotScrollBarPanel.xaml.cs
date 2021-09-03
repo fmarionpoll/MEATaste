@@ -48,12 +48,14 @@ namespace MEATaste.Views.PlotScrollBar
 
         private void Left_Click(object sender, RoutedEventArgs e)
         {
-            controller.MoveXAxis(-1);
+            controller.MoveXAxis(-controller.Delta/10);
         }
 
         private void Right_Click(object sender, RoutedEventArgs e)
         {
-            controller.MoveXAxis(+1);
+            controller.MoveXAxis(controller.Delta/10);
         }
+
+        
     }
 }

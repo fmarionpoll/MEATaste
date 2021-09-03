@@ -11,6 +11,8 @@ namespace MEATaste.Views.PlotFiltered
     {
         public PlotFilteredPanelModel Model { get; }
         private readonly ApplicationState state;
+        private WpfPlot plotControl;
+
 
         public PlotFilteredPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
@@ -28,15 +30,14 @@ namespace MEATaste.Views.PlotFiltered
                 ChangeSelectedElectrode();
             else
             {
-                Model.SelectedElectrodeRecord = null; 
-                var plotControl = Model.PlotControl;
+                Model.SelectedElectrodeRecord = null;
                 plotControl.Plot.Clear();
             }
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
         {
-            Model.PlotControl = wpfControl;
+            plotControl = wpfControl;
         }
 
         private void ChangeSelectedElectrode()
@@ -60,7 +61,7 @@ namespace MEATaste.Views.PlotFiltered
                 return;
 
             Mouse.OverrideCursor = Cursors.Wait;
-            var plot = Model.PlotControl.Plot;
+            var plot = plotControl.Plot;
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
             
@@ -86,10 +87,9 @@ namespace MEATaste.Views.PlotFiltered
         public void OnAxesChanged(object sender, EventArgs e)
         {
             var changedPlot = (WpfPlot)sender;
-            var plot = Model.PlotControl;
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
-            ChangeXAxes(Model.PlotControl, newAxisLimits.XMin, newAxisLimits.XMax);
-            UpdateAxesMaxMinFromScottPlot(plot.Plot.GetAxisLimits());
+            ChangeXAxes(plotControl, newAxisLimits.XMin, newAxisLimits.XMax);
+            UpdateAxesMaxMinFromScottPlot(plotControl.Plot.GetAxisLimits());
         }
 
         private void UpdateAxesMaxMinFromScottPlot(AxisLimits axisLimits)
@@ -113,7 +113,7 @@ namespace MEATaste.Views.PlotFiltered
 
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
-                ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
+                ChangeXAxes(plotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
 
         public void ChangeFilter(int selectedFilterIndex)
