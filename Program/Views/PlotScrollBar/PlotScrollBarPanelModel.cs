@@ -11,6 +11,10 @@ namespace MEATaste.Views.PlotScrollBar
     {
         private string xFirst;
         private string xLast;
+        private double viewPortWidth;
+        private double scrollableMaximum;
+        private double scrollableMinimum;
+        private double scrollPosition;
 
         public string XFirst
         {
@@ -31,6 +35,50 @@ namespace MEATaste.Views.PlotScrollBar
                 if (xLast == value) return;
                 xLast = value;
                 OnPropertyChanged(nameof(XLast));
+            }
+        }
+
+        public double ViewPortWidth
+        {
+            get => viewPortWidth;
+            set
+            {
+                if (viewPortWidth == value) return;
+                viewPortWidth = value;
+                OnPropertyChanged(nameof(ViewPortWidth));
+            }
+        }
+
+        public double ScrollableMaximum
+        {
+            get => scrollableMaximum;
+            set
+            {
+                if (scrollableMaximum == value) return;
+                scrollableMaximum = value;
+                OnPropertyChanged(nameof(ScrollableMaximum));
+            }
+        }
+
+        public double ScrollableMinimum
+        {
+            get => scrollableMinimum;
+            set
+            {
+                if (scrollableMinimum == value) return;
+                scrollableMinimum = value;
+                OnPropertyChanged(nameof(ScrollableMinimum));
+            }
+        }
+
+        public double ScrollPosition
+        {
+            get => scrollPosition;
+            set
+            {
+                if (scrollPosition == value) return;
+                scrollPosition = value;
+                OnPropertyChanged(nameof(ScrollPosition));
             }
         }
 

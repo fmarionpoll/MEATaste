@@ -30,13 +30,20 @@ namespace MEATaste.Views.PlotScrollBar
 
             Model.XFirst = axesMaxMin.XMin.ToString("0.###");
             Model.XLast = axesMaxMin.XMax.ToString("0.###");
+            Model.ViewPortWidth = axesMaxMin.XMax - axesMaxMin.XMin;
+            Model.ScrollPosition = (axesMaxMin.XMax + axesMaxMin.XMin)/2;
         }
 
         private void FileHasChanged()
         {
             MeaExperiment meaExperiment = state.CurrentMeaExperiment.Get();
             if (meaExperiment.RawSignalDouble != null)
+            {
                 fileDuration = meaExperiment.RawSignalDouble.Length / meaExperiment.Descriptors.SamplingRate;
+                Model.ScrollableMinimum = 0;
+                Model.ScrollableMaximum = fileDuration;
+            }
+                
         }
 
         public void UpdateXAxisLimitsFromModelValues()
@@ -75,6 +82,11 @@ namespace MEATaste.Views.PlotScrollBar
                 delta = fileDuration - axesMaxMin.XMax;
             }
             state.AxesMaxMin.Set(new AxesExtrema(axesMaxMin.XMin + delta, axesMaxMin.XMax + delta, axesMaxMin.YMin, axesMaxMin.YMax));
+        }
+
+        public void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+            
         }
     }
 }

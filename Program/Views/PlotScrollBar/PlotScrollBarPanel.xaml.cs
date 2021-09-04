@@ -56,6 +56,9 @@ namespace MEATaste.Views.PlotScrollBar
             controller.MoveXAxis(controller.Delta/10);
         }
 
-        
+        private void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+            controller.ScrollBar_Scroll(sender, e);
+        }
     }
 }
