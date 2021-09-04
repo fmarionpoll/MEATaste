@@ -11,10 +11,10 @@ namespace MEATaste.Views.PlotScrollBar
     {
         private string xFirst;
         private string xLast;
-        private double viewPortWidth;
-        private double scrollableMaximum;
-        private double scrollableMinimum;
-        private double scrollPosition;
+        private double sbViewPortSize;
+        private double sbMaximum;
+        private double sbMinimum;
+        private double sbValue;
 
         public string XFirst
         {
@@ -38,47 +38,47 @@ namespace MEATaste.Views.PlotScrollBar
             }
         }
 
-        public double ViewPortWidth
+        public double SBViewPortSize
         {
-            get => viewPortWidth;
+            get => sbViewPortSize;
             set
             {
-                if (viewPortWidth == value) return;
-                viewPortWidth = value;
-                OnPropertyChanged(nameof(ViewPortWidth));
+                if (sbViewPortSize == value) return;
+                sbViewPortSize = value;
+                OnPropertyChanged(nameof(SBViewPortSize));
             }
         }
 
-        public double ScrollableMaximum
+        public double SBMaximum
         {
-            get => scrollableMaximum;
+            get => sbMaximum;
             set
             {
-                if (scrollableMaximum == value) return;
-                scrollableMaximum = value;
-                OnPropertyChanged(nameof(ScrollableMaximum));
+                if (sbMaximum == value) return;
+                sbMaximum = value;
+                OnPropertyChanged(nameof(SBMaximum));
             }
         }
 
-        public double ScrollableMinimum
+        public double SBMinimum
         {
-            get => scrollableMinimum;
+            get => sbMinimum;
             set
             {
-                if (scrollableMinimum == value) return;
-                scrollableMinimum = value;
-                OnPropertyChanged(nameof(ScrollableMinimum));
+                if (sbMinimum == value) return;
+                sbMinimum = value;
+                OnPropertyChanged(nameof(SBMinimum));
             }
         }
 
-        public double ScrollPosition
+        public double SBValue
         {
-            get => scrollPosition;
+            get => sbValue;
             set
             {
-                if (scrollPosition == value) return;
-                scrollPosition = value;
-                OnPropertyChanged(nameof(ScrollPosition));
+                if (sbValue == value) return;
+                sbValue = value;
+                OnPropertyChanged(nameof(SBValue));
             }
         }
 
