@@ -12,7 +12,6 @@ namespace MEATaste.Views.PlotScrollBar
 
         private readonly ApplicationState state;
         private double fileDuration;
-        public double Delta;
 
 
         public PlotScrollBarPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
@@ -33,9 +32,8 @@ namespace MEATaste.Views.PlotScrollBar
             Model.XLast = axesMaxMin.XMax.ToString("0.###");
 
             double diff = axesMaxMin.XMax - axesMaxMin.XMin;
-            Model.SBViewPortSize = diff ; // /fileDuration;
-            Model.SBValue = (axesMaxMin.XMax + axesMaxMin.XMin)/2;
-            Trace.WriteLine($"viewportsize ={Model.SBViewPortSize} diff={diff} fileduration={fileDuration}");
+            Model.ScrollViewPortSize = diff ; // /fileDuration;
+            Model.ScrollValue = (axesMaxMin.XMax + axesMaxMin.XMin)/2;
         }
 
         private void FileHasChanged()
@@ -44,10 +42,8 @@ namespace MEATaste.Views.PlotScrollBar
             if (meaExperiment.RawSignalDouble == null) return;
 
             fileDuration = meaExperiment.RawSignalDouble.Length / meaExperiment.Descriptors.SamplingRate;
-            Model.SBMinimum = 0;
-            Model.SBMaximum = fileDuration;
-            Model.SBViewPortSize = fileDuration;
-            Model.SBValue = fileDuration / 2;
+            Model.ScrollMinimum = 0;
+            Model.ScrollMaximum = fileDuration;
         }
 
         public void UpdateXAxisLimitsFromModelValues()
@@ -55,42 +51,18 @@ namespace MEATaste.Views.PlotScrollBar
             var xLast = Convert.ToDouble(Model.XLast);
             var xFirst = Convert.ToDouble(Model.XFirst);
             var axesMaxMin = state.AxesMaxMin.Get();
-            Delta = xLast - xFirst;
             state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
-        }
-
-        public void LeftLeftClick()
-        {
-            var axesMaxMin = state.AxesMaxMin.Get();
-            Delta = axesMaxMin.XMax - axesMaxMin.XMin;
-            MoveXAxis(-Delta);
-        }
-
-        public void RightRightClick()
-        {
-            var axesMaxMin = state.AxesMaxMin.Get();
-            Delta = axesMaxMin.XMax - axesMaxMin.XMin;
-            MoveXAxis(Delta);
-        }
-
-        public void MoveXAxis(double delta)
-        {
-            var axesMaxMin = state.AxesMaxMin.Get();
-            if (axesMaxMin.XMin + delta < 0)
-            {
-                delta = - axesMaxMin.XMin;
-            }
-
-            if (axesMaxMin.XMax + delta > fileDuration)
-            {
-                delta = fileDuration - axesMaxMin.XMax;
-            }
-            state.AxesMaxMin.Set(new AxesExtrema(axesMaxMin.XMin + delta, axesMaxMin.XMax + delta, axesMaxMin.YMin, axesMaxMin.YMax));
         }
 
         public void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
         {
+            var axesMaxMin = state.AxesMaxMin.Get();
+            if (axesMaxMin == null) return; 
             
+            double xFirst = Model.ScrollValue - Model.ScrollViewPortSize / 2;
+            double xLast = Model.ScrollValue + Model.ScrollViewPortSize / 2;
+            state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
+
         }
     }
 }

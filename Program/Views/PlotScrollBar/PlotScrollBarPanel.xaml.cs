@@ -35,27 +35,7 @@ namespace MEATaste.Views.PlotScrollBar
                 }
             }
         }
-
-        private void LeftLeft_Click(object sender, RoutedEventArgs e)
-        {
-            controller.LeftLeftClick();
-        }
-
-        private void RightRight_Click(object sender, RoutedEventArgs e)
-        {
-            controller.RightRightClick();
-        }
-
-        private void Left_Click(object sender, RoutedEventArgs e)
-        {
-            controller.MoveXAxis(-controller.Delta/10);
-        }
-
-        private void Right_Click(object sender, RoutedEventArgs e)
-        {
-            controller.MoveXAxis(controller.Delta/10);
-        }
-
+        
         private void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
         {
             controller.ScrollBar_Scroll(sender, e);
