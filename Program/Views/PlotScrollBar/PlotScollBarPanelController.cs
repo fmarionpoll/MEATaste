@@ -31,23 +31,23 @@ namespace MEATaste.Views.PlotScrollBar
 
             Model.XFirst = axesMaxMin.XMin.ToString("0.###");
             Model.XLast = axesMaxMin.XMax.ToString("0.###");
+
             double diff = axesMaxMin.XMax - axesMaxMin.XMin;
-            Model.SBViewPortSize = diff /fileDuration;
-            Trace.WriteLine($"viewportsize ={Model.SBViewPortSize} diff={diff} fileduration={fileDuration}");
+            Model.SBViewPortSize = diff ; // /fileDuration;
             Model.SBValue = (axesMaxMin.XMax + axesMaxMin.XMin)/2;
+            Trace.WriteLine($"viewportsize ={Model.SBViewPortSize} diff={diff} fileduration={fileDuration}");
         }
 
         private void FileHasChanged()
         {
             MeaExperiment meaExperiment = state.CurrentMeaExperiment.Get();
-            if (meaExperiment.RawSignalDouble != null)
-            {
-                fileDuration = meaExperiment.RawSignalDouble.Length / meaExperiment.Descriptors.SamplingRate;
-                Model.SBMinimum = 0;
-                Model.SBMaximum = fileDuration;
-                Model.SBViewPortSize = fileDuration;
-            }
+            if (meaExperiment.RawSignalDouble == null) return;
 
+            fileDuration = meaExperiment.RawSignalDouble.Length / meaExperiment.Descriptors.SamplingRate;
+            Model.SBMinimum = 0;
+            Model.SBMaximum = fileDuration;
+            Model.SBViewPortSize = fileDuration;
+            Model.SBValue = fileDuration / 2;
         }
 
         public void UpdateXAxisLimitsFromModelValues()
