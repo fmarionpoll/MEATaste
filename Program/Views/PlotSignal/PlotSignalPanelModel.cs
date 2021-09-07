@@ -10,7 +10,7 @@ namespace MEATaste.Views.PlotSignal
     {
         private AxisLimits axisLimitsForDataPlot;
         private bool plotDataForSelectedElectrode;
-        private ElectrodeRecord selectedElectrodeRecord;
+        private ElectrodeProperties selectedElectrodeProperties;
 
         public AxisLimits AxisLimitsForDataPlot
         {
@@ -38,14 +38,14 @@ namespace MEATaste.Views.PlotSignal
             }
         }
 
-        public ElectrodeRecord SelectedElectrodeRecord
+        public ElectrodeProperties SelectedElectrodeProperties
         {
-            get => selectedElectrodeRecord;
+            get => selectedElectrodeProperties;
             set
             {
-                if (selectedElectrodeRecord == value) return;
-                selectedElectrodeRecord = value;
-                OnPropertyChanged(nameof(SelectedElectrodeRecord));
+                if (selectedElectrodeProperties == value) return;
+                selectedElectrodeProperties = value;
+                OnPropertyChanged(nameof(SelectedElectrodeProperties));
             }
         }
         

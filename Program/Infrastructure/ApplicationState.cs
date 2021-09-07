@@ -5,15 +5,15 @@ namespace MEATaste.Infrastructure
     public class ApplicationState
     {
         public StateProperty<MeaExperiment> CurrentMeaExperiment { get; }
-        public StateProperty<ElectrodeRecord> SelectedElectrode { get; }
-        public StateProperty<ElectrodeRecord> LoadedElectrode { get; }
+        public StateProperty<MeaElectrodeRecord> CurrentMeaElectrode { get; }
+        public StateProperty<ElectrodeProperties> LoadedElectrode { get; }
         public StateProperty<AxesExtrema> AxesMaxMin { get; }
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {
             CurrentMeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.CurrentExperimentChanged);
-            SelectedElectrode = statePropertyFactory.Create<ElectrodeRecord>(null, EventType.SelectedElectrodeChanged);
-            LoadedElectrode = statePropertyFactory.Create<ElectrodeRecord>(null, EventType.ElectrodeRecordLoaded);
+            CurrentMeaElectrode = statePropertyFactory.Create<MeaElectrodeRecord>(null, EventType.SelectedElectrodeChanged);
+            LoadedElectrode = statePropertyFactory.Create<ElectrodeProperties>(null, EventType.ElectrodeRecordLoaded);
             AxesMaxMin = statePropertyFactory.Create<AxesExtrema>(null, EventType.AxesMaxMinChanged);
         }
     }

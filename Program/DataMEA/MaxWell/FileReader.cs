@@ -25,9 +25,9 @@ namespace MEATaste.DataMEA.MaxWell
             return null;
         }
 
-        public ushort[] ReadDataForOneElectrode(ElectrodeRecord electrodeRecord)
+        public ushort[] ReadDataForOneElectrode(ElectrodeProperties electrodeProperties)
         {
-            return fileReader.ReadAll_OneElectrodeAsInt(electrodeRecord);
+            return fileReader.ReadAll_OneElectrodeAsInt(electrodeProperties);
         }
 
 
@@ -136,10 +136,10 @@ namespace MEATaste.DataMEA.MaxWell
             H5Dataset dataset = group.Dataset("mapping");
             Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
 
-            meaExp.Descriptors.Electrodes = new ElectrodeRecord[compoundData.Length];
+            meaExp.Descriptors.Electrodes = new ElectrodeProperties[compoundData.Length];
             for (int i = 0; i < compoundData.Length; i++)
             {
-                ElectrodeRecord ec = new ElectrodeRecord(
+                ElectrodeProperties ec = new ElectrodeProperties(
                     compoundData[i].electrode,
                     compoundData[i].channel,
                     compoundData[i].x,
@@ -149,12 +149,12 @@ namespace MEATaste.DataMEA.MaxWell
             return true;
         }
 
-        public ushort[] ReadAll_OneElectrodeAsInt(ElectrodeRecord electrodeRecord)
+        public ushort[] ReadAll_OneElectrodeAsInt(ElectrodeProperties electrodeProperties)
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
             var nbdatapoints = dataset.Space.Dimensions[1]; // any size
-            return Read_OneElectrodeDataAsInt(electrodeRecord.Channel, 0, nbdatapoints -1);
+            return Read_OneElectrodeDataAsInt(electrodeProperties.Channel, 0, nbdatapoints -1);
         }
 
         public ushort[] Read_OneElectrodeDataAsInt(int channel, ulong startsAt, ulong endsAt)

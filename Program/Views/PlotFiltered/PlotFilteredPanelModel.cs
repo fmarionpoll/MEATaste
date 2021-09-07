@@ -11,7 +11,7 @@ namespace MEATaste.Views.PlotFiltered
     {
         private AxisLimits axisLimitsForDataPlot;
         private bool plotFilteredData;
-        private ElectrodeRecord selectedElectrodeRecord;
+        private ElectrodeProperties selectedElectrodeProperties;
         private int selectedFilterIndex = 0;
 
          public AxisLimits AxisLimitsForDataPlot
@@ -34,14 +34,14 @@ namespace MEATaste.Views.PlotFiltered
             }
         }
         
-        public ElectrodeRecord SelectedElectrodeRecord
+        public ElectrodeProperties SelectedElectrodeProperties
         {
-            get => selectedElectrodeRecord;
+            get => selectedElectrodeProperties;
             set
             {
-                if (selectedElectrodeRecord == value) return;
-                selectedElectrodeRecord = value;
-                OnPropertyChanged(nameof(SelectedElectrodeRecord));
+                if (selectedElectrodeProperties == value) return;
+                selectedElectrodeProperties = value;
+                OnPropertyChanged(nameof(SelectedElectrodeProperties));
             }
         }
 

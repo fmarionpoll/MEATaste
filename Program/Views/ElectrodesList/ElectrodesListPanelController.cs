@@ -23,22 +23,22 @@ namespace MEATaste.Views.ElectrodesList
         }
 
  
-        public void SelectElectrode(ElectrodeRecord electrodeRecord)
+        public void SelectElectrode(ElectrodeProperties electrodeProperties)
         {
-            state.SelectedElectrode.Set(electrodeRecord);
+            state.CurrentMeaElectrode.Set(electrodeProperties);
         }
 
         private void ChangeSelectedElectrode()
         {
-            Model.SelectedElectrodeRecord = state.SelectedElectrode.Get();
-            Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeRecord);
+            Model.SelectedElectrodeProperties = state.CurrentMeaElectrode.Get();
+            Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeProperties);
         }
 
         private void LoadElectrodeListItems()
         {
             //var array = state.CurrentMeaExperiment.Get().Descriptors.Electrodes.Select(electrode => electrode.Electrode).ToArray();
             var array = state.CurrentMeaExperiment.Get().Descriptors.Electrodes;
-            Model.Electrodes = new ObservableCollection<ElectrodeRecord>(array);
+            Model.Electrodes = new ObservableCollection<ElectrodeProperties>(array);
             Model.ElectrodeListView = CollectionViewSource.GetDefaultView(Model.Electrodes);
         }
     }

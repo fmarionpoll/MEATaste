@@ -9,10 +9,6 @@ namespace MEATaste.DataMEA.Models
     {
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
-        public ushort[] RawSignalUShort { get; set; }
-        public double[] RawSignalDouble { get; set; }
-        public AxesExtrema AxesExtremaValues { get; set; }  // how to monitor this?
-
         public Descriptors Descriptors;
 
         public MeaExperiment(string fileName, string fileVersion, Descriptors descriptors)
@@ -35,18 +31,10 @@ namespace MEATaste.DataMEA.Models
         public double Hpf { get; set; }
         public double Lsb { get; set; }
         // mapping
-        public ElectrodeRecord[] Electrodes { get; set; }
+        public ElectrodeProperties[] Electrodes { get; set; }
     }
 
-    public record ElectrodeRecord(
-        int Electrode,
-        int Channel,
-        double XuM,
-        double YuM);
+   
 
-    public record AxesExtrema(
-        double XMin,
-        double XMax,
-        double YMin,
-        double YMax);
+ 
 }

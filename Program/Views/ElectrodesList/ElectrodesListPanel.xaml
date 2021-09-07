@@ -14,7 +14,7 @@
                   AlternationCount="2"
                   AlternatingRowBackground="LightBlue"
                   ItemsSource="{Binding ElectrodeListView}" 
-                  SelectedItem="{Binding SelectedElectrodeRecord}" 
+                  SelectedItem="{Binding SelectedElectrodeProperties}" 
                   SelectionUnit="FullRow"
                   SelectionChanged="ElectrodesGrid_SelectionChanged" 
                   HorizontalAlignment ="Stretch" 

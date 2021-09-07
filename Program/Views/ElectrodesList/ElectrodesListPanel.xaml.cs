@@ -21,8 +21,8 @@ namespace MEATaste.Views.ElectrodesList
         {
             if (sender is not DataGrid electrodesGrid) return;
 
-            ElectrodeRecord electrodeRecord = (ElectrodeRecord) electrodesGrid.SelectedItem;
-            controller.SelectElectrode(electrodeRecord);
+            ElectrodeProperties electrodeProperties = (ElectrodeProperties) electrodesGrid.SelectedItem;
+            controller.SelectElectrode(electrodeProperties);
             electrodesGrid.ScrollIntoView(electrodesGrid.SelectedItem);
         }
 

@@ -30,7 +30,7 @@ namespace MEATaste.Views.PlotFiltered
                 ChangeSelectedElectrode();
             else
             {
-                Model.SelectedElectrodeRecord = null;
+                Model.SelectedElectrodeProperties = null;
                 plotControl.Plot.Clear();
             }
         }
@@ -43,11 +43,11 @@ namespace MEATaste.Views.PlotFiltered
         private void ChangeSelectedElectrode()
         {
             if (!Model.PlotFilteredData) return;
-            var electrodeRecord = state.SelectedElectrode.Get();
+            var electrodeRecord = state.CurrentMeaElectrode.Get();
             if (electrodeRecord == null) return;
-            if (electrodeRecord == Model.SelectedElectrodeRecord)
+            if (electrodeRecord == Model.SelectedElectrodeProperties)
                 return;
-            Model.SelectedElectrodeRecord = electrodeRecord;
+            Model.SelectedElectrodeProperties = electrodeRecord;
             UpdateSelectedElectrodeFilteredData();
         }
 
@@ -119,7 +119,7 @@ namespace MEATaste.Views.PlotFiltered
         public void ChangeFilter(int selectedFilterIndex)
         {
             Model.SelectedFilterIndex = selectedFilterIndex;
-            if (Model.SelectedElectrodeRecord != null)
+            if (Model.SelectedElectrodeProperties != null)
                 UpdateSelectedElectrodeFilteredData();
         }
 
