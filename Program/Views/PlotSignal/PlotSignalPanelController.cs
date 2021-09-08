@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
+using MEATaste.DataMEA.dbWave;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -14,12 +15,14 @@ namespace MEATaste.Views.PlotSignal
 
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
+        private readonly DataFileWriter dataFileWriter;
         private WpfPlot plotControl;
 
-        public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader, IEventSubscriber eventSubscriber)
+        public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader, DataFileWriter dataFileWriter, IEventSubscriber eventSubscriber)
         {
             this.state = state;
             this.meaFileReader = meaFileReader;
+            this.dataFileWriter = dataFileWriter;
 
             Model = new PlotSignalPanelModel();
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
@@ -109,7 +112,10 @@ namespace MEATaste.Views.PlotSignal
 
         public void SaveDataFile()
         {
-
+            var experiment = state.CurrentExperiment.Get();
+            var electrode = state.CurrentElectrode.Get();
+            var electrodeData = state.ElectrodeBuffer.Get();
+            var flag = dataFileWriter.SaveDataFile(experiment, electrode, electrodeData);
         }
 
     }

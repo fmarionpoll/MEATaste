@@ -1,4 +1,5 @@
-﻿using MEATaste.DataMEA.MaxWell;
+﻿using MEATaste.DataMEA.dbWave;
+using MEATaste.DataMEA.MaxWell;
 using MEATaste.Views.ElectrodesList;
 using MEATaste.Views.ElectrodesMap;
 using MEATaste.Views.FileOpen;
@@ -28,6 +29,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<ApplicationState>();
                 services.AddSingleton<FileReader>();
                 services.AddSingleton<MeaFileReader>();
+                services.AddSingleton<DataFileWriter>();
             }
 
             void ConfigureControllers()

@@ -36,7 +36,7 @@ namespace MEATaste.Views.PlotSignal
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-
+            controller.SaveDataFile();
         }
     }
 
