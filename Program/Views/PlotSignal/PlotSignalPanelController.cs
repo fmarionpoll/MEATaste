@@ -107,6 +107,10 @@ namespace MEATaste.Views.PlotSignal
                 ChangeXAxes(plotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
 
+        public void SaveDataFile()
+        {
+
+        }
 
     }
 }

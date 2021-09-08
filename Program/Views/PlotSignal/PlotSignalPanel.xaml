@@ -12,9 +12,10 @@
         </Grid.RowDefinitions>
         <WpfPlot x:Name="PlotControl"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row ="1" 
                  Loaded="PlotControl_Loaded" AxesChanged="PlotControl_AxesChanged" />
-        <CheckBox Grid.Row="0" Margin="0,0,0,0" VerticalAlignment="Center" Checked="CheckBox_Checked" >
+        <CheckBox Grid.Row="0" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Checked="CheckBox_Checked" >
             <TextBlock Text="Load data for selected electrode" />
         </CheckBox>
+        <Button Content="Save data file..." HorizontalAlignment="Left" Height="20" Margin="203,0,0,0" VerticalAlignment="Center" Width="88" Click="Button_Click"/>
     </Grid>
 
 </UserControl>
