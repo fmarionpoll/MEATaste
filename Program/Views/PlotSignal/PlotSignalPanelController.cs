@@ -115,7 +115,7 @@ namespace MEATaste.Views.PlotSignal
             var experiment = state.CurrentExperiment.Get();
             var electrode = state.CurrentElectrode.Get();
             var electrodeData = state.ElectrodeBuffer.Get();
-            var flag = dataFileWriter.SaveDataFile(experiment, electrode, electrodeData);
+            dataFileWriter.SaveCurrentElectrodeDataToFile(experiment, electrode, electrodeData);
         }
 
     }
