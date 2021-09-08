@@ -16,13 +16,6 @@ namespace MEATaste.Views.MainView
             InitializeComponent();
         }
 
-        // TODO
-        //private void ListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        //{
-        //    int selected = ListViewChannels.SelectedIndex;
-        //    Electrode electrode = state.CurrentMeaExperiment.Descriptors.Electrodes[selected];
-        //    UpdateSelectedElectrode(electrode);
-        //}
 
     }
 }

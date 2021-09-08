@@ -1,7 +1,5 @@
 ﻿
 using System;
-using System.Linq;
-using System.Windows;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using OxyPlot;
@@ -42,7 +40,7 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void ChangeSelectedElectrode()
         {
-            var selectedElectrode = state.CurrentMeaElectrode.Get();
+            var selectedElectrode = state.CurrentElectrode.Get();
             var plotModel = Model.ScatterPlotModel;
 
             if (selectedElectrode == null)
@@ -74,7 +72,7 @@ namespace MEATaste.Views.ElectrodesMap
                 MarkerFill = OxyColors.LightBlue
             };
 
-            foreach (var electrode in state.CurrentMeaExperiment.Get().Descriptors.Electrodes)
+            foreach (var electrode in state.CurrentExperiment.Get().Descriptors.Electrodes)
             {
                 var point = new ScatterPoint(electrode.XuM, electrode.YuM);
                 series.Points.Add(point);
@@ -136,15 +134,15 @@ namespace MEATaste.Views.ElectrodesMap
             if (e.HitTestResult == null)
                 return;
             var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
-            var currentExperiment = state.CurrentMeaExperiment.Get();
+            var currentExperiment = state.CurrentExperiment.Get();
             var selectedElectrode = currentExperiment.Descriptors.Electrodes[indexOfNearestPoint];
             SelectElectrode(selectedElectrode);
         }
 
         public void SelectElectrode(ElectrodeProperties electrodeProperties)
         {
-            if (state.CurrentMeaElectrode.Get() != null && electrodeProperties.Electrode == state.CurrentMeaElectrode.Get().Electrode) return;
-            state.CurrentMeaElectrode.Set(electrodeProperties);
+            if (state.CurrentElectrode.Get() != null && electrodeProperties.Electrode == state.CurrentElectrode.Get().Electrode) return;
+            state.CurrentElectrode.Set(electrodeProperties);
         }
 
     }

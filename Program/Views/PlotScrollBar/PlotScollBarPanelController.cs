@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 
@@ -31,17 +30,17 @@ namespace MEATaste.Views.PlotScrollBar
             Model.XFirst = axesMaxMin.XMin.ToString("0.###");
             Model.XLast = axesMaxMin.XMax.ToString("0.###");
 
-            double diff = axesMaxMin.XMax - axesMaxMin.XMin;
-            Model.ScrollViewPortSize = diff ; // /fileDuration;
+            Model.ScrollViewPortSize = axesMaxMin.XMax - axesMaxMin.XMin; 
             Model.ScrollValue = (axesMaxMin.XMax + axesMaxMin.XMin)/2;
         }
 
         private void FileHasChanged()
         {
-            MeaExperiment meaExperiment = state.CurrentMeaExperiment.Get();
-            if (meaExperiment.RawSignalDouble == null) return;
+            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            if (electrodeBuffer == null || electrodeBuffer.RawSignalDouble == null) return;
 
-            fileDuration = meaExperiment.RawSignalDouble.Length / meaExperiment.Descriptors.SamplingRate;
+            var meaExperiment = state.CurrentExperiment.Get();
+            fileDuration = electrodeBuffer.RawSignalDouble.Length / meaExperiment.Descriptors.SamplingRate;
             Model.ScrollMinimum = 0;
             Model.ScrollMaximum = fileDuration;
         }

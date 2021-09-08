@@ -2,11 +2,10 @@
 
 namespace MEATaste.DataMEA.Models
 {
-    public class MeaElectrodeRecord
+    public class ElectrodeDataBuffer
     {
         public ushort[] RawSignalUShort { get; set; }
         public double[] RawSignalDouble { get; set; }
-        public AxesExtrema AxesExtremaValues { get; set; }  
     }
 
     public record AxesExtrema(

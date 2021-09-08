@@ -19,9 +19,8 @@ namespace MEATaste.Views.PlotSignal
 
         private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            var checkBox = sender as CheckBox;
-            bool value = checkBox != null && checkBox.IsChecked == true;
-            controller.AuthorizeReading(value);
+            var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
+            controller.AuthorizeReading(flag);
         }
 
         private void PlotControl_Loaded(object sender, System.Windows.RoutedEventArgs e)

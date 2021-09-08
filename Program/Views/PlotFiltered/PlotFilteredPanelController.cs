@@ -43,7 +43,7 @@ namespace MEATaste.Views.PlotFiltered
         private void ChangeSelectedElectrode()
         {
             if (!Model.PlotFilteredData) return;
-            var electrodeRecord = state.CurrentMeaElectrode.Get();
+            var electrodeRecord = state.CurrentElectrode.Get();
             if (electrodeRecord == null) return;
             if (electrodeRecord == Model.SelectedElectrodeProperties)
                 return;
@@ -53,10 +53,12 @@ namespace MEATaste.Views.PlotFiltered
 
         private void UpdateSelectedElectrodeFilteredData()
         {
-            var currentExperiment = state.CurrentMeaExperiment.Get();
+            var currentExperiment = state.CurrentExperiment.Get();
             if (currentExperiment == null) 
                 return;
-            var rawSignalDouble = currentExperiment.RawSignalDouble;
+
+            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            var rawSignalDouble = electrodeBuffer.RawSignalDouble;
             if (rawSignalDouble == null) 
                 return;
 

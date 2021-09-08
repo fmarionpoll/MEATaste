@@ -40,7 +40,7 @@ namespace MEATaste.Views.PlotSignal
         {
             if (!Model.PlotDataForSelectedElectrode) return;
 
-            ElectrodeProperties electrodeProperties = state.CurrentMeaElectrode.Get();
+            ElectrodeProperties electrodeProperties = state.CurrentElectrode.Get();
             if (electrodeProperties == null || electrodeProperties == Model.SelectedElectrodeProperties)
                 return;
             Model.SelectedElectrodeProperties = electrodeProperties;
@@ -50,16 +50,23 @@ namespace MEATaste.Views.PlotSignal
         private void UpdateSelectedElectrodeData(ElectrodeProperties electrodeProperties)
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            var currentExperiment = state.CurrentMeaExperiment.Get();
-            currentExperiment.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeProperties);
-            var rawSignalUShort = currentExperiment.RawSignalUShort;
-            var gain = currentExperiment.Descriptors.Gain / 1000;
+            var currentExperiment = state.CurrentExperiment.Get();
 
-            currentExperiment.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
-            state.LoadedElectrode.Set(electrodeProperties);
+            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            if (electrodeBuffer == null)
+            {
+                state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
+                electrodeBuffer = state.ElectrodeBuffer.Get();
+            }
+            electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeProperties);
+            var rawSignalUShort = electrodeBuffer.RawSignalUShort;
+            var gain = currentExperiment.Descriptors.Gain / 1000;
+            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
+
+            state.CurrentElectrode.Set(electrodeProperties);
             var plot = plotControl.Plot;
             plot.Clear();
-            plot.AddSignal(currentExperiment.RawSignalDouble, currentExperiment.Descriptors.SamplingRate);
+            plot.AddSignal(electrodeBuffer.RawSignalDouble, currentExperiment.Descriptors.SamplingRate);
             var title = $"electrode: {electrodeProperties.Electrode} channel: {electrodeProperties.Channel} (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
