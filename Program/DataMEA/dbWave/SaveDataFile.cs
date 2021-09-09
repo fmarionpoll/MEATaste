@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using MEATaste.DataMEA.Models;
@@ -15,45 +16,30 @@ namespace MEATaste.DataMEA.dbWave
             ElectrodeDataBuffer electrodeData)
         {
 
-            string directoryName = CreateDirectoryFromExperimentFileName(experiment);
-            string fileName = directoryName +
+            var directoryName = CreateDirectoryFromExperimentFileName(experiment);
+            var fileName = directoryName +
                               Path.DirectorySeparatorChar +
                               "data_electrode_" +
                               electrode.Electrode +
                               ".dat";
 
             bool flag = false;
-            // -------------------
-            string authorName = "Mahesh Chand";
-            int age = 30;
-            string bookTitle = "ADO.NET Programming using C#";
-            bool mvp = true;
-            double price = 54.99;
-            // ----------------
             
             try
             {
                 using (var binWriterToFile = new BinaryWriter(File.Open(fileName, FileMode.Create)))
                 {
                     WriteHeaderATLAB(binWriterToFile, experiment, electrode, electrodeData);
-
-                    // Write string   
-                    binWriterToFile.Write(authorName);
-                    // Write string   
-                    // Write integer  
-                    binWriterToFile.Write(age);
-                    binWriterToFile.Write(bookTitle);
-                    // Write boolean  
-                    binWriterToFile.Write(mvp);
-                    // Write double   
-                    binWriterToFile.Write(price);
+                    WriteDataATLAB(binWriterToFile, experiment, electrodeData);
+                    
+                    binWriterToFile.Close();
                 }
 
                 flag = true;
             }
-            catch (IOException ioexp)
+            catch (IOException ioException)
             {
-                Trace.WriteLine($"Error: {ioexp.Message}");
+                Trace.WriteLine($"Error: {ioException.Message}");
                 flag = false;
             }
 
@@ -62,13 +48,25 @@ namespace MEATaste.DataMEA.dbWave
 
         private string  CreateDirectoryFromExperimentFileName(MeaExperiment experiment)
         {
-            string directoryName = experiment.FileName.Substring(0, experiment.FileName.Length-3);
+            var directoryName = experiment.FileName.Substring(0, experiment.FileName.Length-3);
             if (!Directory.Exists(directoryName))
             {
                 Directory.CreateDirectory(directoryName);
             }
 
             return directoryName;
+        }
+
+        private byte[] ObjectToByteArray(Object obj)
+        {
+            if (obj == null)
+                return null;
+
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, obj);
+
+            return ms.ToArray();
         }
 
         private void WriteHeaderATLAB(BinaryWriter binWriterToFile, MeaExperiment experiment, ElectrodeProperties electrode,
@@ -110,6 +108,12 @@ namespace MEATaste.DataMEA.dbWave
 
             
             binWriterToFile.Write(bufferBytes, 0, headerLength);
+        }
+
+        private void WriteDataATLAB(BinaryWriter binWriterToFile, MeaExperiment experiment, ElectrodeDataBuffer electrodeData)
+        {
+           // here transform 10 bits data into 12 bits and short (or char?)
+            //binWriterToFile.Write(ObjectToByteArray(electrodeData.RawSignalUShort));
         }
 
         private void WriteHeaderAwave(BinaryWriter binWriter, MeaExperiment experiment, ElectrodeProperties electrode,
