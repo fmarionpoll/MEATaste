@@ -58,6 +58,8 @@ namespace MEATaste.Views.PlotFiltered
                 return;
 
             var electrodeBuffer = state.ElectrodeBuffer.Get();
+            if (electrodeBuffer == null)
+                return;
             var rawSignalDouble = electrodeBuffer.RawSignalDouble;
             if (rawSignalDouble == null) 
                 return;

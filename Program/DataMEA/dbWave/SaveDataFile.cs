@@ -96,41 +96,44 @@ namespace MEATaste.DataMEA.dbWave
             var bw = new BinaryWriter(stream, utf8);
             bw.Seek(0, SeekOrigin.Begin);       // header version
             bw.Write(0xAAAA);
-            bw.Seek(DEVID - 1, SeekOrigin.Begin);   // device ID
-            bw.Write(0); 
-            bw.Seek(SCNCNT - 1, SeekOrigin.Begin);  // number of data channels
-            bw.Write(1);
-            bw.Seek(CHANLST - 1, SeekOrigin.Begin);
-            bw.Write((short)electrode.Channel);
-            bw.Seek(GAINLST - 1, SeekOrigin.Begin);
+            bw.Seek(DEVID, SeekOrigin.Begin);   // device ID
+            bw.Write((short)0); 
+            bw.Seek(SCNCNT, SeekOrigin.Begin);  // number of data channels
             bw.Write((short)1);
-            bw.Seek(CHANCOM - 1, SeekOrigin.Begin);
+            bw.Seek(CHANLST, SeekOrigin.Begin);
+            bw.Write((short)electrode.Channel);
+            bw.Seek(GAINLST, SeekOrigin.Begin);
+            bw.Write((short)1);
+            bw.Seek(CHANCOM, SeekOrigin.Begin);
             bw.Write(electrode.Electrode.ToString());
 
-            bw.Seek(ACQDATE - 1, SeekOrigin.Begin);
+            bw.Seek(ACQDATE, SeekOrigin.Begin);
             var timeStart = experiment.Descriptors.TimeStart;
             var acqDate = timeStart.ToString(@"MM'/'dd'/'yyyy HH:mm:ss");
             bw.Write(acqDate);
 
-            bw.Seek(ACQCOM - 1, SeekOrigin.Begin);
+            bw.Seek(CLKPER, SeekOrigin.Begin);
+            var clockperiod = 4E6f / experiment.Descriptors.SamplingRate;
+            Int32 iiclockperiod = (Int32) clockperiod;
+            bw.Write(iiclockperiod);
+            Trace.WriteLine($"clock period={iiclockperiod}");
+
+            Int32 length = (Int32) electrodeData.RawSignalUShort.LongLength;
+            bw.Seek(SAMCNT, SeekOrigin.Begin);  // data length
+            bw.Write(length);
+            Trace.WriteLine($"data length={length}");
+
+            bw.Seek(ACQCOM, SeekOrigin.Begin);
             bw.Write(electrode.Electrode.ToString());
-            bw.Seek(ACQCOM + 20 - 1, SeekOrigin.Begin);
-            bw.Write("X=" + electrode.XuM );
-            bw.Seek(ACQCOM + 30 - 1, SeekOrigin.Begin);
+            bw.Seek(ACQCOM + 20, SeekOrigin.Begin);
+            bw.Write("X=" + electrode.XuM);
+            bw.Seek(ACQCOM + 30, SeekOrigin.Begin);
             bw.Write("Y=" + electrode.YuM);
 
-            bw.Seek(CLKPER - 1, SeekOrigin.Begin);
-            //const auto clock_rate = 4.0E6f / static_cast<float>(*plong);
-            var clockperiod = 4E6f / experiment.Descriptors.SamplingRate;
-            Int32 iiclockper = (int)clockperiod;
-            bw.Write(iiclockper);
-
-            bw.Seek(XGAIN - 1, SeekOrigin.Begin);
+            bw.Seek(XGAIN, SeekOrigin.Begin);
             bw.Write((float)experiment.Descriptors.Gain);
 
-            var length = electrodeData.RawSignalUShort.LongLength;
-            bw.Seek(SAMCNT - 1, SeekOrigin.Begin);  // data length
-            bw.Write((short) length);  
+           
 
             binWriterToFile.Write(bufferBytes);
         }
