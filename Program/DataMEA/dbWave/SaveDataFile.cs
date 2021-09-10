@@ -56,9 +56,10 @@ namespace MEATaste.DataMEA.dbWave
             {
                 using (var binWriterToFile = new BinaryWriter(File.Open(fileName, FileMode.Create)))
                 {
-                    WriteHeaderATLAB(binWriterToFile, experiment, electrode, electrodeData);
-                    WriteDataATLAB(binWriterToFile, electrodeData);
+                    WriteHeaderAtlab(binWriterToFile, experiment, electrode, electrodeData);
+                    WriteDataAtlab(binWriterToFile, electrodeData);
                     binWriterToFile.Close();
+                    Trace.WriteLine("dat file created and closed");
                 }
 
                 flag = true;
@@ -83,7 +84,7 @@ namespace MEATaste.DataMEA.dbWave
             return directoryName;
         }
 
-        private void WriteHeaderATLAB(BinaryWriter binWriterToFile, MeaExperiment experiment,
+        private static void WriteHeaderAtlab(BinaryWriter binWriterToFile, MeaExperiment experiment,
             ElectrodeProperties electrode,
             ElectrodeDataBuffer electrodeData)
         {
@@ -95,34 +96,46 @@ namespace MEATaste.DataMEA.dbWave
             var bw = new BinaryWriter(stream, utf8);
             bw.Seek(0, SeekOrigin.Begin);       // header version
             bw.Write(0xAAAA);
-            bw.Seek(DEVID, SeekOrigin.Begin);   // device ID
+            bw.Seek(DEVID - 1, SeekOrigin.Begin);   // device ID
             bw.Write(0); 
-            bw.Seek(SCNCNT, SeekOrigin.Begin);  // number of data channels
+            bw.Seek(SCNCNT - 1, SeekOrigin.Begin);  // number of data channels
             bw.Write(1);
-            bw.Seek(CHANLST, SeekOrigin.Begin);
+            bw.Seek(CHANLST - 1, SeekOrigin.Begin);
             bw.Write((short)electrode.Channel);
-            bw.Seek(GAINLST, SeekOrigin.Begin);
+            bw.Seek(GAINLST - 1, SeekOrigin.Begin);
             bw.Write((short)1);
-            bw.Seek(CHANCOM, SeekOrigin.Begin);
+            bw.Seek(CHANCOM - 1, SeekOrigin.Begin);
             bw.Write(electrode.Electrode.ToString());
 
-            bw.Seek(ACQDATE, SeekOrigin.Begin);
-            bw.Seek(ACQTIME, SeekOrigin.Begin);
+            bw.Seek(ACQDATE - 1, SeekOrigin.Begin);
+            var timeStart = experiment.Descriptors.TimeStart;
+            var acqDate = timeStart.ToString(@"MM'/'dd'/'yyyy HH:mm:ss");
+            bw.Write(acqDate);
 
-            bw.Seek(ACQCOM, SeekOrigin.Begin);
-            bw.Write(electrode.Electrode.ToString()+ "  XuM="+ electrode.XuM+" YuM="+electrode.YuM);
+            bw.Seek(ACQCOM - 1, SeekOrigin.Begin);
+            bw.Write(electrode.Electrode.ToString());
+            bw.Seek(ACQCOM + 20 - 1, SeekOrigin.Begin);
+            bw.Write("X=" + electrode.XuM );
+            bw.Seek(ACQCOM + 30 - 1, SeekOrigin.Begin);
+            bw.Write("Y=" + electrode.YuM);
 
-            bw.Seek(XGAIN, SeekOrigin.Begin);
+            bw.Seek(CLKPER - 1, SeekOrigin.Begin);
+            //const auto clock_rate = 4.0E6f / static_cast<float>(*plong);
+            var clockperiod = 4E6f / experiment.Descriptors.SamplingRate;
+            Int32 iiclockper = (int)clockperiod;
+            bw.Write(iiclockper);
+
+            bw.Seek(XGAIN - 1, SeekOrigin.Begin);
             bw.Write((float)experiment.Descriptors.Gain);
 
             var length = electrodeData.RawSignalUShort.LongLength;
-            bw.Seek(SAMCNT, SeekOrigin.Begin);  // data length
+            bw.Seek(SAMCNT - 1, SeekOrigin.Begin);  // data length
             bw.Write((short) length);  
 
             binWriterToFile.Write(bufferBytes);
         }
 
-        private static void WriteDataATLAB(BinaryWriter binWriterToFile, [NotNull] ElectrodeDataBuffer electrodeData)
+        private static void WriteDataAtlab(BinaryWriter binWriterToFile, [NotNull] ElectrodeDataBuffer electrodeData)
         {
             if (electrodeData == null) throw new ArgumentNullException(nameof(electrodeData));
 
