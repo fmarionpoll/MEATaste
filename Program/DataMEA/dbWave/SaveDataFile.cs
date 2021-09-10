@@ -105,21 +105,24 @@ namespace MEATaste.DataMEA.dbWave
             bw.Write((short)1);
             bw.Seek(CHANCOM, SeekOrigin.Begin);
             bw.Write(electrode.Electrode.ToString());
-            
+
+            bw.Seek(ACQDATE, SeekOrigin.Begin);
+            bw.Seek(ACQTIME, SeekOrigin.Begin);
+
             bw.Seek(ACQCOM, SeekOrigin.Begin);
             bw.Write(electrode.Electrode.ToString()+ "  XuM="+ electrode.XuM+" YuM="+electrode.YuM);
 
             bw.Seek(XGAIN, SeekOrigin.Begin);
             bw.Write((float)experiment.Descriptors.Gain);
 
-            var length = (Int32) electrodeData.RawSignalUShort.LongLength;
+            var length = electrodeData.RawSignalUShort.LongLength;
             bw.Seek(SAMCNT, SeekOrigin.Begin);  // data length
-            bw.Write(length);  
+            bw.Write((short) length);  
 
-            binWriterToFile.Write(bufferBytes, 0, headerLength);
+            binWriterToFile.Write(bufferBytes);
         }
 
-        private void WriteDataATLAB(BinaryWriter binWriterToFile, [NotNull] ElectrodeDataBuffer electrodeData)
+        private static void WriteDataATLAB(BinaryWriter binWriterToFile, [NotNull] ElectrodeDataBuffer electrodeData)
         {
             if (electrodeData == null) throw new ArgumentNullException(nameof(electrodeData));
 
@@ -131,6 +134,7 @@ namespace MEATaste.DataMEA.dbWave
             }
         }
 
+        /*
         private void WriteHeaderAwave(BinaryWriter binWriter, MeaExperiment experiment, ElectrodeProperties electrode,
             ElectrodeDataBuffer electrodeData)
         {
@@ -146,5 +150,6 @@ namespace MEATaste.DataMEA.dbWave
             // TODO
             binWriter.Write(bufferBytes, 0, headerLength);
         }
+        */
     }
 }
