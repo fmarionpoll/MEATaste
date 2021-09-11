@@ -4,20 +4,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="MEATaste.Views.FileOpen.FileOpenPanel"
-    mc:Ignorable="d" Height="28" Width="700" Background="White">
+    mc:Ignorable="d"  
+    d:DesignHeight="26" d:DesignWidth="800">
 
     <Grid  Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="251"/>
+            <ColumnDefinition Width="92" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="249" />
         </Grid.ColumnDefinitions>
-        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" VerticalAlignment="Center"
-                Margin="20,0,0,0" Height="26" Click="OpenDialogButton_Click" Width="75" />
+        
+        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Center" VerticalAlignment="Center" Height="26" 
+               Grid.Column="0" Click="OpenDialogButton_Click" Width="74" />
 
-        <Label Grid.Column="0" x:Name="FileNameLabel" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+        <Label Grid.Column="1" x:Name="FileNameLabel" VerticalAlignment="Center" HorizontalAlignment="Stretch"
                Content="{Binding FileNameLabel, Mode = OneWay}"
-               Visibility="Visible" Margin="110,0,10,0" Height="26" Grid.ColumnSpan="2" />
-        <Button Content="Save current data file..."  Grid.Column="2" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="131" Click="SaveCurrentClick"/>
+               Visibility="Visible" Margin="0,0,0,0" Height="26"  />
+        
+        <Button Content="Save current data file..."  Grid.Column="2" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="131" 
+                Click="SaveCurrentClick"/>
         <Button Content="Save ALL data files..." Grid.Column="2" HorizontalAlignment="Left" Margin="140,0,0,0" VerticalAlignment="Center" Height="20" Width="102" Click="SaveAllClick"/>
     </Grid>
 
