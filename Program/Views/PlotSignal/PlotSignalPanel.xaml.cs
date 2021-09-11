@@ -33,11 +33,6 @@ namespace MEATaste.Views.PlotSignal
         {
             controller.OnAxesChanged(sender, e);
         }
-
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            controller.SaveDataFile();
-        }
     }
 
 }

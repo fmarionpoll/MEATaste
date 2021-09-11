@@ -7,12 +7,18 @@
     mc:Ignorable="d" Height="28" Width="700" Background="White">
 
     <Grid>
-        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" VerticalAlignment="Top"
-                Margin="20,0,0,0" Height="26" Click="OpenDialogButton_Click" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  />
+            <ColumnDefinition Width="251"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="OpenDialogButton" Content="Load H5 file..." HorizontalAlignment="Left" VerticalAlignment="Center"
+                Margin="20,0,0,0" Height="26" Click="OpenDialogButton_Click" Width="75" />
 
         <Label x:Name="FileNameLabel" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding FileNameLabel, Mode = OneWay}"
-               Visibility="Visible" Margin="98,0,0,0" Height="26" >
+               Visibility="Visible" Margin="98,0,0,0" Height="26" Width="10" >
         </Label>
+        <Button Content="Save current data file..."  Grid.Column="1" HorizontalAlignment="Left" Height="20" VerticalAlignment="Center" Width="131" Click="SaveCurrentClick"/>
+        <Button Content="Save ALL data files..." Grid.Column="1" HorizontalAlignment="Left" Margin="140,0,0,0" VerticalAlignment="Center" Height="20" Width="102" Click="SaveAllClick"/>
     </Grid>
 
 </UserControl>

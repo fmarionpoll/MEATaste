@@ -36,7 +36,6 @@ namespace MEATaste.Views.ElectrodesList
 
         private void LoadElectrodeListItems()
         {
-            //var array = state.CurrentExperiment.Get().Descriptors.Electrodes.Select(electrode => electrode.Electrode).ToArray();
             var array = state.CurrentExperiment.Get().Descriptors.Electrodes;
             Model.Electrodes = new ObservableCollection<ElectrodeProperties>(array);
             Model.ElectrodeListView = CollectionViewSource.GetDefaultView(Model.Electrodes);

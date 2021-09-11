@@ -16,5 +16,14 @@ namespace MEATaste.Views.FileOpen
 
         private void OpenDialogButton_Click(object sender, System.Windows.RoutedEventArgs e) => controller.OpenFile();
 
+        private void SaveCurrentClick(object sender, System.Windows.RoutedEventArgs e)
+        {
+            controller.SaveCurrentElectrodeDataClick();
+        }
+
+        private void SaveAllClick(object sender, System.Windows.RoutedEventArgs e)
+        {
+            controller.SaveAllElectrodesDataClick();
+        }
     }
 }

@@ -8,13 +8,13 @@ namespace MEATaste.Views.PlotFiltered
     public partial class PlotFilteredPanel
     {
         private readonly PlotFilteredPanelController controller;
+
         public PlotFilteredPanel()
         {
             controller = App.ServiceProvider.GetService<PlotFilteredPanelController>();
             DataContext = controller!.Model;
             InitializeComponent();
         }
-
 
         private void PlotControl_Loaded_1(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -32,8 +32,6 @@ namespace MEATaste.Views.PlotFiltered
             if (controller != null && sender is ComboBox combo)
                 controller.ChangeFilter(combo.SelectedIndex);
         }
-
- 
 
         private void CheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
         {

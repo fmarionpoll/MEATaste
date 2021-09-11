@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,32 +13,32 @@ using MEATaste.DataMEA.Models;
 namespace MEATaste.DataMEA.dbWave
 {
     public class DataFileWriter
-    {
-         const int DEVID				= 4;	// device_id.........AD card id;
-         const int DEVFLAGS				= 6;	// device_flags......type of acquisition;
-         const int SCNCNT				= 8;	// scan_count .......number of acq channels;
-         const int CHANLST				= 10;	// channel_list[8] ..input channel list;
-         const int TRIGGER_MODE			= 26;	// trigger_mode......AD trigger mode [0..];
-         const int TRIGGER_CHAN			= 28;	// trigger_chan......AD trigger channel [0..7];
-         const int TRIGGER_THRESHOLD	= 30;	// trigger_treshold..AD trig threshold value [binary];
-         const int TRIGGER_POLARITY		= 32;	// trigger_polarity;
-         const int GAINLST				= 42;	// gain_list[8]...... gain channel list;
-         const int CHANCOM				= 74;	// channel_comment[8][40];
-         const int ACQDATE				= 714;	// acq_date[10];
-         const int ACQTIME				= 724;	// acq_time[10];
-         const int TIMING				= 736;	// timing_source;
-         const int CLKPER				= 738;	// clock_period;
-         const int SAMCNT				= 742;	// sample_count;
-         const int RDCNT				= 746;	// read_count;
-         const int ACQCOM				= 750;	// acq_comment[80];
-         const int VERSION				= 830;	// version;
-         const int CYBERA320			= 832;	// CyberA320;
-         const int CYBER_1				= 840;	// cyber1
-         const int CYBER_2				= 868;	// cyber2
-         const int XGAIN				= 914;	// xgain_list[8]
+    { 
+        private const int DEVID				    = 4;	// device_id.........AD card id;
+        private const int DEVFLAGS				= 6;	// device_flags......type of acquisition;
+        private const int SCNCNT				= 8;	// scan_count .......number of acq channels;
+        private const int CHANLST				= 10;	// channel_list[8] ..input channel list;
+        private const int TRIGGER_MODE			= 26;	// trigger_mode......AD trigger mode [0..];
+        private const int TRIGGER_CHAN			= 28;	// trigger_chan......AD trigger channel [0..7];
+        private const int TRIGGER_THRESHOLD	    = 30;	// trigger_treshold..AD trig threshold value [binary];
+        private const int TRIGGER_POLARITY		= 32;	// trigger_polarity;
+        private const int GAINLST				= 42;	// gain_list[8]...... gain channel list;
+        private const int CHANCOM				= 74;	// channel_comment[8][40];
+        private const int ACQDATE				= 714;	// acq_date[10];
+        private const int ACQTIME				= 724;	// acq_time[10];
+        private const int TIMING				= 736;	// timing_source;
+        private const int CLKPER				= 738;	// clock_period;
+        private const int SAMCNT				= 742;  // sample_count;
+        private const int RDCNT				    = 746;	// read_count;
+        private const int ACQCOM				= 750;	// acq_comment[80];
+        private const int VERSION				= 830;	// version;
+        private const int CYBERA320			    = 832;	// CyberA320;
+        private const int CYBER_1				= 840;	// cyber1
+        private const int CYBER_2				= 868;  // cyber2
+        private const int XGAIN				    = 914;  // xgain_list[8]
 
-         const int ACQCOM_LEN = 80;
-         private const int DATA = 1024;
+        private const int ACQCOM_LEN = 80;
+        private const int DATA = 1024;
 
         public bool SaveCurrentElectrodeDataToFile(MeaExperiment experiment, ElectrodeProperties electrode,
             ElectrodeDataBuffer electrodeData)
@@ -84,88 +85,65 @@ namespace MEATaste.DataMEA.dbWave
             return directoryName;
         }
 
-        private static void WriteHeaderAtlab(BinaryWriter binWriterToFile, MeaExperiment experiment,
+        private static void WriteHeaderAtlab(BinaryWriter binaryWriter, MeaExperiment experiment,
             ElectrodeProperties electrode,
             ElectrodeDataBuffer electrodeData)
         {
             //  datafile_Atlab.h & datafile_Atlab.cpp
             const int headerLength = 1024;
             var bufferBytes = new byte[headerLength];
-            var stream = new MemoryStream(bufferBytes);
-            var utf8 = new UTF8Encoding();
-            var bw = new BinaryWriter(stream, utf8);
-            bw.Seek(0, SeekOrigin.Begin);       // header version
-            bw.Write(0xAAAA);
-            bw.Seek(DEVID, SeekOrigin.Begin);   // device ID
-            bw.Write((short)0); 
-            bw.Seek(SCNCNT, SeekOrigin.Begin);  // number of data channels
-            bw.Write((short)1);
-            bw.Seek(CHANLST, SeekOrigin.Begin);
-            bw.Write((short)electrode.Channel);
-            bw.Seek(GAINLST, SeekOrigin.Begin);
-            bw.Write((short)1);
-            bw.Seek(CHANCOM, SeekOrigin.Begin);
-            bw.Write(electrode.Electrode.ToString());
+           
+            binaryWriter.Seek(0, SeekOrigin.Begin);
+            binaryWriter.Write(0xAAAA);
+            binaryWriter.Seek(DEVID, SeekOrigin.Begin); 
+            binaryWriter.Write((short)0); 
+            binaryWriter.Seek(SCNCNT, SeekOrigin.Begin); 
+            binaryWriter.Write((short)1);
+            binaryWriter.Seek(CHANLST, SeekOrigin.Begin);
+            binaryWriter.Write((short)electrode.Channel);
+            binaryWriter.Seek(GAINLST, SeekOrigin.Begin);
+            binaryWriter.Write((short)1);
+            binaryWriter.Seek(CHANCOM, SeekOrigin.Begin);
+            binaryWriter.Write(electrode.Electrode.ToString().ToCharArray());
 
-            bw.Seek(ACQDATE, SeekOrigin.Begin);
+            binaryWriter.Seek(ACQDATE, SeekOrigin.Begin);
             var timeStart = experiment.Descriptors.TimeStart;
             var acqDate = timeStart.ToString(@"MM'/'dd'/'yyyy HH:mm:ss");
-            bw.Write(acqDate);
+            binaryWriter.Write(acqDate.ToCharArray());
 
-            bw.Seek(CLKPER, SeekOrigin.Begin);
+            binaryWriter.Seek(CLKPER, SeekOrigin.Begin);
             var clockperiod = 4E6f / experiment.Descriptors.SamplingRate;
-            Int32 iiclockperiod = (Int32) clockperiod;
-            bw.Write(iiclockperiod);
-            Trace.WriteLine($"clock period={iiclockperiod}");
+            binaryWriter.Write((Int32)clockperiod);
 
             Int32 length = (Int32) electrodeData.RawSignalUShort.LongLength;
-            bw.Seek(SAMCNT, SeekOrigin.Begin);  // data length
-            bw.Write(length);
-            Trace.WriteLine($"data length={length}");
+            binaryWriter.Seek(SAMCNT, SeekOrigin.Begin); 
+            binaryWriter.Write(length);
 
-            bw.Seek(ACQCOM, SeekOrigin.Begin);
-            bw.Write(electrode.Electrode.ToString());
-            bw.Seek(ACQCOM + 20, SeekOrigin.Begin);
-            bw.Write("X=" + electrode.XuM);
-            bw.Seek(ACQCOM + 30, SeekOrigin.Begin);
-            bw.Write("Y=" + electrode.YuM);
+            binaryWriter.Seek(ACQCOM, SeekOrigin.Begin);
+            binaryWriter.Write(electrode.Electrode.ToString().ToCharArray());
 
-            bw.Seek(XGAIN, SeekOrigin.Begin);
-            bw.Write((float)experiment.Descriptors.Gain);
+            binaryWriter.Seek(ACQCOM + 20, SeekOrigin.Begin);
+            binaryWriter.Write(("X=" + electrode.XuM).ToCharArray());
 
-           
+            binaryWriter.Seek(ACQCOM + 30, SeekOrigin.Begin);
+            binaryWriter.Write(("Y=" + electrode.YuM).ToCharArray());
 
-            binWriterToFile.Write(bufferBytes);
+            binaryWriter.Seek(XGAIN, SeekOrigin.Begin);
+            binaryWriter.Write((float)experiment.Descriptors.Gain);
+
         }
 
-        private static void WriteDataAtlab(BinaryWriter binWriterToFile, [NotNull] ElectrodeDataBuffer electrodeData)
+        private static void WriteDataAtlab(BinaryWriter binaryWriter, [NotNull] ElectrodeDataBuffer electrodeData)
         {
             if (electrodeData == null) throw new ArgumentNullException(nameof(electrodeData));
 
-            binWriterToFile.Seek(DATA, SeekOrigin.Begin);       // header version
+            binaryWriter.Seek(DATA, SeekOrigin.Begin);
             foreach (var value in electrodeData.RawSignalUShort)
             {
                 var dtvalue = (short) ((short) value + (short) 1024);
-                binWriterToFile.Write(dtvalue);
+                binaryWriter.Write(dtvalue);
             }
         }
 
-        /*
-        private void WriteHeaderAwave(BinaryWriter binWriter, MeaExperiment experiment, ElectrodeProperties electrode,
-            ElectrodeDataBuffer electrodeData)
-        {
-            const int headerLength = 256;
-            var bufferBytes = new byte[headerLength];
-            var stream = new MemoryStream(bufferBytes);
-            UTF8Encoding utf8 = new UTF8Encoding();
-            BinaryWriter bw = new BinaryWriter(stream, utf8);
-
-            bw.Seek(0, SeekOrigin.Begin);
-            bw.Write(utf8.GetBytes("AWAVE"));
-
-            // TODO
-            binWriter.Write(bufferBytes, 0, headerLength);
-        }
-        */
     }
 }

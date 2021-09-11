@@ -15,14 +15,13 @@ namespace MEATaste.Views.PlotSignal
 
         private readonly ApplicationState state;
         private readonly MeaFileReader meaFileReader;
-        private readonly DataFileWriter dataFileWriter;
         private WpfPlot plotControl;
 
-        public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader, DataFileWriter dataFileWriter, IEventSubscriber eventSubscriber)
+        public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader,
+            IEventSubscriber eventSubscriber)
         {
             this.state = state;
             this.meaFileReader = meaFileReader;
-            this.dataFileWriter = dataFileWriter;
 
             Model = new PlotSignalPanelModel();
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
@@ -108,14 +107,6 @@ namespace MEATaste.Views.PlotSignal
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
                 ChangeXAxes(plotControl, axesMaxMin.XMin, axesMaxMin.XMax);
-        }
-
-        public void SaveDataFile()
-        {
-            var experiment = state.CurrentExperiment.Get();
-            var electrode = state.CurrentElectrode.Get();
-            var electrodeData = state.ElectrodeBuffer.Get();
-            dataFileWriter.SaveCurrentElectrodeDataToFile(experiment, electrode, electrodeData);
         }
 
     }
