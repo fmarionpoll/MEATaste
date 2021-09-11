@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using MEATaste.Annotations;
 using MEATaste.DataMEA.Models;
 
@@ -51,7 +45,7 @@ namespace MEATaste.DataMEA.dbWave
                               electrode.Electrode +
                               ".dat";
 
-            bool flag = false;
+            bool flag;
             
             try
             {
@@ -89,10 +83,6 @@ namespace MEATaste.DataMEA.dbWave
             ElectrodeProperties electrode,
             ElectrodeDataBuffer electrodeData)
         {
-            //  datafile_Atlab.h & datafile_Atlab.cpp
-            const int headerLength = 1024;
-            var bufferBytes = new byte[headerLength];
-           
             binaryWriter.Seek(0, SeekOrigin.Begin);
             binaryWriter.Write(0xAAAA);
             binaryWriter.Seek(DEVID, SeekOrigin.Begin); 
@@ -140,7 +130,7 @@ namespace MEATaste.DataMEA.dbWave
             binaryWriter.Seek(DATA, SeekOrigin.Begin);
             foreach (var value in electrodeData.RawSignalUShort)
             {
-                var dtvalue = (short) ((short) value + (short) 1024);
+                var dtvalue = (short) (value + 1024);
                 binaryWriter.Write(dtvalue);
             }
         }
