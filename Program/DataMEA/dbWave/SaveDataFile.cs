@@ -34,7 +34,7 @@ namespace MEATaste.DataMEA.dbWave
         private const int ACQCOM_LEN = 80;
         private const int DATA = 1024;
 
-        public bool SaveCurrentElectrodeDataToFile(MeaExperiment experiment, ElectrodeProperties electrode,
+        public bool SaveCurrentElectrodeDataToAtlabFile(MeaExperiment experiment, ElectrodeProperties electrode,
             ElectrodeDataBuffer electrodeData)
         {
 

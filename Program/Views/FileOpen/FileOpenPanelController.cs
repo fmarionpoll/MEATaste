@@ -40,7 +40,7 @@ namespace MEATaste.Views.FileOpen
             var experiment = state.CurrentExperiment.Get();
             var electrode = state.CurrentElectrode.Get();
             var electrodeData = state.ElectrodeBuffer.Get();
-            dataFileWriter.SaveCurrentElectrodeDataToFile(experiment, electrode, electrodeData);
+            dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeData);
         }
 
         public void SaveAllElectrodesDataClick()
@@ -59,7 +59,7 @@ namespace MEATaste.Views.FileOpen
                 electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrode);
 
                 var electrodeData = state.ElectrodeBuffer.Get();
-                dataFileWriter.SaveCurrentElectrodeDataToFile(experiment, electrode, electrodeData);
+                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeData);
             }
         }
 
