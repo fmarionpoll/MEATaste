@@ -1,9 +1,10 @@
-﻿using MEATaste.DataMEA.dbWave;
+﻿using System;
+using MEATaste.DataMEA.dbWave;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using Microsoft.Win32;
-using MEATaste.Infrastructure;
+
 
 namespace MEATaste.Views.FileOpen
 {
@@ -38,6 +39,10 @@ namespace MEATaste.Views.FileOpen
 
             var currentExperiment = state.CurrentExperiment.Get();
             Model.FileNameLabel = currentExperiment.FileName + " version="+ currentExperiment.FileVersion;
+            Model.AcquisitionSettingsLabel = 
+                "Gain=" + currentExperiment.Descriptors.Gain
+                + " High-pass filter(Hz)=" + currentExperiment.Descriptors.Hpf
+                + " Sampling rate(Hz)=" + currentExperiment.Descriptors.SamplingRate;
         }
 
         public void SaveCurrentElectrodeDataClick()
@@ -52,21 +57,24 @@ namespace MEATaste.Views.FileOpen
         {
             var experiment = state.CurrentExperiment.Get();
             var array = state.CurrentExperiment.Get().Descriptors.Electrodes;
+            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            if (electrodeBuffer == null)
+            {
+                state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
+                electrodeBuffer = state.ElectrodeBuffer.Get();
+            }
+
             foreach (var electrode in array)
             {
                 state.CurrentElectrode.Set(electrode);
                 eventRaiser.Raise(EventType.SelectedElectrodeChanged);
-                var electrodeBuffer = state.ElectrodeBuffer.Get();
-                if (electrodeBuffer == null)
-                {
-                    state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
-                    electrodeBuffer = state.ElectrodeBuffer.Get();
-                }
+               
                 electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrode);
                 eventRaiser.Raise(EventType.ElectrodeRecordLoaded);
 
-                var electrodeData = state.ElectrodeBuffer.Get();
-                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeData);
+                var electrodeDataBuffer = state.ElectrodeBuffer.Get() ??
+                                          throw new ArgumentNullException("state.ElectrodeBuffer.Get()");
+                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeDataBuffer);
             }
         }
 

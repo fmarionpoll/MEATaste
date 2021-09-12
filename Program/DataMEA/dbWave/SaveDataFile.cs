@@ -105,9 +105,9 @@ namespace MEATaste.DataMEA.dbWave
             var clockperiod = 4E6f / experiment.Descriptors.SamplingRate;
             binaryWriter.Write((Int32)clockperiod);
 
-            Int32 length = (Int32) electrodeData.RawSignalUShort.LongLength;
+            var length = electrodeData.RawSignalUShort.LongLength;
             binaryWriter.Seek(SAMCNT, SeekOrigin.Begin); 
-            binaryWriter.Write(length);
+            binaryWriter.Write((Int32)length);
 
             binaryWriter.Seek(ACQCOM, SeekOrigin.Begin);
             binaryWriter.Write(electrode.Electrode.ToString().ToCharArray());
@@ -120,7 +120,6 @@ namespace MEATaste.DataMEA.dbWave
 
             binaryWriter.Seek(XGAIN, SeekOrigin.Begin);
             binaryWriter.Write((float)experiment.Descriptors.Gain);
-
         }
 
         private static void WriteDataAtlab(BinaryWriter binaryWriter, [NotNull] ElectrodeDataBuffer electrodeData)
