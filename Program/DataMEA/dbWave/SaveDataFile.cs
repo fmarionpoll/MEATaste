@@ -129,7 +129,7 @@ namespace MEATaste.DataMEA.dbWave
             binaryWriter.Seek(DATA, SeekOrigin.Begin);
             foreach (var value in electrodeData.RawSignalUShort)
             {
-                var dtvalue = (short) (value + 1024);
+                var dtvalue = (short) (value*4);
                 binaryWriter.Write(dtvalue);
             }
         }
