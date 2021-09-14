@@ -4,13 +4,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="MEATaste.Views.FileOpen.FileOpenPanel"
-    mc:Ignorable="d"  
-    d:DesignHeight="71.689" d:DesignWidth="800">
+    mc:Ignorable="d" d:DesignWidth="800" Height="30">
 
     <Grid  Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
-            <RowDefinition Height="20" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="108" />
@@ -36,9 +34,6 @@
             <Button Content="Save ALL data files..." Grid.Column="1" HorizontalAlignment="Left" Margin="140,0,0,0"
                     VerticalAlignment="Center" Width="102" Click="SaveAllClick" />
         </Grid>
-        <Grid  Grid.Row="1" Grid.Column="1">
-            <Label VerticalAlignment="Center" Content="{Binding AcquisitionSettingsLabel, Mode = OneWay}"
-                   HorizontalAlignment="Left" Visibility="Visible" Height="26"  />
-        </Grid>
+
     </Grid>
 </UserControl>

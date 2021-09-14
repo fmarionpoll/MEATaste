@@ -10,6 +10,7 @@ namespace MEATaste.Views.ElectrodesList
     public class ElectrodesListPanelController
     {
         public ElectrodesListPanelModel Model { get; }
+        private ObservableCollection<ElectrodeProperties> ElectrodesList;
 
         private readonly ApplicationState state;
 
@@ -37,8 +38,8 @@ namespace MEATaste.Views.ElectrodesList
         private void LoadElectrodeListItems()
         {
             var array = state.CurrentExperiment.Get().Descriptors.Electrodes;
-            Model.Electrodes = new ObservableCollection<ElectrodeProperties>(array);
-            Model.ElectrodeListView = CollectionViewSource.GetDefaultView(Model.Electrodes);
+            ElectrodesList = new ObservableCollection<ElectrodeProperties>(array);
+            Model.ElectrodeListView = CollectionViewSource.GetDefaultView(ElectrodesList);
         }
     }
 }

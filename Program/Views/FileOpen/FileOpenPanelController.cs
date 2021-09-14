@@ -15,16 +15,15 @@ namespace MEATaste.Views.FileOpen
         private readonly MeaFileReader meaFileReader;
         private readonly DataFileWriter dataFileWriter; 
         private readonly ApplicationState state;
-        private readonly IEventRaiser eventRaiser;
+       
 
         public FileOpenPanelController(ApplicationState state, 
             MeaFileReader meaFileReader, 
-            DataFileWriter dataFileWriter, IEventRaiser eventRaiser)
+            DataFileWriter dataFileWriter)
         {
             this.meaFileReader = meaFileReader;
             this.dataFileWriter = dataFileWriter;
             this.state = state;
-            this.eventRaiser = eventRaiser;
 
             Model = new FileOpenPanelModel();
         }
@@ -39,10 +38,7 @@ namespace MEATaste.Views.FileOpen
 
             var currentExperiment = state.CurrentExperiment.Get();
             Model.FileNameLabel = currentExperiment.FileName + " version="+ currentExperiment.FileVersion;
-            Model.AcquisitionSettingsLabel = 
-                "Gain=" + currentExperiment.Descriptors.Gain
-                + " High-pass filter(Hz)=" + currentExperiment.Descriptors.Hpf
-                + " Sampling rate(Hz)=" + currentExperiment.Descriptors.SamplingRate;
+            
         }
 
         public void SaveCurrentElectrodeDataClick()
@@ -67,10 +63,8 @@ namespace MEATaste.Views.FileOpen
             foreach (var electrode in array)
             {
                 state.CurrentElectrode.Set(electrode);
-                eventRaiser.Raise(EventType.SelectedElectrodeChanged);
-               
+                
                 electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrode);
-                eventRaiser.Raise(EventType.ElectrodeRecordLoaded);
 
                 var electrodeDataBuffer = state.ElectrodeBuffer.Get() ??
                                           throw new ArgumentNullException("state.ElectrodeBuffer.Get()");

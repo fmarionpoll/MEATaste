@@ -11,6 +11,7 @@ namespace MEATaste.Views.PlotSignal
         private AxisLimits axisLimitsForDataPlot;
         private bool plotDataForSelectedElectrode;
         private ElectrodeProperties selectedElectrodeProperties;
+        private string acquisitionSettingsLabel = string.Empty;
 
         public AxisLimits AxisLimitsForDataPlot
         {
@@ -48,7 +49,18 @@ namespace MEATaste.Views.PlotSignal
                 OnPropertyChanged(nameof(SelectedElectrodeProperties));
             }
         }
-        
+
+        public string AcquisitionSettingsLabel
+        {
+            get => acquisitionSettingsLabel;
+            set
+            {
+                if (acquisitionSettingsLabel == value) return;
+                acquisitionSettingsLabel = value;
+                OnPropertyChanged(nameof(AcquisitionSettingsLabel));
+            }
+        }
+
         public PlotSignalPanelModel()
         {
         }

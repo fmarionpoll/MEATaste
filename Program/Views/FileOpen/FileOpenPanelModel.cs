@@ -8,8 +8,6 @@ namespace MEATaste.Views.FileOpen
     public class FileOpenPanelModel : INotifyPropertyChanged
     {
         private string fileNameLabel = string.Empty;
-        private string acquisitionSettingsLabel = string.Empty;
-        private string hpfLabel = string.Empty;
 
         public string FileNameLabel
         {
@@ -22,16 +20,6 @@ namespace MEATaste.Views.FileOpen
             }
         }
 
-        public string AcquisitionSettingsLabel
-        {
-            get => acquisitionSettingsLabel;
-            set
-            {
-                if (acquisitionSettingsLabel == value) return;
-                acquisitionSettingsLabel = value;
-                OnPropertyChanged(nameof(AcquisitionSettingsLabel));
-            }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         

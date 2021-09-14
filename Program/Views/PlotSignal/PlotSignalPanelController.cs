@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
-using MEATaste.DataMEA.dbWave;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -17,15 +16,26 @@ namespace MEATaste.Views.PlotSignal
         private readonly MeaFileReader meaFileReader;
         private WpfPlot plotControl;
 
-        public PlotSignalPanelController(ApplicationState state, MeaFileReader meaFileReader,
+        public PlotSignalPanelController(ApplicationState state, 
+            MeaFileReader meaFileReader,
             IEventSubscriber eventSubscriber)
         {
             this.state = state;
             this.meaFileReader = meaFileReader;
 
             Model = new PlotSignalPanelModel();
+            eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, LoadAcquisitionParameters);
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
+        }
+
+        private void LoadAcquisitionParameters()
+        {
+            var currentExperiment = state.CurrentExperiment.Get();
+            Model.AcquisitionSettingsLabel =
+                "Gain=" + currentExperiment.Descriptors.Gain
+                        + " High-pass filter(Hz)=" + currentExperiment.Descriptors.Hpf
+                        + " Sampling rate(Hz)=" + currentExperiment.Descriptors.SamplingRate;
         }
 
         public void AuthorizeReading(bool value)

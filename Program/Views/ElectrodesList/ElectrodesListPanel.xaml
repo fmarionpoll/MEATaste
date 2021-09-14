@@ -8,25 +8,25 @@
              mc:Ignorable="d">
 
     <DataGrid x:Name="ElectrodesGrid"
-                 Margin="20"
-                  SelectionMode="Single"
-                  CanUserDeleteRows="False" 
-                  AlternationCount="2"
-                  AlternatingRowBackground="LightBlue"
-                  ItemsSource="{Binding ElectrodeListView}" 
-                  SelectedItem="{Binding SelectedElectrodeProperties}" 
-                  SelectionUnit="FullRow"
-                  SelectionChanged="ElectrodesGrid_SelectionChanged" 
-                  HorizontalAlignment ="Stretch" 
-                  VerticalAlignment ="Stretch" 
-                  HorizontalContentAlignment ="Center" 
-                  VerticalContentAlignment = "Center" 
-                  EnableColumnVirtualization="True" 
-                  IsReadOnly="True" 
-                  CanUserAddRows="False"  
-                  ClipToBounds="True">
+              Margin="35, 0, 10, 0"
+              SelectionMode="Single"
+              CanUserDeleteRows="False" 
+              AlternationCount="2"
+              AlternatingRowBackground="LightBlue"
+              ItemsSource="{Binding ElectrodeListView}" 
+              SelectedItem="{Binding SelectedElectrodeProperties, Mode=TwoWay}" 
+              SelectionUnit="FullRow"
+              SelectionChanged="ElectrodesGrid_SelectionChanged" 
+              HorizontalAlignment ="Stretch" 
+              VerticalAlignment ="Stretch" 
+              HorizontalContentAlignment ="Center" 
+              VerticalContentAlignment = "Center" 
+              EnableColumnVirtualization="True" 
+              IsReadOnly="True" 
+              CanUserAddRows="False"  
+              ClipToBounds="True" CanUserResizeRows="False" RowDetailsVisibilityMode="Visible">
                   
-        <DataGrid.Resources>
+            <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FF0000" />
             </DataGrid.Resources>
