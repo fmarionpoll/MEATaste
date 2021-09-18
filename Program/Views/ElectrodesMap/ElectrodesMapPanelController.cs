@@ -92,7 +92,7 @@ namespace MEATaste.Views.ElectrodesMap
             xAxis.Minimum = electrodeProperties.XuM - deltaX;
             xAxis.Maximum = electrodeProperties.XuM + deltaX;
 
-            var deltaY = deltaX; // * plotModel.Height / plotModel.Width;
+            var deltaY = deltaX; 
             yAxis.Minimum = electrodeProperties.YuM - deltaY;
             yAxis.Maximum = electrodeProperties.YuM + deltaY;
         }
@@ -122,7 +122,8 @@ namespace MEATaste.Views.ElectrodesMap
             {
                 SelectionMode = SelectionMode.Single,
                 MarkerType = MarkerType.Circle,
-                MarkerFill = OxyColors.Red
+                MarkerStroke = OxyColors.Red,
+                MarkerFill = OxyColors.Transparent
             };
             var point = new ScatterPoint(0, 0);
             series.Points.Add(point);
@@ -141,7 +142,8 @@ namespace MEATaste.Views.ElectrodesMap
 
         public void SelectElectrode(ElectrodeProperties electrodeProperties)
         {
-            if (state.CurrentElectrode.Get() != null && electrodeProperties.Electrode == state.CurrentElectrode.Get().Electrode) return;
+            if (state.CurrentElectrode.Get() != null &&
+                electrodeProperties.Electrode == state.CurrentElectrode.Get().Electrode) return;
             state.CurrentElectrode.Set(electrodeProperties);
         }
 

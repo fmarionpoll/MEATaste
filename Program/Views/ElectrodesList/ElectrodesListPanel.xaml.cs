@@ -1,5 +1,6 @@
-﻿using System.Windows.Controls;
-using MEATaste.DataMEA.Models;
+﻿using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -16,15 +17,16 @@ namespace MEATaste.Views.ElectrodesList
             DataContext = controller!.Model;
             InitializeComponent();
         }
-
+        
         private void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is not DataGrid electrodesGrid) return;
-
-            ElectrodeProperties electrodeProperties = (ElectrodeProperties) electrodesGrid.SelectedItem;
-            controller.SelectElectrode(electrodeProperties);
-            electrodesGrid.ScrollIntoView(electrodesGrid.SelectedItem);
+            Trace.WriteLine("SelectionChanged");
+            controller.ElectrodesGrid_SelectionChanged(sender, e);
         }
 
+        private void ElectrodesGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            Trace.WriteLine("SelectedCellsChanged");
+        }
     }
 }

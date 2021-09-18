@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
 using MEATaste.Annotations;
 using MEATaste.DataMEA.Models;
 

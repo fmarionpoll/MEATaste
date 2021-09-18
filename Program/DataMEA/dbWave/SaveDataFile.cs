@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using MEATaste.Annotations;
@@ -119,7 +120,8 @@ namespace MEATaste.DataMEA.dbWave
             binaryWriter.Write(("Y=" + electrode.YuM).ToCharArray());
 
             binaryWriter.Seek(XGAIN, SeekOrigin.Begin);
-            binaryWriter.Write((float)experiment.Descriptors.Gain);
+            double xgain = 20/(4096 * experiment.Descriptors.Lsb);
+            binaryWriter.Write((float)xgain);
         }
 
         private static void WriteDataAtlab(BinaryWriter binaryWriter, [NotNull] ElectrodeDataBuffer electrodeData)
@@ -127,11 +129,14 @@ namespace MEATaste.DataMEA.dbWave
             if (electrodeData == null) throw new ArgumentNullException(nameof(electrodeData));
 
             binaryWriter.Seek(DATA, SeekOrigin.Begin);
+            const short delta = 2048 - 512;
+            
             foreach (var value in electrodeData.RawSignalUShort)
             {
-                var dtvalue = (short) (value*4);
+                var dtvalue = (short) (value + delta);
                 binaryWriter.Write(dtvalue);
             }
+ 
         }
 
     }

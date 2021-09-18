@@ -16,7 +16,6 @@
               ItemsSource="{Binding ElectrodeListView}" 
               SelectedItem="{Binding SelectedElectrodeProperties, Mode=TwoWay}" 
               SelectionUnit="FullRow"
-              SelectionChanged="ElectrodesGrid_SelectionChanged" 
               HorizontalAlignment ="Stretch" 
               VerticalAlignment ="Stretch" 
               HorizontalContentAlignment ="Center" 
@@ -24,7 +23,9 @@
               EnableColumnVirtualization="True" 
               IsReadOnly="True" 
               CanUserAddRows="False"  
-              ClipToBounds="True" CanUserResizeRows="False" RowDetailsVisibilityMode="Visible">
+              ClipToBounds="True" CanUserResizeRows="False" 
+              RowDetailsVisibilityMode="Visible" 
+              SelectionChanged="ElectrodesGrid_SelectionChanged" SelectedCellsChanged="ElectrodesGrid_SelectedCellsChanged">
                   
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>

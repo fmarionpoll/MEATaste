@@ -5,7 +5,6 @@ using System.Windows.Controls;
 namespace MEATaste.Views.ElectrodesMap
 {
 
-
     public partial class ElectrodesMapPanel : UserControl
     {
         private readonly ElectrodesMapPanelController controller;
@@ -16,7 +15,6 @@ namespace MEATaste.Views.ElectrodesMap
             DataContext = controller!.Model;
             InitializeComponent();
         }
-
-
+        
     }
 }

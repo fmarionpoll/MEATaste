@@ -174,7 +174,7 @@ namespace MEATaste.DataMEA.MaxWell
 
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
-                starts: new[] { (ulong)channel, startsAt },   // start at row ElectrodeNumber, column 0
+                starts: new[] { (ulong)channel, startsAt },         // start at row ElectrodeNumber, column 0
                 strides: new ulong[] { 1, 1 },                      // don't skip anything
                 counts: new ulong[] { 1, nbpoints },                // read 1 row, ndatapoints columns
                 blocks: new ulong[] { 1, 1 }                        // blocks are single elements
@@ -193,7 +193,7 @@ namespace MEATaste.DataMEA.MaxWell
                     fileSelection: datasetSelection,
                     memorySelection: memorySelection,
                     memoryDims: memoryDims
-                );  
+                );
 
             return result;
         }

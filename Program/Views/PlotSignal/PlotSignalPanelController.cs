@@ -32,10 +32,10 @@ namespace MEATaste.Views.PlotSignal
         private void LoadAcquisitionParameters()
         {
             var currentExperiment = state.CurrentExperiment.Get();
-            Model.AcquisitionSettingsLabel =
-                "Gain=" + currentExperiment.Descriptors.Gain
-                        + " High-pass filter(Hz)=" + currentExperiment.Descriptors.Hpf
-                        + " Sampling rate(Hz)=" + currentExperiment.Descriptors.SamplingRate;
+            Model.AcquisitionSettingsLabel = " High-pass filter(Hz)=" + currentExperiment.Descriptors.Hpf 
+                                           + " Sampling rate(Hz)=" + currentExperiment.Descriptors.SamplingRate
+                                           + " resolution (mV) =" + currentExperiment.Descriptors.Lsb 
+                                           * currentExperiment.Descriptors.Gain * 1000;
         }
 
         public void AuthorizeReading(bool value)
@@ -72,17 +72,20 @@ namespace MEATaste.Views.PlotSignal
             }
             electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeProperties);
             var rawSignalUShort = electrodeBuffer.RawSignalUShort;
-            var gain = currentExperiment.Descriptors.Gain / 1000;
-            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
+            //var gain = currentExperiment.Descriptors.Gain / 1000;
+            //electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
+            var Lsb = currentExperiment.Descriptors.Lsb * 1000;
+            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x -512)* Lsb).ToArray();
 
             state.CurrentElectrode.Set(electrodeProperties);
             var plot = plotControl.Plot;
             plot.Clear();
             plot.AddSignal(electrodeBuffer.RawSignalDouble, currentExperiment.Descriptors.SamplingRate);
-            var title = $"electrode: {electrodeProperties.Electrode} channel: {electrodeProperties.Channel} (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
+            var title =
+                $"electrode: {electrodeProperties.Electrode} channel: {electrodeProperties.Channel} (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
-            plot.YLabel("Voltage (µV)");
+            plot.YLabel("Voltage (mV)");
             
             plotControl.Plot.Render();
             Mouse.OverrideCursor = null;
