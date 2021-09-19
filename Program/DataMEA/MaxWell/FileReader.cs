@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using HDF.PInvoke;
 using HDF5.NET;
 using MEATaste.DataMEA.Models;
@@ -27,7 +28,18 @@ namespace MEATaste.DataMEA.MaxWell
 
         public ushort[] ReadDataForOneElectrode(ElectrodeProperties electrodeProperties)
         {
-            return fileReader.ReadAll_OneElectrodeAsInt(electrodeProperties);
+            //Stopwatch stopwatch = new Stopwatch();
+            //stopwatch.Start();
+            var result1 = fileReader.ReadAll_OneElectrodeAsInt(electrodeProperties);
+            //stopwatch.Stop();
+            //Trace.WriteLine("Elapsed time -direct- is " +(stopwatch.ElapsedMilliseconds/1000).ToString("0.###") +" s" );
+
+            //stopwatch.Start();
+            //var result2 = fileReader.ReadAll_OneElectrodeAsIntParallel(electrodeProperties);
+            //stopwatch.Stop();
+            //Trace.WriteLine("Elapsed time -parallel- is " + (stopwatch.ElapsedMilliseconds / 1000).ToString("0.###") + " s");
+
+            return result1;
         }
 
 
@@ -153,24 +165,44 @@ namespace MEATaste.DataMEA.MaxWell
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
-            var nbdatapoints = dataset.Space.Dimensions[1]; // any size*
-            int chunkSize = dataset.
-            return Read_OneElectrodeDataAsInt(electrodeProperties.Channel, 0, nbdatapoints -1);
+            int ndimensions = dataset.Space.Rank;
+            if (ndimensions != 2)
+                return null; 
+            var nbdatapoints = dataset.Space.Dimensions[1];      // any size*
+            return Read_OneElectrodeDataAsInt(group, dataset, electrodeProperties.Channel, 0, nbdatapoints -1);
         }
 
-        public ushort[] Read_OneElectrodeDataAsInt(int channel, ulong startsAt, ulong endsAt)
+        public ushort[] ReadAll_OneElectrodeAsIntParallel(ElectrodeProperties electrodeProperties)
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
+            var nbdatapoints = dataset.Space.Dimensions[1];      // any size*
+            const ulong chunkSizePerChannel = 200;
+            var result = new ushort[nbdatapoints];
+            var nchunks = (long) (nbdatapoints / chunkSizePerChannel) ;
 
             int ndimensions = dataset.Space.Rank;
             if (ndimensions != 2)
                 return null;
-            var nbDatasetChannels = dataset.Space.Dimensions[0];    // 1028 expected
-            var nbDatasetPoints = dataset.Space.Dimensions[1];      // any size
-            var dataType = dataset.Type;
 
+            Parallel.For (0, nchunks, i =>
+            {
+                var istart = (ulong) i * chunkSizePerChannel;
+                var iend = istart + chunkSizePerChannel - 1;
+                if (iend > nbdatapoints)
+                    iend = nbdatapoints - 1;
+                var chunkresult = Read_OneElectrodeDataAsInt(group, dataset, electrodeProperties.Channel, istart, iend);
+                Array.Copy(chunkresult, 0, result, (int) istart, (int) (iend - istart + 1));
+            }) ;
+
+            return result;
+        }
+
+        public ushort[] Read_OneElectrodeDataAsInt(H5Group group, H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
+        {
             var nbPointsRequested = endsAt - startsAt + 1;
+
+            //Trace.WriteLine($"startsAt: {startsAt} endsAt: {endsAt} nbPointsRequested={nbPointsRequested}");
             
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
@@ -198,6 +230,7 @@ namespace MEATaste.DataMEA.MaxWell
 
             return result;
         }
+
 
 
     }

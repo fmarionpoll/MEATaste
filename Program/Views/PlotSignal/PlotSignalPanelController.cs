@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
@@ -32,10 +34,9 @@ namespace MEATaste.Views.PlotSignal
         private void LoadAcquisitionParameters()
         {
             var currentExperiment = state.CurrentExperiment.Get();
-            Model.AcquisitionSettingsLabel = " High-pass filter(Hz)=" + currentExperiment.Descriptors.Hpf 
-                                           + " Sampling rate(Hz)=" + currentExperiment.Descriptors.SamplingRate
-                                           + " resolution (mV) =" + currentExperiment.Descriptors.Lsb 
-                                           * currentExperiment.Descriptors.Gain * 1000;
+            Model.AcquisitionSettingsLabel = " High-pass=" + currentExperiment.Descriptors.Hpf + " Hz " 
+                                           + " Sampling rate=" + currentExperiment.Descriptors.SamplingRate /1000 + " kHz "
+                                           + " resolution=" + (currentExperiment.Descriptors.Lsb * 1000).ToString("0.###")  + " mV";
         }
 
         public void AuthorizeReading(bool value)
@@ -52,18 +53,19 @@ namespace MEATaste.Views.PlotSignal
         {
             if (!Model.PlotDataForSelectedElectrode) return;
 
-            ElectrodeProperties electrodeProperties = state.CurrentElectrode.Get();
+            var electrodeProperties = state.CurrentElectrode.Get();
             if (electrodeProperties == null || electrodeProperties == Model.SelectedElectrodeProperties)
                 return;
             Model.SelectedElectrodeProperties = electrodeProperties;
+
+            //var cancellationTokenSource = new CancellationTokenSource();
+            //var task = new Task(() => UpdateSelectedElectrodeData(electrodeProperties), cancellationTokenSource.Token);
             UpdateSelectedElectrodeData(electrodeProperties);
         }
 
         private void UpdateSelectedElectrodeData(ElectrodeProperties electrodeProperties)
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            var currentExperiment = state.CurrentExperiment.Get();
-
+            
             var electrodeBuffer = state.ElectrodeBuffer.Get();
             if (electrodeBuffer == null)
             {
@@ -71,24 +73,35 @@ namespace MEATaste.Views.PlotSignal
                 electrodeBuffer = state.ElectrodeBuffer.Get();
             }
             electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeProperties);
-            var rawSignalUShort = electrodeBuffer.RawSignalUShort;
-            //var gain = currentExperiment.Descriptors.Gain / 1000;
-            //electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
-            var lsb = currentExperiment.Descriptors.Lsb * 1000;
-            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x -512)* lsb).ToArray();
 
+            DisplayNewData(electrodeProperties);
+        }
+
+        private void DisplayNewData(ElectrodeProperties electrodeProperties)
+        {
+            var currentExperiment = state.CurrentExperiment.Get();
             state.CurrentElectrode.Set(electrodeProperties);
             var plot = plotControl.Plot;
             plot.Clear();
-            plot.AddSignal(electrodeBuffer.RawSignalDouble, currentExperiment.Descriptors.SamplingRate);
-            var title =
-                $"electrode: {electrodeProperties.Electrode} channel: {electrodeProperties.Channel} (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
+            plot.AddSignal(TransferDataToElectrodeBuffer(), currentExperiment.Descriptors.SamplingRate);
+            var title = "electrode: "+ electrodeProperties.Electrode
+            + " channel: " +electrodeProperties.Channel
+            + $" (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (mV)");
-            
+
             plotControl.Plot.Render();
-            Mouse.OverrideCursor = null;
+        }
+
+        private double[] TransferDataToElectrodeBuffer()
+        {
+            var currentExperiment = state.CurrentExperiment.Get();
+            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            var rawSignalUShort = electrodeBuffer.RawSignalUShort;
+            var lsb = currentExperiment.Descriptors.Lsb * 1000;
+            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
+            return electrodeBuffer.RawSignalDouble;
         }
 
         public void OnAxesChanged(object sender, EventArgs e)

@@ -63,9 +63,7 @@ namespace MEATaste.Views.FileOpen
             foreach (var electrode in array)
             {
                 state.CurrentElectrode.Set(electrode);
-                
                 electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrode);
-
                 var electrodeDataBuffer = state.ElectrodeBuffer.Get() ??
                                           throw new ArgumentNullException("state.ElectrodeBuffer.Get()");
                 dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeDataBuffer);
