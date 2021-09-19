@@ -74,8 +74,8 @@ namespace MEATaste.Views.PlotSignal
             var rawSignalUShort = electrodeBuffer.RawSignalUShort;
             //var gain = currentExperiment.Descriptors.Gain / 1000;
             //electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => x * gain).ToArray();
-            var Lsb = currentExperiment.Descriptors.Lsb * 1000;
-            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x -512)* Lsb).ToArray();
+            var lsb = currentExperiment.Descriptors.Lsb * 1000;
+            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x -512)* lsb).ToArray();
 
             state.CurrentElectrode.Set(electrodeProperties);
             var plot = plotControl.Plot;

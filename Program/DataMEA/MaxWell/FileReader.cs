@@ -153,7 +153,8 @@ namespace MEATaste.DataMEA.MaxWell
         {
             H5Group group = Root.Group("/");
             H5Dataset dataset = group.Dataset("sig");
-            var nbdatapoints = dataset.Space.Dimensions[1]; // any size
+            var nbdatapoints = dataset.Space.Dimensions[1]; // any size*
+            int chunkSize = dataset.
             return Read_OneElectrodeDataAsInt(electrodeProperties.Channel, 0, nbdatapoints -1);
         }
 
@@ -165,18 +166,17 @@ namespace MEATaste.DataMEA.MaxWell
             int ndimensions = dataset.Space.Rank;
             if (ndimensions != 2)
                 return null;
-            //ulong nbchannels = dataset.Space.Dimensions[0];     // 1028 expected
-            //ulong nbdatapoints = dataset.Space.Dimensions[1];   // any size
-            //var dataType = dataset.Type;
+            var nbDatasetChannels = dataset.Space.Dimensions[0];    // 1028 expected
+            var nbDatasetPoints = dataset.Space.Dimensions[1];      // any size
+            var dataType = dataset.Type;
 
-            var nbpoints = endsAt - startsAt + 1;
-            var memoryDims = new[] { nbpoints };
-
+            var nbPointsRequested = endsAt - startsAt + 1;
+            
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
                 starts: new[] { (ulong)channel, startsAt },         // start at row ElectrodeNumber, column 0
                 strides: new ulong[] { 1, 1 },                      // don't skip anything
-                counts: new ulong[] { 1, nbpoints },                // read 1 row, ndatapoints columns
+                counts: new ulong[] { 1, nbPointsRequested },       // read 1 row, ndatapoints columns
                 blocks: new ulong[] { 1, 1 }                        // blocks are single elements
             );
 
@@ -184,10 +184,11 @@ namespace MEATaste.DataMEA.MaxWell
                 rank: 1,
                 starts: new ulong[] { 0 },
                 strides: new ulong[] { 1 },
-                counts: new[] { nbpoints },
+                counts: new[] { nbPointsRequested },
                 blocks: new ulong[] { 1 }
             );
 
+            var memoryDims = new[] { nbPointsRequested };
             var result = dataset
                 .Read<ushort>(
                     fileSelection: datasetSelection,
