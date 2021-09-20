@@ -75,7 +75,7 @@ namespace MEATaste.Annotations
   /// {
   ///   foreach (var book in books) {
   ///     if (book != null) // Warning: Expression is always true
-  ///      Console.WriteLine(book.ToUpper());
+  ///      Trace.WriteLine(book.ToUpper());
   ///   }
   /// }
   /// </code></example>
@@ -95,7 +95,7 @@ namespace MEATaste.Annotations
   ///   foreach (var book in books)
   ///   {
   ///     // Warning: Possible 'System.NullReferenceException'
-  ///     Console.WriteLine(book.ToUpper());
+  ///     Trace.WriteLine(book.ToUpper());
   ///   }
   /// }
   /// </code></example>

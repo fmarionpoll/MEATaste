@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -48,10 +49,17 @@ namespace MEATaste.Views.ElectrodesList
         public void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is not DataGrid electrodesGrid) return;
+            Trace.WriteLine("SelectionChanged");
+
             dataGrid = electrodesGrid;
             var electrodeProperties = (ElectrodeProperties)dataGrid.SelectedItem;
             SelectElectrode(electrodeProperties);
             ChangeSelectedElectrode();
+        }
+
+        public void ElectrodesGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            Trace.WriteLine("SelectedCellsChanged");
         }
 
     }

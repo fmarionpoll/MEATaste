@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,13 +20,12 @@ namespace MEATaste.Views.ElectrodesList
         
         private void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Trace.WriteLine("SelectionChanged");
-            controller.ElectrodesGrid_SelectionChanged(sender, e);
+           controller.ElectrodesGrid_SelectionChanged(sender, e);
         }
 
         private void ElectrodesGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            Trace.WriteLine("SelectedCellsChanged");
+            controller.ElectrodesGrid_SelectedCellsChanged(sender, e);
         }
     }
 }
