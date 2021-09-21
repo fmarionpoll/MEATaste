@@ -28,15 +28,29 @@ namespace MEATaste.Views.ElectrodesList
         
         public void SelectElectrode(ElectrodeProperties electrodeProperties)
         {
+            Trace.WriteLine($"SelectElectrode({electrodeProperties.Electrode})");
+
             state.CurrentElectrode.Set(electrodeProperties);
             ChangeSelectedElectrode();
         }
 
         private void ChangeSelectedElectrode()
         {
-            Model.SelectedElectrodeProperties = state.CurrentElectrode.Get();
+            Trace.WriteLine("ChangeSelectedElectrode()");
+
+            var stateElectrodeProperties = state.CurrentElectrode.Get();
+            if (Model.SelectedElectrodeProperties == null)
+            {
+                Trace.WriteLine("ChangeSelectedElectrode() -- State.SelectedElectrode=NULL");
+                return;
+            }
+
+            Model.SelectedElectrodeProperties = stateElectrodeProperties;
             Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeProperties);
-            dataGrid?.ScrollIntoView(dataGrid.SelectedItem);
+            Trace.WriteLine($"ChangeSelectedElectrode() -- dataGrid.SelectedItem={dataGrid.SelectedItem}");
+
+            dataGrid?.ScrollIntoView(dataGrid.SelectedItem); 
+           
         }
 
         private void LoadElectrodeListItems()
@@ -49,17 +63,32 @@ namespace MEATaste.Views.ElectrodesList
         public void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is not DataGrid electrodesGrid) return;
-            Trace.WriteLine("SelectionChanged");
-
+           
             dataGrid = electrodesGrid;
             var electrodeProperties = (ElectrodeProperties)dataGrid.SelectedItem;
+
+            var elState = state.CurrentElectrode.Get();
+            if (elState != null)
+            {
+                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.Electrode}"
+                                + $" with Current electrode={elState.Electrode}");
+            }
+            else
+            {
+                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.Electrode} state electrode=NULL");
+            }
             SelectElectrode(electrodeProperties);
-            ChangeSelectedElectrode();
         }
 
         public void ElectrodesGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            Trace.WriteLine("SelectedCellsChanged");
+            if (sender is not DataGrid electrodesGrid) return;
+
+            dataGrid = electrodesGrid;
+            var electrodeProperties = (ElectrodeProperties)dataGrid.SelectedItem;
+            var elState = state.CurrentElectrode.Get();
+            Trace.WriteLine($"===> SelectedCellsChanged to dataGrid electrode={electrodeProperties.Electrode}"
+                            + $" with Current electrode={elState.Electrode}");
         }
 
     }
