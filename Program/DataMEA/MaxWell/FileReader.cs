@@ -28,11 +28,11 @@ namespace MEATaste.DataMEA.MaxWell
 
         public ushort[] ReadDataForOneElectrode(ElectrodeProperties electrodeProperties)
         {
-            //Stopwatch stopwatch = new Stopwatch();
-            //stopwatch.Start();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             var result1 = fileReader.ReadAll_OneElectrodeAsInt(electrodeProperties);
-            //stopwatch.Stop();
-            //Trace.WriteLine("Elapsed time -direct- is " +(stopwatch.ElapsedMilliseconds/1000).ToString("0.###") +" s" );
+            stopwatch.Stop();
+            Trace.WriteLine("Elapsed time -direct- is " + (stopwatch.ElapsedMilliseconds / 1000).ToString("0.###") + " s");
 
             //stopwatch.Start();
             //var result2 = fileReader.ReadAll_OneElectrodeAsIntParallel(electrodeProperties);
@@ -169,7 +169,7 @@ namespace MEATaste.DataMEA.MaxWell
             if (ndimensions != 2)
                 return null; 
             var nbdatapoints = dataset.Space.Dimensions[1];      // any size*
-            return Read_OneElectrodeDataAsInt(group, dataset, electrodeProperties.Channel, 0, nbdatapoints -1);
+            return Read_OneElectrodeDataAsInt(dataset, electrodeProperties.Channel, 0, nbdatapoints -1);
         }
 
         public ushort[] ReadAll_OneElectrodeAsIntParallel(ElectrodeProperties electrodeProperties)
@@ -191,14 +191,14 @@ namespace MEATaste.DataMEA.MaxWell
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = Read_OneElectrodeDataAsInt(group, dataset, electrodeProperties.Channel, istart, iend);
+                var chunkresult = Read_OneElectrodeDataAsInt(dataset, electrodeProperties.Channel, istart, iend);
                 Array.Copy(chunkresult, 0, result, (int) istart, (int) (iend - istart + 1));
             }) ;
 
             return result;
         }
 
-        public ushort[] Read_OneElectrodeDataAsInt(H5Group group, H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
+        public ushort[] Read_OneElectrodeDataAsInt(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
 
