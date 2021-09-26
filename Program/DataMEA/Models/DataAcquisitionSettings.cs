@@ -12,5 +12,7 @@ namespace MEATaste.DataMEA.Models
         public double Gain { get; set; }
         public double Hpf { get; set; }
         public double Lsb { get; set; }
+        // acquisition length
+        public ulong nDataAcquisitionPoints { get; set; }
     }
 }

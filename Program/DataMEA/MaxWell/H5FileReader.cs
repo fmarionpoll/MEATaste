@@ -70,6 +70,9 @@ namespace MEATaste.DataMEA.MaxWell
             var strings = lines.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             meaExp.DataAcquisitionSettings.TimeStart = GetTimeFromString(strings[0], "start: ");
             meaExp.DataAcquisitionSettings.TimeStop = GetTimeFromString(strings[1], "stop: ");
+
+            h5Dataset = h5Group.Dataset("sig");
+            meaExp.DataAcquisitionSettings.nDataAcquisitionPoints = h5Dataset.Space.Dimensions[1];
         }
 
         private DateTime GetTimeFromString(string inputString, string pattern)
@@ -149,7 +152,7 @@ namespace MEATaste.DataMEA.MaxWell
         {
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("sig");
-            var nbdatapoints = h5Dataset.Space.Dimensions[1];
+            ulong nbdatapoints = h5Dataset.Space.Dimensions[1];
             const ulong chunkSizePerChannel = 200;
             var result = new ushort[nbdatapoints];
             var nchunks = (long)(nbdatapoints / chunkSizePerChannel);

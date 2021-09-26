@@ -87,7 +87,7 @@ namespace MEATaste.Views.PlotSignal
             plot.YLabel("Voltage (mV)");
 
             DataAcquisitionSettings acqSettings = currentExperiment.DataAcquisitionSettings;
-            double duration = acqSettings.TimeStop.Subtract(acqSettings.TimeStart).TotalSeconds;
+            double duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
             Trace.WriteLine("duration(s)=" + duration);
             plot.SetAxisLimits(0, duration);
             plotControl.Plot.Render();
