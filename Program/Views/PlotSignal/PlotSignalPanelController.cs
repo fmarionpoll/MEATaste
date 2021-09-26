@@ -77,8 +77,16 @@ namespace MEATaste.Views.PlotSignal
             var currentExperiment = state.CurrentExperiment.Get();
             state.CurrentElectrode.Set(electrodeProperties);
             var plot = plotControl.Plot;
+
             plot.Clear();
-            plot.AddSignal(TransferDataToElectrodeBuffer(), currentExperiment.DataAcquisitionSettings.SamplingRate);
+            var electrodeBuffer = TransferDataToElectrodeBuffer();
+            ScottPlot.Plottable.SignalPlot sig = plot.AddSignal(electrodeBuffer, 
+                currentExperiment.DataAcquisitionSettings.SamplingRate);
+
+            DataAcquisitionSettings acqSettings = currentExperiment.DataAcquisitionSettings;
+            double duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
+            Trace.WriteLine("duration(s)=" + duration);
+            
             var title = "electrode: "+ electrodeProperties.Electrode
             + " channel: " +electrodeProperties.Channel
             + $" (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
@@ -86,11 +94,9 @@ namespace MEATaste.Views.PlotSignal
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (mV)");
 
-            DataAcquisitionSettings acqSettings = currentExperiment.DataAcquisitionSettings;
-            double duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
-            Trace.WriteLine("duration(s)=" + duration);
             plot.SetAxisLimits(0, duration);
-            plotControl.Plot.Render();
+            sig.MaxRenderIndex = (int)(acqSettings.nDataAcquisitionPoints - 1);
+            plot.Render();
         }
 
         private double[] TransferDataToElectrodeBuffer()
