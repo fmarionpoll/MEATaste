@@ -1,40 +1,20 @@
-﻿using System;
-
-
+﻿
 namespace MEATaste.DataMEA.Models
 {
-    // Models
-
     public record MeaExperiment
     {
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
-        public Descriptors Descriptors;
+        public DataAcquisitionSettings DataAcquisitionSettings;
+        public ElectrodeProperties[] Electrodes { get; set; }
+        public SpikeTime[] SpikeTimes { get; set; }
 
-        public MeaExperiment(string fileName, string fileVersion, Descriptors descriptors)
+        public MeaExperiment(string fileName, string fileVersion, DataAcquisitionSettings dataAcquisitionSettings)
         {
             FileName = fileName;
             if (fileVersion != null)
                 FileVersion = fileVersion;
-            Descriptors = descriptors;
+            DataAcquisitionSettings = dataAcquisitionSettings;
         }
     }
-
-    public class Descriptors
-    {
-        // time
-        public DateTime TimeStart { get; set; }
-        public DateTime TimeStop { get; set; }
-        public double SamplingRate = 20000;
-        // settings
-        public double Gain { get; set; }
-        public double Hpf { get; set; }
-        public double Lsb { get; set; }
-        // mapping
-        public ElectrodeProperties[] Electrodes { get; set; }
-    }
-
-   
-
- 
 }

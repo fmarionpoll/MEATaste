@@ -74,11 +74,11 @@ namespace MEATaste.Views.PlotFiltered
             {
             case 1:
                 var medianRow = Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20);
-                plot.AddSignal(medianRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Green, label: "median");
+                plot.AddSignal(medianRow, currentExperiment.DataAcquisitionSettings.SamplingRate, System.Drawing.Color.Green, label: "median");
                 break;
             default:
                 var derivRow = Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length);
-                plot.AddSignal(derivRow, currentExperiment.Descriptors.SamplingRate, System.Drawing.Color.Orange, label: "derivative");
+                plot.AddSignal(derivRow, currentExperiment.DataAcquisitionSettings.SamplingRate, System.Drawing.Color.Orange, label: "derivative");
                 break;
             }
             

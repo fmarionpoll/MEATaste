@@ -12,24 +12,4 @@ namespace MEATaste.Infrastructure
 
         public void Subscribe(EventType eventType, Action action) => subscribers.Add(new EventSubscriber(eventType, action));
     }
-
-    internal record EventSubscriber(EventType EventType, Action Action);
-
-    public interface IEventSubscriber
-    {
-        void Subscribe(EventType eventType, Action action);
-    }
-
-    public interface IEventRaiser
-    {
-        void Raise(EventType eventType);
-    }
-
-    public enum EventType
-    {
-        CurrentExperimentChanged = 0,
-        SelectedElectrodeChanged = 1,
-        ElectrodeRecordLoaded = 2,
-        AxesMaxMinChanged = 3,
-    }
 }

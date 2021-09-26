@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -15,15 +12,15 @@ namespace MEATaste.Views.PlotSignal
         public PlotSignalPanelModel Model { get; }
 
         private readonly ApplicationState state;
-        private readonly MeaFileReader meaFileReader;
+        private readonly H5FileReader h5FileReader;
         private WpfPlot plotControl;
 
-        public PlotSignalPanelController(ApplicationState state, 
-            MeaFileReader meaFileReader,
+        public PlotSignalPanelController(ApplicationState state,
+            H5FileReader h5FileReader,
             IEventSubscriber eventSubscriber)
         {
             this.state = state;
-            this.meaFileReader = meaFileReader;
+            this.h5FileReader = h5FileReader;
 
             Model = new PlotSignalPanelModel();
             eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, LoadAcquisitionParameters);
@@ -34,9 +31,9 @@ namespace MEATaste.Views.PlotSignal
         private void LoadAcquisitionParameters()
         {
             var currentExperiment = state.CurrentExperiment.Get();
-            Model.AcquisitionSettingsLabel = " High-pass=" + currentExperiment.Descriptors.Hpf + " Hz " 
-                                           + " Sampling rate=" + currentExperiment.Descriptors.SamplingRate /1000 + " kHz "
-                                           + " resolution=" + (currentExperiment.Descriptors.Lsb * 1000).ToString("0.###")  + " mV";
+            Model.AcquisitionSettingsLabel = " High-pass=" + currentExperiment.DataAcquisitionSettings.Hpf + " Hz " 
+                                           + " Sampling rate=" + currentExperiment.DataAcquisitionSettings.SamplingRate /1000 + " kHz "
+                                           + " resolution=" + (currentExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
         }
 
         public void AuthorizeReading(bool value)
@@ -72,7 +69,7 @@ namespace MEATaste.Views.PlotSignal
                 state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
                 electrodeBuffer = state.ElectrodeBuffer.Get();
             }
-            electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrodeProperties);
+            electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(electrodeProperties.Channel);
 
             DisplayNewData(electrodeProperties);
         }
@@ -83,7 +80,7 @@ namespace MEATaste.Views.PlotSignal
             state.CurrentElectrode.Set(electrodeProperties);
             var plot = plotControl.Plot;
             plot.Clear();
-            plot.AddSignal(TransferDataToElectrodeBuffer(), currentExperiment.Descriptors.SamplingRate);
+            plot.AddSignal(TransferDataToElectrodeBuffer(), currentExperiment.DataAcquisitionSettings.SamplingRate);
             var title = "electrode: "+ electrodeProperties.Electrode
             + " channel: " +electrodeProperties.Channel
             + $" (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
@@ -99,7 +96,7 @@ namespace MEATaste.Views.PlotSignal
             var currentExperiment = state.CurrentExperiment.Get();
             var electrodeBuffer = state.ElectrodeBuffer.Get();
             var rawSignalUShort = electrodeBuffer.RawSignalUShort;
-            var lsb = currentExperiment.Descriptors.Lsb * 1000;
+            var lsb = currentExperiment.DataAcquisitionSettings.Lsb * 1000;
             electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
             return electrodeBuffer.RawSignalDouble;
         }

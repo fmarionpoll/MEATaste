@@ -12,16 +12,16 @@ namespace MEATaste.Views.FileOpen
     {
         public FileOpenPanelModel Model { get; }
 
-        private readonly MeaFileReader meaFileReader;
+        private readonly H5FileReader h5FileReader;
         private readonly DataFileWriter dataFileWriter; 
         private readonly ApplicationState state;
        
 
-        public FileOpenPanelController(ApplicationState state, 
-            MeaFileReader meaFileReader, 
+        public FileOpenPanelController(ApplicationState state,
+            H5FileReader h5FileReader, 
             DataFileWriter dataFileWriter)
         {
-            this.meaFileReader = meaFileReader;
+            this.h5FileReader = h5FileReader;
             this.dataFileWriter = dataFileWriter;
             this.state = state;
 
@@ -34,7 +34,7 @@ namespace MEATaste.Views.FileOpen
             if (openFileDialog.ShowDialog() != true) return;
 
             var fileName = openFileDialog.FileName;
-            state.CurrentExperiment.Set(meaFileReader.ReadFile(fileName));
+            state.CurrentExperiment.Set(h5FileReader.ReadFile(fileName));
 
             var currentExperiment = state.CurrentExperiment.Get();
             Model.FileNameLabel = currentExperiment.FileName + " version="+ currentExperiment.FileVersion;
@@ -52,7 +52,7 @@ namespace MEATaste.Views.FileOpen
         public void SaveAllElectrodesDataClick()
         {
             var experiment = state.CurrentExperiment.Get();
-            var array = state.CurrentExperiment.Get().Descriptors.Electrodes;
+            var array = state.CurrentExperiment.Get().Electrodes;
             var electrodeBuffer = state.ElectrodeBuffer.Get();
             if (electrodeBuffer == null)
             {
@@ -63,7 +63,7 @@ namespace MEATaste.Views.FileOpen
             foreach (var electrode in array)
             {
                 state.CurrentElectrode.Set(electrode);
-                electrodeBuffer.RawSignalUShort = meaFileReader.ReadDataForOneElectrode(electrode);
+                electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(electrode.Channel);
                 var electrodeDataBuffer = state.ElectrodeBuffer.Get() ??
                                           throw new ArgumentNullException("state.ElectrodeBuffer.Get()");
                 dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeDataBuffer);

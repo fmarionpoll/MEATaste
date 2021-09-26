@@ -4,8 +4,6 @@ using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
-using System.Windows;
-
 
 
 namespace MEATaste.Views.ElectrodesList
@@ -55,7 +53,7 @@ namespace MEATaste.Views.ElectrodesList
 
         private void LoadElectrodeListItems()
         {
-            var array = state.CurrentExperiment.Get().Descriptors.Electrodes;
+            var array = state.CurrentExperiment.Get().Electrodes;
             electrodesList = new ObservableCollection<ElectrodeProperties>(array);
             Model.ElectrodeListView = CollectionViewSource.GetDefaultView(electrodesList);
         }

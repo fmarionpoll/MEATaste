@@ -27,8 +27,7 @@ namespace MEATaste.Infrastructure
 
                 services.AddSingleton<StatePropertyFactory>();
                 services.AddSingleton<ApplicationState>();
-                services.AddSingleton<FileReader>();
-                services.AddSingleton<MeaFileReader>();
+                services.AddSingleton<H5FileReader>();
                 services.AddSingleton<DataFileWriter>();
             }
 

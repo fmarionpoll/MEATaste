@@ -72,7 +72,7 @@ namespace MEATaste.Views.ElectrodesMap
                 MarkerFill = OxyColors.LightBlue
             };
 
-            foreach (var electrode in state.CurrentExperiment.Get().Descriptors.Electrodes)
+            foreach (var electrode in state.CurrentExperiment.Get().Electrodes)
             {
                 var point = new ScatterPoint(electrode.XuM, electrode.YuM);
                 series.Points.Add(point);
@@ -136,7 +136,7 @@ namespace MEATaste.Views.ElectrodesMap
                 return;
             var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
             var currentExperiment = state.CurrentExperiment.Get();
-            var selectedElectrode = currentExperiment.Descriptors.Electrodes[indexOfNearestPoint];
+            var selectedElectrode = currentExperiment.Electrodes[indexOfNearestPoint];
             SelectElectrode(selectedElectrode);
         }
 
