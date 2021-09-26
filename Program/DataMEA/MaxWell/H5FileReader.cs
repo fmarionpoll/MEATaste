@@ -145,7 +145,7 @@ namespace MEATaste.DataMEA.MaxWell
         }
         */
 
-        public ushort[] ReadAllFromOneChannelAsInt(int Channel)
+        public ushort[] ReadAllFromOneChannelAsInt(int channel)
         {
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("sig");
@@ -169,7 +169,7 @@ namespace MEATaste.DataMEA.MaxWell
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = ReadIntervalForOneChannelAsInt(ldataset, Channel, istart, iend);
+                var chunkresult = ReadIntervalForOneChannelAsInt(ldataset, channel, istart, iend);
                 Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
                 lRoot.Dispose();
             });
