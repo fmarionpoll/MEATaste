@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
@@ -54,9 +55,6 @@ namespace MEATaste.Views.PlotSignal
             if (electrodeProperties == null || electrodeProperties == Model.SelectedElectrodeProperties)
                 return;
             Model.SelectedElectrodeProperties = electrodeProperties;
-
-            //var cancellationTokenSource = new CancellationTokenSource();
-            //var task = new Task(() => UpdateSelectedElectrodeData(electrodeProperties), cancellationTokenSource.Token);
             UpdateSelectedElectrodeData(electrodeProperties);
         }
 
@@ -88,6 +86,10 @@ namespace MEATaste.Views.PlotSignal
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (mV)");
 
+            DataAcquisitionSettings acqSettings = currentExperiment.DataAcquisitionSettings;
+            double duration = acqSettings.TimeStop.Subtract(acqSettings.TimeStart).TotalSeconds;
+            Trace.WriteLine("duration(s)=" + duration);
+            plot.SetAxisLimits(0, duration);
             plotControl.Plot.Render();
         }
 
