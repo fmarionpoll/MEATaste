@@ -34,7 +34,7 @@ namespace MEATaste.Views.FileOpen
             if (openFileDialog.ShowDialog() != true) return;
 
             var fileName = openFileDialog.FileName;
-            state.CurrentExperiment.Set(h5FileReader.ReadFile(fileName));
+            state.CurrentExperiment.Set(h5FileReader.OpenFileAndReadExperiment(fileName));
 
             var currentExperiment = state.CurrentExperiment.Get();
             Model.FileNameLabel = currentExperiment.FileName + " version="+ currentExperiment.FileVersion;

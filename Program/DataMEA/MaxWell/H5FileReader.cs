@@ -51,7 +51,7 @@ namespace MEATaste.DataMEA.MaxWell
             return meaExp;
         }
 
-        public MeaExperiment ReadFile(string fileName)
+        public MeaExperiment OpenFileAndReadExperiment(string fileName)
         {
             if (OpenReadMaxWellFile(fileName)
                 && IsReadableAsMaxWellFile())
