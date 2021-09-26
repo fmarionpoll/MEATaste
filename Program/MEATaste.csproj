@@ -7,6 +7,10 @@
     <Authors>FMP</Authors>
     <Company>EGCE</Company>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="HDF.PInvoke.1.10" Version="1.10.612" />
     <PackageReference Include="HDF5.NET" Version="1.0.0-alpha.10" />

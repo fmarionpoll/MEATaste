@@ -28,20 +28,19 @@ namespace MEATaste.DataMEA.MaxWell
 
         public ushort[] ReadDataForOneElectrode(ElectrodeProperties electrodeProperties)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var result1 = fileReader.ReadAll_OneElectrodeAsInt(electrodeProperties);
-            stopwatch.Stop();
-            Trace.WriteLine("Elapsed time -direct- is " + (stopwatch.ElapsedMilliseconds / 1000).ToString("0.###") + " s");
-
+            var stopwatch = new Stopwatch();
             //stopwatch.Start();
-            //var result2 = fileReader.ReadAll_OneElectrodeAsIntParallel(electrodeProperties);
+            //var result1 = fileReader.ReadAll_OneElectrodeAsInt(electrodeProperties);
             //stopwatch.Stop();
-            //Trace.WriteLine("Elapsed time -parallel- is " + (stopwatch.ElapsedMilliseconds / 1000).ToString("0.###") + " s");
+            //Trace.WriteLine("Elapsed time -direct- is " + (stopwatch.ElapsedMilliseconds / 1000).ToString("0.###") + " s");
+            //return result1;
 
-            return result1;
+            stopwatch.Start();
+            var result2 = fileReader.ReadAll_OneElectrodeAsIntParallel(electrodeProperties);
+            stopwatch.Stop();
+            Trace.WriteLine("Elapsed time -parallel- is " + (stopwatch.ElapsedMilliseconds / 1000).ToString("0.###") + " s");
+            return result2;
         }
-
 
     }
 
@@ -66,23 +65,23 @@ namespace MEATaste.DataMEA.MaxWell
 
         public bool IsFileReadableAsMaxWellFile()
         {
-            H5Group group = Root.Group("/");
-            H5Dataset dataset = group.Dataset("version");
-            string[] data = dataset.ReadString();
+            var h5Group = Root.Group("/");
+            var h5Dataset = h5Group.Dataset("version");
+            var data = h5Dataset.ReadString();
             FileVersion = data[0];
             
-            if (FileVersion == "20160704")
+            switch (FileVersion)
             {
-                Trace.WriteLine($"MaxWell file version: legacy ({FileVersion}) or v0");
-                return true;
+                case "20160704":
+                    Trace.WriteLine($"MaxWell file version: legacy ({FileVersion}) or v0");
+                    return true;
+                case "20190530":
+                    Trace.WriteLine($"MaxWell file version: 2021 on ({FileVersion}) or v1");
+                    return false;
+                default:
+                    Trace.WriteLine("unknown file structure");
+                    break;
             }
-            else if (FileVersion == "20190530")
-            {
-                Trace.WriteLine($"MaxWell file version: 2021 on ({FileVersion}) or v1");
-                return false;
-            }
-            else
-                Trace.WriteLine("unknown file structure");
             return false;
         }
 
@@ -97,11 +96,11 @@ namespace MEATaste.DataMEA.MaxWell
 
         public bool ReadTimeDescriptors(MeaExperiment meaExp)
         {
-            H5Group group = Root.Group("/");
-            H5Dataset dataset = group.Dataset("time");
-            string[] data = dataset.ReadString();
-            string lines = data[0];
-            string[] strings = lines.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            var h5Group = Root.Group("/");
+            var h5Dataset = h5Group.Dataset("time");
+            var data = h5Dataset.ReadString();
+            var lines = data[0];
+            var strings = lines.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             meaExp.Descriptors.TimeStart = GetTimeFromString(strings[0], "start: ");
             meaExp.Descriptors.TimeStop = GetTimeFromString(strings[1], "stop: ");
 
@@ -110,48 +109,47 @@ namespace MEATaste.DataMEA.MaxWell
 
         private DateTime GetTimeFromString(string inputString, string pattern)
         {
-            int pos1 = pattern.Length;
-            int pos2 = inputString.IndexOf(';');
+            var pos1 = pattern.Length;
+            var pos2 = inputString.IndexOf(';');
             if (pos2 < 0)
                 pos2 = inputString.Length;
-            string dateInput = inputString.Substring(pos1, pos2 - pos1);
-            DateTime parsedDate = DateTime.Parse(dateInput);
+            var dateInput = inputString.Substring(pos1, pos2 - pos1);
+            var parsedDate = DateTime.Parse(dateInput);
             return parsedDate;
         }
 
         public bool ReadSettingsDescriptors(MeaExperiment meaExp)
         {
-            H5Group group = Root.Group("/settings");
+            var h5Group = Root.Group("/settings");
 
-            double[] gainarray = ReadDoubleDataFromGroup(group, "gain");
+            var gainarray = ReadDoubleDataFromGroup(h5Group, "gain");
             meaExp.Descriptors.Gain = gainarray[0];
 
-            double[] hpfarray = ReadDoubleDataFromGroup(group, "hpf");
+            var hpfarray = ReadDoubleDataFromGroup(h5Group, "hpf");
             meaExp.Descriptors.Hpf = hpfarray[0];
 
-            double[] lsbarray = ReadDoubleDataFromGroup(group, "lsb");
+            var lsbarray = ReadDoubleDataFromGroup(h5Group, "lsb");
             meaExp.Descriptors.Lsb = lsbarray[0];
             
             return true;
         }
 
-        private double[] ReadDoubleDataFromGroup(H5Group group, string headerName)
+        private double[] ReadDoubleDataFromGroup(H5Group h5Group, string headerName)
         {
-            H5Dataset datasetGain = group.Dataset(headerName);
-            double[] results = datasetGain.Read<double>();
-            return results;
+            var datasetGain = h5Group.Dataset(headerName);
+            return datasetGain.Read<double>();
         }
 
         public bool ReadMapElectrodes(MeaExperiment meaExp)
         {
-            H5Group group = Root.Group("/");
-            H5Dataset dataset = group.Dataset("mapping");
-            Legacy.DatasetMembers[] compoundData = dataset.Read<Legacy.DatasetMembers>();
+            var h5Group = Root.Group("/");
+            var h5Dataset = h5Group.Dataset("mapping");
+            Legacy.DatasetMembers[] compoundData = h5Dataset.Read<Legacy.DatasetMembers>();
 
             meaExp.Descriptors.Electrodes = new ElectrodeProperties[compoundData.Length];
-            for (int i = 0; i < compoundData.Length; i++)
+            for (var i = 0; i < compoundData.Length; i++)
             {
-                ElectrodeProperties ec = new ElectrodeProperties(
+                var ec = new ElectrodeProperties(
                     compoundData[i].electrode,
                     compoundData[i].channel,
                     compoundData[i].x,
@@ -163,37 +161,43 @@ namespace MEATaste.DataMEA.MaxWell
 
         public ushort[] ReadAll_OneElectrodeAsInt(ElectrodeProperties electrodeProperties)
         {
-            H5Group group = Root.Group("/");
-            H5Dataset dataset = group.Dataset("sig");
-            int ndimensions = dataset.Space.Rank;
+            var h5Group = Root.Group("/");
+            var h5Dataset = h5Group.Dataset("sig");
+            int ndimensions = h5Dataset.Space.Rank;
             if (ndimensions != 2)
                 return null; 
-            var nbdatapoints = dataset.Space.Dimensions[1];      // any size*
-            return Read_OneElectrodeDataAsInt(dataset, electrodeProperties.Channel, 0, nbdatapoints -1);
+            var nbdatapoints = h5Dataset.Space.Dimensions[1]; 
+            return Read_OneElectrodeDataAsInt(h5Dataset, electrodeProperties.Channel, 0, nbdatapoints -1);
         }
 
         public ushort[] ReadAll_OneElectrodeAsIntParallel(ElectrodeProperties electrodeProperties)
         {
-            H5Group group = Root.Group("/");
-            H5Dataset dataset = group.Dataset("sig");
-            var nbdatapoints = dataset.Space.Dimensions[1];      // any size*
+            var h5Group = Root.Group("/");
+            var h5Dataset = h5Group.Dataset("sig");
+            var nbdatapoints = h5Dataset.Space.Dimensions[1];
             const ulong chunkSizePerChannel = 200;
             var result = new ushort[nbdatapoints];
-            var nchunks = (long) (nbdatapoints / chunkSizePerChannel) ;
+            var nchunks = (long)(nbdatapoints / chunkSizePerChannel);
 
-            int ndimensions = dataset.Space.Rank;
+            int ndimensions = h5Dataset.Space.Rank;
             if (ndimensions != 2)
                 return null;
 
-            Parallel.For (0, nchunks, i =>
+            Parallel.For(0, nchunks, i =>
             {
-                var istart = (ulong) i * chunkSizePerChannel;
+                var fileName = FileName;
+                var lRoot = H5File.OpenRead(fileName);
+                var lgroup = lRoot.Group("/");
+                var ldataset = lgroup.Dataset("sig");
+
+                var istart = (ulong)i * chunkSizePerChannel;
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = Read_OneElectrodeDataAsInt(dataset, electrodeProperties.Channel, istart, iend);
-                Array.Copy(chunkresult, 0, result, (int) istart, (int) (iend - istart + 1));
-            }) ;
+                var chunkresult = Read_OneElectrodeDataAsInt(ldataset, electrodeProperties.Channel, istart, iend);
+                Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
+                lRoot.Dispose();
+            });
 
             return result;
         }
