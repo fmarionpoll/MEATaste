@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using ScottPlot;
-using ScottPlot.Plottable;
+
 
 namespace MEATaste.Views.PlotSignal
 {
     public class PlotSignalPanelController
     {
         public PlotSignalPanelModel Model { get; }
-
         private readonly ApplicationState state;
         private readonly H5FileReader h5FileReader;
         private ElectrodeProperties selectedElectrode;
@@ -44,11 +44,20 @@ namespace MEATaste.Views.PlotSignal
             if (Model.DisplayChecked != value)
             {
                 MakeCurvesVisible(value);
-                Application.Current.Dispatcher.Invoke(new Action(() => { Model.PlotControl.Render(); }));
+                Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
             }
-            
             Model.DisplayChecked = value;
             ChangeSelectedElectrode();
+        }
+
+        private void MakeCurvesVisible(bool visible)
+        {
+            var plot = Model.PlotControl.Plot;
+            var plottables = plot.GetPlottables();
+            foreach (var t in plottables)
+            {
+                t.IsVisible = visible;
+            }
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -67,16 +76,6 @@ namespace MEATaste.Views.PlotSignal
             UpdateSelectedElectrodeData(properties);
         }
 
-        private void MakeCurvesVisible(bool visible)
-        {
-            var plot = Model.PlotControl.Plot;
-            var plottables = plot.GetPlottables();
-            foreach (var t in plottables)
-            {
-                t.IsVisible = visible;
-            }
-        }
-
         private void UpdateSelectedElectrodeData(ElectrodeProperties properties)
         {
             var electrodeBuffer = state.ElectrodeBuffer.Get();
@@ -89,8 +88,10 @@ namespace MEATaste.Views.PlotSignal
 
             if (properties != selectedElectrode || flag)
             {
+                Mouse.OverrideCursor = Cursors.Wait;
                 electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(properties.Channel);
                 selectedElectrode = properties;
+                Mouse.OverrideCursor = null;
             }
 
             DisplayNewData(properties);
@@ -99,7 +100,6 @@ namespace MEATaste.Views.PlotSignal
         private void DisplayNewData(ElectrodeProperties properties)
         {
             var currentExperiment = state.CurrentExperiment.Get();
-            state.CurrentElectrode.Set(properties);
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             var electrodeBuffer = TransferDataToElectrodeBuffer();
@@ -108,7 +108,6 @@ namespace MEATaste.Views.PlotSignal
 
             var acqSettings = currentExperiment.DataAcquisitionSettings;
             var duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
-
             var title = "electrode: "+ properties.Electrode
                                      + " channel: " +properties.Channel
                                      + $" (position : x={properties.XuM}, y={properties.YuM} µm)";
@@ -119,7 +118,7 @@ namespace MEATaste.Views.PlotSignal
             plot.SetAxisLimits(0, duration);
             sig.MaxRenderIndex = (int)(acqSettings.nDataAcquisitionPoints - 1);
             plot.Render();
-            Application.Current.Dispatcher.Invoke(new Action(() => { Model.PlotControl.Render(); }));
+            Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
         }
 
         private double[] TransferDataToElectrodeBuffer()

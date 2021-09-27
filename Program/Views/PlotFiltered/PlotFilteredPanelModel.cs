@@ -9,28 +9,29 @@ namespace MEATaste.Views.PlotFiltered
 {
     public class PlotFilteredPanelModel : INotifyPropertyChanged
     {
-        private AxisLimits axisLimitsForDataPlot;
-        private bool plotFilteredData;
+        private bool displayChecked;
         private ElectrodeProperties selectedElectrodeProperties;
         private int selectedFilterIndex = 0;
+        private WpfPlot plotControl;
 
-         public AxisLimits AxisLimitsForDataPlot
+        public WpfPlot PlotControl
         {
-            get => axisLimitsForDataPlot;
+            get => plotControl;
             set
             {
-                axisLimitsForDataPlot = value;
-                OnPropertyChanged(nameof(AxisLimitsForDataPlot));
+                if (plotControl == value) return;
+                plotControl = value;
+                OnPropertyChanged(nameof(PlotControl));
             }
         }
-
-        public bool PlotFilteredData
+        
+        public bool DisplayChecked
         {
-            get => plotFilteredData;
+            get => displayChecked;
             set
             {
-                plotFilteredData = value;
-                OnPropertyChanged(nameof(PlotFilteredData));
+                displayChecked = value;
+                OnPropertyChanged(nameof(DisplayChecked));
             }
         }
         
@@ -58,6 +59,7 @@ namespace MEATaste.Views.PlotFiltered
 
         public PlotFilteredPanelModel()
         {
+            PlotControl = new WpfPlot();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

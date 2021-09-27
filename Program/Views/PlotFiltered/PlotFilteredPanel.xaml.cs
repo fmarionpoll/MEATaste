@@ -37,7 +37,7 @@ namespace MEATaste.Views.PlotFiltered
         {
             var checkBox = sender as CheckBox;
             var value = checkBox?.IsChecked == true;
-            controller.AuthorizeReading(value);
+            controller.DisplayCurveChecked(value);
         }
     }
 }

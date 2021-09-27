@@ -18,7 +18,7 @@ namespace MEATaste.Views.PlotSignal
             {
                 if (plotControl == value) return;
                 plotControl = value;
-                OnPropertyChanged(nameof(DisplayChecked));
+                OnPropertyChanged(nameof(PlotControl));
             }
         }
 

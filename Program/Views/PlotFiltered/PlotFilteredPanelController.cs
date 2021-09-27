@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Windows;
 using System.Windows.Input;
 using MEATaste.DataMEA.Models;
 using MEATaste.DataMEA.Utilities;
@@ -12,7 +14,7 @@ namespace MEATaste.Views.PlotFiltered
         public PlotFilteredPanelModel Model { get; }
         private readonly ApplicationState state;
         private WpfPlot plotControl;
-
+        private ElectrodeProperties selectedElectrode;
 
         public PlotFilteredPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
@@ -23,15 +25,24 @@ namespace MEATaste.Views.PlotFiltered
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
         }
 
-        public void AuthorizeReading(bool value)
+        public void DisplayCurveChecked(bool value)
         {
-            Model.PlotFilteredData = value;
-            if (value)
-                ChangeSelectedElectrode();
-            else
+            if (Model.DisplayChecked != value)
             {
-                Model.SelectedElectrodeProperties = null;
-                plotControl.Plot.Clear();
+                MakeCurvesVisible(value);
+                Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
+            }
+            Model.DisplayChecked = value;
+            ChangeSelectedElectrode();
+        }
+
+        private void MakeCurvesVisible(bool visible)
+        {
+            var plot = Model.PlotControl.Plot;
+            var plottables = plot.GetPlottables();
+            foreach (var t in plottables)
+            {
+                t.IsVisible = visible;
             }
         }
 
@@ -42,16 +53,16 @@ namespace MEATaste.Views.PlotFiltered
 
         private void ChangeSelectedElectrode()
         {
-            if (!Model.PlotFilteredData) return;
-            var electrodeRecord = state.CurrentElectrode.Get();
-            if (electrodeRecord == null) return;
-            if (electrodeRecord == Model.SelectedElectrodeProperties)
+            if (!Model.DisplayChecked) return;
+
+            var properties = state.CurrentElectrode.Get();
+            if (properties == null || properties == selectedElectrode)
                 return;
-            Model.SelectedElectrodeProperties = electrodeRecord;
-            UpdateSelectedElectrodeFilteredData();
+            
+            UpdateSelectedElectrodeFilteredData(properties);
         }
 
-        private void UpdateSelectedElectrodeFilteredData()
+        private void UpdateSelectedElectrodeFilteredData(ElectrodeProperties properties)
         {
             var currentExperiment = state.CurrentExperiment.Get();
             if (currentExperiment == null) 
@@ -64,28 +75,40 @@ namespace MEATaste.Views.PlotFiltered
             if (rawSignalDouble == null) 
                 return;
 
+            if (properties == selectedElectrode) return;
+
+            selectedElectrode = properties;
+            var result = ComputeFilteredData(rawSignalDouble);
+            PlotData(result);
+        }
+
+        private double[] ComputeFilteredData(double[] rawSignalDouble)
+        {
             Mouse.OverrideCursor = Cursors.Wait;
+            double[] result = Model.SelectedFilterIndex switch
+            {
+                1 => Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20),
+                _ => Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length)
+            };
+            Mouse.OverrideCursor = null;
+            return result;
+        }
+
+        private void PlotData(double[] result)
+        {
+            var currentExperiment = state.CurrentExperiment.Get();
             var plot = plotControl.Plot;
+            plot.AddSignal(result, currentExperiment.DataAcquisitionSettings.SamplingRate,
+                System.Drawing.Color.Orange, label: Model.SelectedFilterIndex.ToString());
+
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
-            
+
             plot.Clear();
-            switch (Model.SelectedFilterIndex)
-            {
-            case 1:
-                var medianRow = Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20);
-                plot.AddSignal(medianRow, currentExperiment.DataAcquisitionSettings.SamplingRate, System.Drawing.Color.Green, label: "median");
-                break;
-            default:
-                var derivRow = Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length);
-                plot.AddSignal(derivRow, currentExperiment.DataAcquisitionSettings.SamplingRate, System.Drawing.Color.Orange, label: "derivative");
-                break;
-            }
-            
-            Mouse.OverrideCursor = null;
             var legend = plot.Legend();
-            legend.FontSize = 10; 
+            legend.FontSize = 10;
             plot.Render();
+            Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
         }
 
         public void OnAxesChanged(object sender, EventArgs e)
@@ -108,13 +131,12 @@ namespace MEATaste.Views.PlotFiltered
             plot.Render();
             plot.Configuration.AxesChangedEventEnabled = true;
 
-            Model.AxisLimitsForDataPlot = plot.Plot.GetAxisLimits();
+            //Model.AxisLimitsForDataPlot = plot.Plot.GetAxisLimits();
         }
 
         private void AxesChanged()
         {
-            if (!Model.PlotFilteredData) return;
-
+            if (!Model.DisplayChecked) return;
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
                 ChangeXAxes(plotControl, axesMaxMin.XMin, axesMaxMin.XMax);
@@ -124,7 +146,7 @@ namespace MEATaste.Views.PlotFiltered
         {
             Model.SelectedFilterIndex = selectedFilterIndex;
             if (Model.SelectedElectrodeProperties != null)
-                UpdateSelectedElectrodeFilteredData();
+                UpdateSelectedElectrodeFilteredData(Model.SelectedElectrodeProperties);
         }
 
     }
