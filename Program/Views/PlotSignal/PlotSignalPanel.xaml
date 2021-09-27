@@ -14,10 +14,10 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <WpfPlot x:Name="PlotControl" Grid.Row ="1" 
-                 Loaded="PlotControl_Loaded" AxesChanged="PlotControl_AxesChanged" Grid.ColumnSpan="2" />
-        <CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Checked="CheckBox_Checked" Height="16"
-                  Width="190">
+        <WpfPlot x:Name = "PlotControl" Grid.Row ="1" Grid.ColumnSpan="2" 
+                 Loaded = "PlotControl_Loaded" 
+                 AxesChanged = "PlotControl_AxesChanged" />
+        <CheckBox Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Height="16" Width="190" Click="CheckBox_Click" >
             <TextBlock Text="Load data for selected electrode" />
         </CheckBox>
         <Label VerticalAlignment="Center" Content="{Binding AcquisitionSettingsLabel, Mode = OneWay}"

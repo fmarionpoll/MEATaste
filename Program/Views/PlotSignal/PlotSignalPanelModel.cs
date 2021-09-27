@@ -1,52 +1,40 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
-using MEATaste.DataMEA.Models;
 using ScottPlot;
 
 namespace MEATaste.Views.PlotSignal
 {
     public class PlotSignalPanelModel : INotifyPropertyChanged
     {
-        private AxisLimits axisLimitsForDataPlot;
-        private bool plotDataForSelectedElectrode;
-        private ElectrodeProperties selectedElectrodeProperties;
+        private bool displayChecked;
         private string acquisitionSettingsLabel = string.Empty;
+        private WpfPlot plotControl;
 
-        public AxisLimits AxisLimitsForDataPlot
+        public WpfPlot PlotControl
         {
-            get => axisLimitsForDataPlot;
+            get => plotControl;
             set
             {
-                if (axisLimitsForDataPlot.XMin == value.XMin
-                && AxisLimitsForDataPlot.XMax == value.XMax
-                && AxisLimitsForDataPlot.YMin == value.YMin
-                && AxisLimitsForDataPlot.YMax == value.YMax
-                ) return;
-                axisLimitsForDataPlot = value;
-                OnPropertyChanged(nameof(AxisLimitsForDataPlot));
+                if (plotControl == value) return;
+                plotControl = value;
+                OnPropertyChanged(nameof(DisplayChecked));
             }
         }
 
-        public bool PlotDataForSelectedElectrode
+        public PlotSignalPanelModel()
         {
-            get => plotDataForSelectedElectrode;
-            set
-            {
-                if (plotDataForSelectedElectrode == value) return;
-                plotDataForSelectedElectrode = value;
-                OnPropertyChanged(nameof(PlotDataForSelectedElectrode));
-            }
+            PlotControl = new WpfPlot();
         }
 
-        public ElectrodeProperties SelectedElectrodeProperties
+        public bool DisplayChecked
         {
-            get => selectedElectrodeProperties;
+            get => displayChecked;
             set
             {
-                if (selectedElectrodeProperties == value) return;
-                selectedElectrodeProperties = value;
-                OnPropertyChanged(nameof(SelectedElectrodeProperties));
+                if (displayChecked == value) return;
+                displayChecked = value;
+                OnPropertyChanged(nameof(DisplayChecked));
             }
         }
 
@@ -59,10 +47,6 @@ namespace MEATaste.Views.PlotSignal
                 acquisitionSettingsLabel = value;
                 OnPropertyChanged(nameof(AcquisitionSettingsLabel));
             }
-        }
-
-        public PlotSignalPanelModel()
-        {
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

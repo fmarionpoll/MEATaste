@@ -17,11 +17,6 @@ namespace MEATaste.Views.PlotSignal
             InitializeComponent();
         }
 
-        private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
-            controller.AuthorizeReading(flag);
-        }
 
         private void PlotControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -32,6 +27,12 @@ namespace MEATaste.Views.PlotSignal
         private void PlotControl_AxesChanged(object sender, System.EventArgs e)
         {
             controller.OnAxesChanged(sender, e);
+        }
+
+        private void CheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
+            controller.DisplayCurveChecked(flag);
         }
     }
 

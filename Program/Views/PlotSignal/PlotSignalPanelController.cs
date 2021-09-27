@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using ScottPlot;
+using ScottPlot.Plottable;
 
 namespace MEATaste.Views.PlotSignal
 {
@@ -14,7 +15,8 @@ namespace MEATaste.Views.PlotSignal
 
         private readonly ApplicationState state;
         private readonly H5FileReader h5FileReader;
-        private WpfPlot plotControl;
+        private ElectrodeProperties selectedElectrode;
+        
 
         public PlotSignalPanelController(ApplicationState state,
             H5FileReader h5FileReader,
@@ -37,59 +39,79 @@ namespace MEATaste.Views.PlotSignal
                                            + " resolution=" + (currentExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
         }
 
-        public void AuthorizeReading(bool value)
+        public void DisplayCurveChecked(bool value)
         {
-            Model.PlotDataForSelectedElectrode = value;
+            if (Model.DisplayChecked != value)
+            {
+                MakeCurvesVisible(value);
+                Application.Current.Dispatcher.Invoke(new Action(() => { Model.PlotControl.Render(); }));
+            }
+            
+            Model.DisplayChecked = value;
+            ChangeSelectedElectrode();
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
         {
-            plotControl = wpfControl;
+            Model.PlotControl = wpfControl;
         }
 
         private void ChangeSelectedElectrode()
         {
-            if (!Model.PlotDataForSelectedElectrode) return;
-
-            var electrodeProperties = state.CurrentElectrode.Get();
-            if (electrodeProperties == null || electrodeProperties == Model.SelectedElectrodeProperties)
+            if (!Model.DisplayChecked) return;
+            
+            var properties = state.CurrentElectrode.Get();
+            if (properties == null || properties == selectedElectrode)
                 return;
-            Model.SelectedElectrodeProperties = electrodeProperties;
-            UpdateSelectedElectrodeData(electrodeProperties);
+
+            UpdateSelectedElectrodeData(properties);
         }
 
-        private void UpdateSelectedElectrodeData(ElectrodeProperties electrodeProperties)
+        private void MakeCurvesVisible(bool visible)
         {
-            
+            var plot = Model.PlotControl.Plot;
+            var plottables = plot.GetPlottables();
+            foreach (var t in plottables)
+            {
+                t.IsVisible = visible;
+            }
+        }
+
+        private void UpdateSelectedElectrodeData(ElectrodeProperties properties)
+        {
             var electrodeBuffer = state.ElectrodeBuffer.Get();
-            if (electrodeBuffer == null)
+            var flag = electrodeBuffer == null;
+            if (flag)
             {
                 state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
                 electrodeBuffer = state.ElectrodeBuffer.Get();
             }
-            electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(electrodeProperties.Channel);
 
-            DisplayNewData(electrodeProperties);
+            if (properties != selectedElectrode || flag)
+            {
+                electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(properties.Channel);
+                selectedElectrode = properties;
+            }
+
+            DisplayNewData(properties);
         }
 
-        private void DisplayNewData(ElectrodeProperties electrodeProperties)
+        private void DisplayNewData(ElectrodeProperties properties)
         {
             var currentExperiment = state.CurrentExperiment.Get();
-            state.CurrentElectrode.Set(electrodeProperties);
-            var plot = plotControl.Plot;
-
+            state.CurrentElectrode.Set(properties);
+            var plot = Model.PlotControl.Plot;
             plot.Clear();
             var electrodeBuffer = TransferDataToElectrodeBuffer();
-            ScottPlot.Plottable.SignalPlot sig = plot.AddSignal(electrodeBuffer, 
+            var sig = plot.AddSignal(electrodeBuffer, 
                 currentExperiment.DataAcquisitionSettings.SamplingRate);
 
-            DataAcquisitionSettings acqSettings = currentExperiment.DataAcquisitionSettings;
-            double duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
-            Trace.WriteLine("duration(s)=" + duration);
-            
-            var title = "electrode: "+ electrodeProperties.Electrode
-            + " channel: " +electrodeProperties.Channel
-            + $" (position : x={electrodeProperties.XuM}, y={electrodeProperties.YuM} µm)";
+            var acqSettings = currentExperiment.DataAcquisitionSettings;
+            var duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
+
+            var title = "electrode: "+ properties.Electrode
+                                     + " channel: " +properties.Channel
+                                     + $" (position : x={properties.XuM}, y={properties.YuM} µm)";
             plot.Title(title);
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (mV)");
@@ -97,6 +119,7 @@ namespace MEATaste.Views.PlotSignal
             plot.SetAxisLimits(0, duration);
             sig.MaxRenderIndex = (int)(acqSettings.nDataAcquisitionPoints - 1);
             plot.Render();
+            Application.Current.Dispatcher.Invoke(new Action(() => { Model.PlotControl.Render(); }));
         }
 
         private double[] TransferDataToElectrodeBuffer()
@@ -113,8 +136,8 @@ namespace MEATaste.Views.PlotSignal
         {
             var changedPlot = (WpfPlot)sender;
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
-            ChangeXAxes(plotControl, newAxisLimits.XMin, newAxisLimits.XMax);
-            UpdateAxesMaxMinFromScottPlot(plotControl.Plot.GetAxisLimits());
+            ChangeXAxes(changedPlot, newAxisLimits.XMin, newAxisLimits.XMax);
+            UpdateAxesMaxMinFromScottPlot(changedPlot.Plot.GetAxisLimits());
         }
 
         private void UpdateAxesMaxMinFromScottPlot(AxisLimits axisLimits)
@@ -128,16 +151,14 @@ namespace MEATaste.Views.PlotSignal
             plot.Plot.SetAxisLimitsX(xMin, xMax);
             plot.Render();
             plot.Configuration.AxesChangedEventEnabled = true;
-
-            Model.AxisLimitsForDataPlot = plot.Plot.GetAxisLimits();
         }
 
         private void AxesChanged()
         {
-            if (!Model.PlotDataForSelectedElectrode) return;
+            if (!Model.DisplayChecked) return;
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
-                ChangeXAxes(plotControl, axesMaxMin.XMin, axesMaxMin.XMax);
+                ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
 
     }
