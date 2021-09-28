@@ -108,6 +108,8 @@ namespace MEATaste.Views.PlotFiltered
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
 
+            AxesExtrema extrema = state.AxesMaxMin.Get();
+            plot.SetAxisLimits(extrema.XMin, extrema.XMax);
             var legend = plot.Legend();
             legend.FontSize = 10;
             plot.Render();

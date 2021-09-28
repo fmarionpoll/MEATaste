@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
-using MEATaste.DataMEA.Models;
 using ScottPlot;
 
 namespace MEATaste.Views.PlotFiltered
