@@ -10,7 +10,6 @@ namespace MEATaste.Views.PlotFiltered
     public class PlotFilteredPanelModel : INotifyPropertyChanged
     {
         private bool displayChecked;
-        private ElectrodeProperties selectedElectrodeProperties;
         private int selectedFilterIndex = 0;
         private WpfPlot plotControl;
 
@@ -35,17 +34,6 @@ namespace MEATaste.Views.PlotFiltered
             }
         }
         
-        public ElectrodeProperties SelectedElectrodeProperties
-        {
-            get => selectedElectrodeProperties;
-            set
-            {
-                if (selectedElectrodeProperties == value) return;
-                selectedElectrodeProperties = value;
-                OnPropertyChanged(nameof(SelectedElectrodeProperties));
-            }
-        }
-
         public int SelectedFilterIndex
         {
             get => selectedFilterIndex;

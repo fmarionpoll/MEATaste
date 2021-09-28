@@ -6,5 +6,6 @@ namespace MEATaste.DataMEA.Models
     {
         public ushort[] RawSignalUShort { get; set; }
         public double[] RawSignalDouble { get; set; }
+
     }
 }
