@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using System.Windows.Input;
 using MEATaste.DataMEA.Models;
@@ -16,6 +15,7 @@ namespace MEATaste.Views.PlotFiltered
         private WpfPlot plotControl;
         private ElectrodeProperties selectedElectrode;
 
+
         public PlotFilteredPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
             this.state = state;
@@ -28,10 +28,7 @@ namespace MEATaste.Views.PlotFiltered
         public void DisplayCurveChecked(bool value)
         {
             if (Model.DisplayChecked != value)
-            {
                 MakeCurvesVisible(value);
-                Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
-            }
             Model.DisplayChecked = value;
             ChangeSelectedElectrode();
         }
@@ -44,6 +41,7 @@ namespace MEATaste.Views.PlotFiltered
             {
                 t.IsVisible = visible;
             }
+            Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -53,16 +51,20 @@ namespace MEATaste.Views.PlotFiltered
 
         private void ChangeSelectedElectrode()
         {
-            if (!Model.DisplayChecked) return;
+            if (!Model.DisplayChecked)
+            {
+                selectedElectrode = null;
+                return;
+            }
 
             var properties = state.CurrentElectrode.Get();
             if (properties == null || properties == selectedElectrode)
                 return;
-            
-            UpdateSelectedElectrodeFilteredData(properties);
+            selectedElectrode = properties;
+            UpdateSelectedElectrodeFilteredData();
         }
 
-        private void UpdateSelectedElectrodeFilteredData(ElectrodeProperties properties)
+        private void UpdateSelectedElectrodeFilteredData()
         {
             var currentExperiment = state.CurrentExperiment.Get();
             if (currentExperiment == null) 
@@ -75,17 +77,13 @@ namespace MEATaste.Views.PlotFiltered
             if (rawSignalDouble == null) 
                 return;
 
-            if (properties == selectedElectrode) return;
-
-            selectedElectrode = properties;
-            var result = ComputeFilteredData(rawSignalDouble);
-            PlotData(result);
+            PlotData(ComputeFilteredData(rawSignalDouble));
         }
 
         private double[] ComputeFilteredData(double[] rawSignalDouble)
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            double[] result = Model.SelectedFilterIndex switch
+            var result = Model.SelectedFilterIndex switch
             {
                 1 => Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20),
                 _ => Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length)
@@ -98,13 +96,13 @@ namespace MEATaste.Views.PlotFiltered
         {
             var currentExperiment = state.CurrentExperiment.Get();
             var plot = plotControl.Plot;
+            plot.Clear();
             plot.AddSignal(result, currentExperiment.DataAcquisitionSettings.SamplingRate,
                 System.Drawing.Color.Orange, label: Model.SelectedFilterIndex.ToString());
 
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (µV)");
 
-            plot.Clear();
             var legend = plot.Legend();
             legend.FontSize = 10;
             plot.Render();
@@ -116,12 +114,7 @@ namespace MEATaste.Views.PlotFiltered
             var changedPlot = (WpfPlot)sender;
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
             ChangeXAxes(plotControl, newAxisLimits.XMin, newAxisLimits.XMax);
-            UpdateAxesMaxMinFromScottPlot(plotControl.Plot.GetAxisLimits());
-        }
-
-        private void UpdateAxesMaxMinFromScottPlot(AxisLimits axisLimits)
-        {
-            state.AxesMaxMin.Set(new AxesExtrema(axisLimits.XMin, axisLimits.XMax, axisLimits.YMin, axisLimits.YMax));
+            state.AxesMaxMin.Set(new AxesExtrema(newAxisLimits.XMin, newAxisLimits.XMax, newAxisLimits.YMin, newAxisLimits.YMax));
         }
 
         private void ChangeXAxes(WpfPlot plot, double xMin, double xMax)
@@ -130,8 +123,6 @@ namespace MEATaste.Views.PlotFiltered
             plot.Plot.SetAxisLimitsX(xMin, xMax);
             plot.Render();
             plot.Configuration.AxesChangedEventEnabled = true;
-
-            //Model.AxisLimitsForDataPlot = plot.Plot.GetAxisLimits();
         }
 
         private void AxesChanged()
@@ -146,7 +137,7 @@ namespace MEATaste.Views.PlotFiltered
         {
             Model.SelectedFilterIndex = selectedFilterIndex;
             if (Model.SelectedElectrodeProperties != null)
-                UpdateSelectedElectrodeFilteredData(Model.SelectedElectrodeProperties);
+                UpdateSelectedElectrodeFilteredData();
         }
 
     }

@@ -42,10 +42,7 @@ namespace MEATaste.Views.PlotSignal
         public void DisplayCurveChecked(bool value)
         {
             if (Model.DisplayChecked != value)
-            {
                 MakeCurvesVisible(value);
-                Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
-            }
             Model.DisplayChecked = value;
             ChangeSelectedElectrode();
         }
@@ -58,6 +55,7 @@ namespace MEATaste.Views.PlotSignal
             {
                 t.IsVisible = visible;
             }
+            Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -94,17 +92,16 @@ namespace MEATaste.Views.PlotSignal
                 Mouse.OverrideCursor = null;
             }
 
-            DisplayNewData(properties);
+            var result = TransferDataToElectrodeBuffer();
+            DisplayNewData(properties, result);
         }
 
-        private void DisplayNewData(ElectrodeProperties properties)
+        private void DisplayNewData(ElectrodeProperties properties, double[] result)
         {
             var currentExperiment = state.CurrentExperiment.Get();
             var plot = Model.PlotControl.Plot;
             plot.Clear();
-            var electrodeBuffer = TransferDataToElectrodeBuffer();
-            var sig = plot.AddSignal(electrodeBuffer, 
-                currentExperiment.DataAcquisitionSettings.SamplingRate);
+            var sig = plot.AddSignal(result, currentExperiment.DataAcquisitionSettings.SamplingRate);
 
             var acqSettings = currentExperiment.DataAcquisitionSettings;
             var duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
@@ -136,12 +133,7 @@ namespace MEATaste.Views.PlotSignal
             var changedPlot = (WpfPlot)sender;
             var newAxisLimits = changedPlot.Plot.GetAxisLimits();
             ChangeXAxes(changedPlot, newAxisLimits.XMin, newAxisLimits.XMax);
-            UpdateAxesMaxMinFromScottPlot(changedPlot.Plot.GetAxisLimits());
-        }
-
-        private void UpdateAxesMaxMinFromScottPlot(AxisLimits axisLimits)
-        {
-            state.AxesMaxMin.Set(new AxesExtrema(axisLimits.XMin, axisLimits.XMax, axisLimits.YMin, axisLimits.YMax));
+            state.AxesMaxMin.Set(new AxesExtrema(newAxisLimits.XMin, newAxisLimits.XMax, newAxisLimits.YMin, newAxisLimits.YMax));
         }
 
         private void ChangeXAxes(WpfPlot plot, double xMin, double xMax)
