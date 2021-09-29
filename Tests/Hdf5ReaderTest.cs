@@ -29,7 +29,7 @@ namespace Tests
 
         private void OpenTestFile()
         {
-            fileName = GetFileNameHdd(true);
+            fileName = GetFileNameHdd(false);
             if (!OpenReadMaxWellFile(fileName))
                 throw new Exception();
         }
@@ -37,7 +37,7 @@ namespace Tests
         [Fact]
         public void ShouldOpenFileAndGetContent()
         {
-            var name = @"E:\2021 MaxWell\Trace_20210715_16_54_48_1mM(+++).raw.h5";
+            var name = GetFileNameHdd(false);
             var h5FileReader = new H5FileReader();
             h5FileReader.OpenReadMaxWellFile(name);
             h5FileReader.IsReadableAsMaxWellFile();
