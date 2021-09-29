@@ -45,7 +45,9 @@ namespace MEATaste.Views.PlotSignal
                 MakeCurvesVisible(value);
             Model.DisplayChecked = value;
 
-            if (value && Model.PlotControl.Plot.GetPlottables().Length == 0)
+            if (value && 
+                (Model.PlotControl.Plot.GetPlottables().Length == 0
+                || state.CurrentElectrode.Get() != selectedElectrode))
                 ChangeSelectedElectrode();
         }
 
