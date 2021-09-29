@@ -150,6 +150,8 @@ namespace MEATaste.DataMEA.MaxWell
 
         public ushort[] ReadAllFromOneChannelAsInt(int channel)
         {
+            var sw = Stopwatch.StartNew();
+            // -------------------------------------------
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("sig");
             ulong nbdatapoints = h5Dataset.Space.Dimensions[1];
@@ -176,7 +178,8 @@ namespace MEATaste.DataMEA.MaxWell
                 Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
                 lRoot.Dispose();
             });
-
+            // -------------------------------------------
+            Trace.WriteLine($"Generic: {sw.Elapsed.TotalMilliseconds:F1} ms");
             return result;
         }
 
