@@ -155,9 +155,9 @@ namespace MEATaste.DataMEA.MaxWell
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("sig");
             ulong nbdatapoints = h5Dataset.Space.Dimensions[1];
-            const ulong chunkSizePerChannel = 200;
+            const ulong chunkSizePerChannel = 200 * 100;
             var result = new ushort[nbdatapoints];
-            var nchunks = (long)(nbdatapoints / chunkSizePerChannel);
+            var nchunks = (long)(1 +nbdatapoints / chunkSizePerChannel);
 
             int ndimensions = h5Dataset.Space.Rank;
             if (ndimensions != 2)
@@ -179,7 +179,7 @@ namespace MEATaste.DataMEA.MaxWell
                 lRoot.Dispose();
             });
             // -------------------------------------------
-            Trace.WriteLine($"Generic: {sw.Elapsed.TotalMilliseconds:F1} ms");
+            Trace.WriteLine($"Generic: {sw.Elapsed.TotalSeconds:F1} s");
             return result;
         }
 

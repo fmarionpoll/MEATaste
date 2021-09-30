@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using HDF5.NET;
 using ISA_L.PInvoke;
 
@@ -8,24 +9,20 @@ namespace MEATaste.DataMEA.MaxWell
 {
     public static class DeflateHelper_Intel_ISA_L
     {
-        private static IntPtr _statePtr;
-        private static int _stateLength;
+        private static int _stateLength = Unsafe.SizeOf<inflate_state>();
 
-        static unsafe DeflateHelper_Intel_ISA_L()
-        {
-            _stateLength = Unsafe.SizeOf<inflate_state>();
-            _statePtr = Marshal.AllocHGlobal(Unsafe.SizeOf<inflate_state>());
-            new Span<byte>(_statePtr.ToPointer(), _stateLength).Fill(0);
-        }
+        private static System.Threading.ThreadLocal<IntPtr> _statePtr = new ThreadLocal<IntPtr>(
+            valueFactory: DeflateHelper_Intel_ISA_L.CreateState,
+            trackAllValues: false);
 
         public static unsafe Memory<byte> FilterFunc(H5FilterFlags flags, uint[] parameters, Memory<byte> buffer)
         {
             /* We're decompressing */
             if (flags.HasFlag(H5FilterFlags.Decompress))
             {
-                var state = new Span<inflate_state>(_statePtr.ToPointer(), _stateLength);
+                var state = new Span<inflate_state>(_statePtr.Value.ToPointer(), _stateLength);
 
-                ISAL.isal_inflate_reset(_statePtr);
+                ISAL.isal_inflate_reset(_statePtr.Value);
 
                 buffer = buffer.Slice(2); // skip ZLIB header to get only the DEFLATE stream
 
@@ -46,7 +43,7 @@ namespace MEATaste.DataMEA.MaxWell
                             state[0].next_out = ptrOut;
                             state[0].avail_out = (uint)targetBuffer.Length;
 
-                            var status = ISAL.isal_inflate(_statePtr);
+                            var status = ISAL.isal_inflate(_statePtr.Value);
 
                             if (status != inflate_return_values.ISAL_DECOMP_OK)
                                 throw new Exception($"Error encountered while decompressing: {status}.");
@@ -79,6 +76,14 @@ namespace MEATaste.DataMEA.MaxWell
             {
                 throw new Exception("Writing data chunks is not yet supported by HDF5.NET.");
             }
+        }
+
+        private static unsafe IntPtr CreateState()
+        {
+            var ptr = Marshal.AllocHGlobal(Unsafe.SizeOf<inflate_state>());
+            new Span<byte>(ptr.ToPointer(), _stateLength).Fill(0);
+
+            return ptr;
         }
     }
 }
