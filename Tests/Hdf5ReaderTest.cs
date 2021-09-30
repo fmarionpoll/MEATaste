@@ -17,8 +17,8 @@ namespace Tests
 
         private string GetFileNameHdd(bool optionHdd)
         {
-            return optionHdd ? "E:\\2021 MaxWell\\Trace_20210715_16_54_48_1mM(+++).raw.h5"
-                : "C:\\Users\\fred\\Downloads\\Trace_20210715_16_54_48_1mM(+++).raw.h5";
+            return optionHdd ? @"E:\2021 MaxWell\Trace_20210715_16_54_48_1mM(+++).raw.h5"
+                             : @"C:\Users\fred\Downloads\Trace_20210715_16_54_48_1mM(+++).raw.h5";
         }
 
         public bool OpenReadMaxWellFile(string localFileName)
@@ -27,8 +27,17 @@ namespace Tests
             return Root != null;
         }
 
+        private void RegisterIntelFilter()
+        {
+            H5Filter.Register(
+                identifier: H5FilterID.Deflate,
+                name: "deflate",
+                filterFunc: DeflateHelper_Intel_ISA_L.FilterFunc);
+        }
+
         private void OpenTestFile()
         {
+
             fileName = GetFileNameHdd(false);
             if (!OpenReadMaxWellFile(fileName))
                 throw new Exception();
@@ -48,6 +57,16 @@ namespace Tests
         {
             var sw = Stopwatch.StartNew();
             OpenTestFile();
+            var unused = ReadAll_OneElectrodeAsInt(863);
+            Trace.WriteLine($"read channel in: {sw.Elapsed.TotalSeconds:F3} s");
+        }
+
+        [Fact]
+        public void OpenAndReadH5MaxwellFileAndIntelFilterTest()
+        {
+            var sw = Stopwatch.StartNew();
+            OpenTestFile();
+            RegisterIntelFilter();
             var unused = ReadAll_OneElectrodeAsInt(863);
             Trace.WriteLine($"read channel in: {sw.Elapsed.TotalSeconds:F3} s");
         }
@@ -145,64 +164,64 @@ namespace Tests
             return result;
         }
 
-        [Fact]
-        public void OpenAndReadH5MaxwellFileWithThreadsTestmmf()
-        {
-            var sw = Stopwatch.StartNew();
-            OpenTestFile();
-            var unused = ReadAll_OneElectrodeAsIntParallelmmf(863);
-            Trace.WriteLine($"read channel in: {sw.Elapsed.TotalSeconds:F3} s");
-        }
+        //[Fact]
+        //public void OpenAndReadH5MaxwellFileWithThreadsTestmmf()
+        //{
+        //    var sw = Stopwatch.StartNew();
+        //    OpenTestFile();
+        //    var unused = ReadAll_OneElectrodeAsIntParallelmmf(863);
+        //    Trace.WriteLine($"read channel in: {sw.Elapsed.TotalSeconds:F3} s");
+        //}
 
-        public ushort[] ReadAll_OneElectrodeAsIntParallelmmf(int channel)
-        {
-            var h5Group = Root.Group("/");
-            var h5Dataset = h5Group.Dataset("sig");
-            var nbdatapoints = h5Dataset.Space.Dimensions[1];
-            const ulong chunkSizePerChannel = 200;
-            var result = new ushort[nbdatapoints];
-            var nchunks = (long)(nbdatapoints / chunkSizePerChannel);
+        //public ushort[] ReadAll_OneElectrodeAsIntParallelmmf(int channel)
+        //{
+        //    var h5Group = Root.Group("/");
+        //    var h5Dataset = h5Group.Dataset("sig");
+        //    var nbdatapoints = h5Dataset.Space.Dimensions[1];
+        //    const ulong chunkSizePerChannel = 200;
+        //    var result = new ushort[nbdatapoints];
+        //    var nchunks = (long)(nbdatapoints / chunkSizePerChannel);
 
-            int ndimensions = h5Dataset.Space.Rank;
-            if (ndimensions != 2)
-                return null;
+        //    int ndimensions = h5Dataset.Space.Rank;
+        //    if (ndimensions != 2)
+        //        return null;
 
-            var fileStream = File.Open(
-                fileName,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read);
+        //    var fileStream = File.Open(
+        //        fileName,
+        //        FileMode.Open,
+        //        FileAccess.Read,
+        //        FileShare.Read);
 
-            var mmf = MemoryMappedFile.CreateFromFile(
-                fileStream,
-                mapName: "MemMap",
-                capacity: 0,
-                MemoryMappedFileAccess.Read,
-                HandleInheritability.None,
-                leaveOpen: true);
+        //    var mmf = MemoryMappedFile.CreateFromFile(
+        //        fileStream,
+        //        mapName: "MemMap",
+        //        capacity: 0,
+        //        MemoryMappedFileAccess.Read,
+        //        HandleInheritability.None,
+        //        leaveOpen: true);
 
-            Parallel.For(0, nchunks, i =>
-            {
-                var mmfStream = mmf.CreateViewStream(
-                    offset: 0,
-                    size: 0,
-                    MemoryMappedFileAccess.Read);
+        //    Parallel.For(0, nchunks, i =>
+        //    {
+        //        var mmfStream = mmf.CreateViewStream(
+        //            offset: 0,
+        //            size: 0,
+        //            MemoryMappedFileAccess.Read);
 
-                var h5MmFile = H5File.Open(mmfStream);
-                var h5MmGroup = h5MmFile.Group("/");
-                var h5MmDataset = h5MmGroup.Dataset("sig");
+        //        var h5MmFile = H5File.Open(mmfStream);
+        //        var h5MmGroup = h5MmFile.Group("/");
+        //        var h5MmDataset = h5MmGroup.Dataset("sig");
 
-                var istart = (ulong)i * chunkSizePerChannel;
-                var iend = istart + chunkSizePerChannel - 1;
-                if (iend > nbdatapoints)
-                    iend = nbdatapoints - 1;
-                var chunkresult = Read_OneElectrodeDataAsInt(h5MmDataset, channel, istart, iend);
-                Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
+        //        var istart = (ulong)i * chunkSizePerChannel;
+        //        var iend = istart + chunkSizePerChannel - 1;
+        //        if (iend > nbdatapoints)
+        //            iend = nbdatapoints - 1;
+        //        var chunkresult = Read_OneElectrodeDataAsInt(h5MmDataset, channel, istart, iend);
+        //        Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
                 
-            });
+        //    });
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public ushort[] Read_OneElectrodeDataAsInt(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
         {
