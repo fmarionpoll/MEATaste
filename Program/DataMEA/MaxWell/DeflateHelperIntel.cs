@@ -7,23 +7,21 @@ using ISA_L.PInvoke;
 
 namespace MEATaste.DataMEA.MaxWell
 {
-    
-    public static class DeflateHelper_Intel_ISA_L
+    // from Apollo3zehn Github 
+    public static class DeflateHelperIntel
     {
-        private static int _stateLength = Unsafe.SizeOf<inflate_state>();
+        private static readonly int StateLength = Unsafe.SizeOf<inflate_state>();
 
-        private static System.Threading.ThreadLocal<IntPtr> _statePtr = new ThreadLocal<IntPtr>(
-            valueFactory: DeflateHelper_Intel_ISA_L.CreateState,
-            trackAllValues: false);
+        private static readonly ThreadLocal<IntPtr> StatePtr = new(CreateState, false);
 
         public static unsafe Memory<byte> FilterFunc(H5FilterFlags flags, uint[] parameters, Memory<byte> buffer)
         {
             /* We're decompressing */
             if (flags.HasFlag(H5FilterFlags.Decompress))
             {
-                var state = new Span<inflate_state>(_statePtr.Value.ToPointer(), _stateLength);
+                var state = new Span<inflate_state>(StatePtr.Value.ToPointer(), StateLength);
 
-                ISAL.isal_inflate_reset(_statePtr.Value);
+                ISAL.isal_inflate_reset(StatePtr.Value);
 
                 buffer = buffer.Slice(2); // skip ZLIB header to get only the DEFLATE stream
 
@@ -44,7 +42,7 @@ namespace MEATaste.DataMEA.MaxWell
                             state[0].next_out = ptrOut;
                             state[0].avail_out = (uint)targetBuffer.Length;
 
-                            var status = ISAL.isal_inflate(_statePtr.Value);
+                            var status = ISAL.isal_inflate(StatePtr.Value);
 
                             if (status != inflate_return_values.ISAL_DECOMP_OK)
                                 throw new Exception($"Error encountered while decompressing: {status}.");
@@ -68,8 +66,7 @@ namespace MEATaste.DataMEA.MaxWell
                     }
                 }
 
-                return inflated
-                    .AsMemory(0, length);
+                return inflated.AsMemory(0, length);
             }
 
             /* We're compressing */
@@ -82,7 +79,7 @@ namespace MEATaste.DataMEA.MaxWell
         private static unsafe IntPtr CreateState()
         {
             var ptr = Marshal.AllocHGlobal(Unsafe.SizeOf<inflate_state>());
-            new Span<byte>(ptr.ToPointer(), _stateLength).Fill(0);
+            new Span<byte>(ptr.ToPointer(), StateLength).Fill(0);
 
             return ptr;
         }

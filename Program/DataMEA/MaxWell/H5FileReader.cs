@@ -151,11 +151,11 @@ namespace MEATaste.DataMEA.MaxWell
 
         public ushort[] ReadAllFromOneChannelAsInt(int channel)
         {
-            var sw = Stopwatch.StartNew();
-            // -------------------------------------------
+            //var sw = Stopwatch.StartNew();
+
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("sig");
-            ulong nbdatapoints = h5Dataset.Space.Dimensions[1];
+            var nbdatapoints = h5Dataset.Space.Dimensions[1];
             const ulong chunkSizePerChannel = 200 * 100;
             var result = new ushort[nbdatapoints];
             var nchunks = (long)(1 +nbdatapoints / chunkSizePerChannel);
@@ -166,25 +166,23 @@ namespace MEATaste.DataMEA.MaxWell
 
             Parallel.For(0, nchunks, i =>
             {
-                var fileName = H5FileName;
-                var lRoot = H5File.OpenRead(fileName);
-                var lgroup = lRoot.Group("/");
-                var ldataset = lgroup.Dataset("sig");
+                var h5File = H5File.OpenRead(H5FileName);
+                var dataset = h5File.Group("/").Dataset("sig");
 
                 var istart = (ulong)i * chunkSizePerChannel;
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = ReadIntervalForOneChannelAsInt(ldataset, channel, istart, iend);
+                var chunkresult = ReadAcquisitionDataOneChannel(dataset, channel, istart, iend);
                 Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
-                lRoot.Dispose();
+                h5File.Dispose();
             });
-            // -------------------------------------------
-            Trace.WriteLine($"Generic: {sw.Elapsed.TotalSeconds:F1} s");
+
+            //Trace.WriteLine($"Generic: {sw.Elapsed.TotalSeconds:F1} s");
             return result;
         }
 
-        public ushort[] ReadIntervalForOneChannelAsInt(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
+        public ushort[] ReadAcquisitionDataOneChannel(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
 
@@ -220,7 +218,7 @@ namespace MEATaste.DataMEA.MaxWell
             H5Filter.Register(
                 identifier: H5FilterID.Deflate,
                 name: "deflate",
-                filterFunc: DeflateHelper_Intel_ISA_L.FilterFunc);
+                filterFunc: DeflateHelperIntel.FilterFunc);
         }
     }
 

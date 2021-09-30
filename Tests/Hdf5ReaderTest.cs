@@ -65,7 +65,7 @@ namespace Tests
             if (ndimensions != 2)
                 return null;
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
-            return h5FileReader.ReadIntervalForOneChannelAsInt(h5Dataset, channel, 0, nbdatapoints - 1);
+            return h5FileReader.ReadAcquisitionDataOneChannel(h5Dataset, channel, 0, nbdatapoints - 1);
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Tests
             if (ndimensions != 2)
                 return null;
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
-            return h5FileReader.ReadIntervalForOneChannelAsInt(h5Dataset, channel, 0, nbdatapoints - 1);
+            return h5FileReader.ReadAcquisitionDataOneChannel(h5Dataset, channel, 0, nbdatapoints - 1);
         }
 
         [Fact]
@@ -112,14 +112,13 @@ namespace Tests
         {
             OpenTestFile();
             h5FileReader.RegisterIntelFilter();
-            var unused = ReadAll_OneElectrodeAsIntParallel(863);
+            var unused = ReadOneChannelWithThreads(863);
         }
 
-        public ushort[] ReadAll_OneElectrodeAsIntParallel(int channel)
+        private ushort[] ReadOneChannelWithThreads(int channel)
         {
             var h5Group = Root.Group("/");
             var h5Dataset = h5Group.Dataset("sig");
-
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
             const ulong chunkSizePerChannel = 200 * 100;
             var result = new ushort[nbdatapoints];
@@ -139,7 +138,7 @@ namespace Tests
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = h5FileReader.ReadIntervalForOneChannelAsInt(dataset, channel, istart, iend);
+                var chunkresult = h5FileReader.ReadAcquisitionDataOneChannel(dataset, channel, istart, iend);
                 Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
                 h5File.Dispose();
             });
