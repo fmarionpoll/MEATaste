@@ -16,6 +16,7 @@ namespace MEATaste.DataMEA.MaxWell
         {
             H5FileRoot = H5File.OpenRead(fileName);
             H5FileName = fileName;
+            RegisterIntelFilter();
             return H5FileRoot != null;
         }
 
@@ -212,6 +213,14 @@ namespace MEATaste.DataMEA.MaxWell
                 );
 
             return result;
+        }
+
+        public void RegisterIntelFilter()
+        {
+            H5Filter.Register(
+                identifier: H5FilterID.Deflate,
+                name: "deflate",
+                filterFunc: DeflateHelper_Intel_ISA_L.FilterFunc);
         }
     }
 

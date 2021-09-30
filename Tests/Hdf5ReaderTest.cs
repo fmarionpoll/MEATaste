@@ -27,14 +27,6 @@ namespace Tests
             return Root != null;
         }
 
-        private void RegisterIntelFilter()
-        {
-            H5Filter.Register(
-                identifier: H5FilterID.Deflate,
-                name: "deflate",
-                filterFunc: DeflateHelper_Intel_ISA_L.FilterFunc);
-        }
-
         private void OpenTestFile()
         {
             fileName = GetFileNameHdd(false);
@@ -61,7 +53,7 @@ namespace Tests
         public void OpenAndReadH5MaxwellFileAndIntelFilterTest()
         {
             OpenTestFile();
-            RegisterIntelFilter();
+            h5FileReader.RegisterIntelFilter();
             var unused = ReadAll_OneElectrodeAsInt(863);
         }
 
@@ -119,7 +111,7 @@ namespace Tests
         public void OpenAndReadH5MaxwellFileWithThreadsTest()
         {
             OpenTestFile();
-            RegisterIntelFilter();
+            h5FileReader.RegisterIntelFilter();
             var unused = ReadAll_OneElectrodeAsIntParallel(863);
         }
 
