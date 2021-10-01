@@ -19,7 +19,7 @@
 			from y(k), using ax, bx, and dx to store x(k+1), x(k+2)
 			and x(k+3).
 		*/
-		public static double[] BDerivFast(double[] dataIn, int rowLength)
+		public static double[] BDerivFast2f3(double[] dataIn, int rowLength)
         {
 			double[] dataOut = new double[rowLength];
 			int span = 4;
@@ -44,7 +44,7 @@
 			return dataOut;
         }
 
-		public static double[] BDeriv(double[] dataIn, int rowLength)
+		public static double[] BDeriv2f3(double[] dataIn, int rowLength)
 		{
 			double[] dataOut = new double[rowLength];
 			int span = 4;

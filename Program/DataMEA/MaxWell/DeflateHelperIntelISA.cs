@@ -7,8 +7,9 @@ using ISA_L.PInvoke;
 
 namespace MEATaste.DataMEA.MaxWell
 {
-    // from Apollo3zehn Github 
-    public static class DeflateHelperIntel
+    // from Apollo3zehn https://github.com/Apollo3zehn/ISA-L.PInvoke 
+
+    public static class DeflateHelperIntelISA
     {
         private static readonly int StateLength = Unsafe.SizeOf<inflate_state>();
 

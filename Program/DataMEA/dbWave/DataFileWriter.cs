@@ -35,7 +35,7 @@ namespace MEATaste.DataMEA.dbWave
         private const int Data = 1024;
 
         public bool SaveCurrentElectrodeDataToAtlabFile(MeaExperiment experiment, ElectrodeProperties electrode,
-            ElectrodeDataBuffer electrodeData)
+            ElectrodeData electrodeData)
         {
 
             var directoryName = CreateDirectoryFromExperimentFileName(experiment);
@@ -81,7 +81,7 @@ namespace MEATaste.DataMEA.dbWave
 
         private static void WriteHeaderAtlab(BinaryWriter binaryWriter, MeaExperiment experiment,
             ElectrodeProperties electrode,
-            ElectrodeDataBuffer electrodeData)
+            ElectrodeData electrodeData)
         {
             binaryWriter.Seek(0, SeekOrigin.Begin);
             binaryWriter.Write(0xAAAA);
@@ -123,7 +123,7 @@ namespace MEATaste.DataMEA.dbWave
             binaryWriter.Write((float)xgain);
         }
 
-        private static void WriteDataAtlab(BinaryWriter binaryWriter, [NotNull] ElectrodeDataBuffer electrodeData)
+        private static void WriteDataAtlab(BinaryWriter binaryWriter, [NotNull] ElectrodeData electrodeData)
         {
             if (electrodeData == null) throw new ArgumentNullException(nameof(electrodeData));
 

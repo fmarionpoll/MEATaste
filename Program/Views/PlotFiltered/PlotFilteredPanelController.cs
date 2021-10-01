@@ -69,7 +69,7 @@ namespace MEATaste.Views.PlotFiltered
             if (currentExperiment == null) 
                 return;
 
-            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            var electrodeBuffer = state.ElectrodeData.Get();
             if (electrodeBuffer == null)
                 return;
             var rawSignalDouble = electrodeBuffer.RawSignalDouble;
@@ -85,10 +85,13 @@ namespace MEATaste.Views.PlotFiltered
             switch (Model.SelectedFilterIndex)
             {
                 case 1:
+                    result = Filter.BDerivFast2f3(rawSignalDouble, rawSignalDouble.Length);
+                    break;
+                case 2:
                     result = Filter.BMedian(rawSignalDouble, rawSignalDouble.Length, 20);
                     break;
                 default:
-                    result = Filter.BDeriv(rawSignalDouble, rawSignalDouble.Length);
+                    result = Filter.BDeriv2f3(rawSignalDouble, rawSignalDouble.Length);
                     break;
             }
 

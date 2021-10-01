@@ -45,7 +45,7 @@ namespace MEATaste.Views.FileOpen
         {
             var experiment = state.CurrentExperiment.Get();
             var electrode = state.CurrentElectrode.Get();
-            var electrodeData = state.ElectrodeBuffer.Get();
+            var electrodeData = state.ElectrodeData.Get();
             dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeData);
         }
 
@@ -53,18 +53,18 @@ namespace MEATaste.Views.FileOpen
         {
             var experiment = state.CurrentExperiment.Get();
             var array = state.CurrentExperiment.Get().Electrodes;
-            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            var electrodeBuffer = state.ElectrodeData.Get();
             if (electrodeBuffer == null)
             {
-                state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
-                electrodeBuffer = state.ElectrodeBuffer.Get();
+                state.ElectrodeData.Set(new ElectrodeData());
+                electrodeBuffer = state.ElectrodeData.Get();
             }
 
             foreach (var electrode in array)
             {
                 state.CurrentElectrode.Set(electrode);
-                electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(electrode.Channel);
-                var electrodeDataBuffer = state.ElectrodeBuffer.Get() ??
+                electrodeBuffer.RawSignalUShort = h5FileReader.ReadChannelDataAll(electrode.Channel);
+                var electrodeDataBuffer = state.ElectrodeData.Get() ??
                                           throw new ArgumentNullException("state.ElectrodeBuffer.Get()");
                 dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeDataBuffer);
             }

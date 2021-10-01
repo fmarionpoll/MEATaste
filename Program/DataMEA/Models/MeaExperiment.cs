@@ -7,7 +7,7 @@ namespace MEATaste.DataMEA.Models
         public string FileVersion { get; set; } = "unknown";
         public DataAcquisitionSettings DataAcquisitionSettings;
         public ElectrodeProperties[] Electrodes { get; set; }
-        public SpikeTime[] SpikeTimes { get; set; }
+        public SpikeDetected[] SpikeTimes { get; set; }
 
         public MeaExperiment(string fileName, string fileVersion, DataAcquisitionSettings dataAcquisitionSettings)
         {

@@ -34,6 +34,12 @@ namespace MEATaste.Views.PlotSignal
             var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
             controller.DisplayCurveChecked(flag);
         }
+
+        private void keep_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
+            controller.KeepCurveChecked(flag);
+        }
     }
 
 }

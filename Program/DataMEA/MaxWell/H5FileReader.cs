@@ -105,7 +105,7 @@ namespace MEATaste.DataMEA.MaxWell
         {
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("mapping");
-            var compoundData = h5Dataset.Read<ElectrodePropertiesCompound.DatasetMembers>();
+            var compoundData = h5Dataset.Read<FileMapElectrodeProperties.DatasetMembers>();
 
             meaExp.Electrodes = new ElectrodeProperties[compoundData.Length];
             for (var i = 0; i < compoundData.Length; i++)
@@ -123,12 +123,12 @@ namespace MEATaste.DataMEA.MaxWell
         {
             var h5Group = H5FileRoot.Group("/proc0");
             var h5Dataset = h5Group.Dataset("spikeTimes");
-            var compoundData = h5Dataset.Read<SpikeTimeCompound.DatasetMembers>();
+            var compoundData = h5Dataset.Read<FileMapSpikeTime.DatasetMembers>();
 
-            meaExp.SpikeTimes = new SpikeTime[compoundData.Length];
+            meaExp.SpikeTimes = new SpikeDetected[compoundData.Length];
             for (var i = 0; i < compoundData.Length; i++)
             {
-                var ec = new SpikeTime(
+                var ec = new SpikeDetected(
                     compoundData[i].frameno,
                     compoundData[i].channel,
                     compoundData[i].amplitude);
@@ -149,12 +149,9 @@ namespace MEATaste.DataMEA.MaxWell
         }
         */
 
-        public ushort[] ReadAllFromOneChannelAsInt(int channel)
+        public ushort[] ReadChannelDataAll(int channel)
         {
-            //var sw = Stopwatch.StartNew();
-
-            var h5Group = H5FileRoot.Group("/");
-            var h5Dataset = h5Group.Dataset("sig");
+            var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
             const ulong chunkSizePerChannel = 200 * 100;
             var result = new ushort[nbdatapoints];
@@ -173,16 +170,15 @@ namespace MEATaste.DataMEA.MaxWell
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = ReadAcquisitionDataOneChannel(dataset, channel, istart, iend);
+                var chunkresult = ReadChannelData(dataset, channel, istart, iend);
                 Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
                 h5File.Dispose();
             });
 
-            //Trace.WriteLine($"Generic: {sw.Elapsed.TotalSeconds:F1} s");
             return result;
         }
 
-        public ushort[] ReadAcquisitionDataOneChannel(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
+        public ushort[] ReadChannelData(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
 
@@ -218,7 +214,7 @@ namespace MEATaste.DataMEA.MaxWell
             H5Filter.Register(
                 identifier: H5FilterID.Deflate,
                 name: "deflate",
-                filterFunc: DeflateHelperIntel.FilterFunc);
+                filterFunc: DeflateHelperIntelISA.FilterFunc);
         }
     }
 

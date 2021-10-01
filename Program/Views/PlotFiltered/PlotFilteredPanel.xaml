@@ -16,8 +16,9 @@
             <TextBlock Text="Filter data buffer" VerticalAlignment="Center" />
         </CheckBox>
         <ComboBox Grid.Row="0" HorizontalAlignment="Left" Margin="140,0,0,0" VerticalAlignment="Center" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
-            <ComboBoxItem Content="Derivative "></ComboBoxItem>
-            <ComboBoxItem Content="Running median"></ComboBoxItem>
+            <ComboBoxItem Content="Derivative BDeriv2f3" />
+            <ComboBoxItem Content="Derivative BDerivFast2f3" />
+            <ComboBoxItem Content="Running median" />
         </ComboBox>
 
     </Grid>

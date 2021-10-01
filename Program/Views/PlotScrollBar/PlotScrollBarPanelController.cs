@@ -36,7 +36,7 @@ namespace MEATaste.Views.PlotScrollBar
 
         private void FileHasChanged()
         {
-            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            var electrodeBuffer = state.ElectrodeData.Get();
             if (electrodeBuffer == null || electrodeBuffer.RawSignalDouble == null) return;
 
             var meaExperiment = state.CurrentExperiment.Get();

@@ -51,6 +51,18 @@ namespace MEATaste.Views.PlotSignal
                 ChangeSelectedElectrode();
         }
 
+        public void KeepCurveChecked(bool value)
+        {
+            if (Model.KeepChecked != value)
+                MakeCurvesVisible(value);
+            Model.KeepChecked = value;
+
+            if (value &&
+                (Model.PlotControl.Plot.GetPlottables().Length == 0
+                 || state.CurrentElectrode.Get() != selectedElectrode))
+                ChangeSelectedElectrode();
+        }
+
         private void MakeCurvesVisible(bool visible)
         {
             var plot = Model.PlotControl.Plot;
@@ -80,18 +92,18 @@ namespace MEATaste.Views.PlotSignal
 
         private void UpdateSelectedElectrodeData(ElectrodeProperties properties)
         {
-            var electrodeBuffer = state.ElectrodeBuffer.Get();
-            var flag = electrodeBuffer == null;
+            var buffer = state.ElectrodeData.Get();
+            var flag = buffer == null;
             if (flag)
             {
-                state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
-                electrodeBuffer = state.ElectrodeBuffer.Get();
+                state.ElectrodeData.Set(new ElectrodeData());
+                buffer = state.ElectrodeData.Get();
             }
 
             if (properties != selectedElectrode || flag)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-                electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(properties.Channel);
+                buffer.RawSignalUShort = h5FileReader.ReadChannelDataAll(properties.Channel);
                 selectedElectrode = properties;
                 Mouse.OverrideCursor = null;
             }
@@ -104,7 +116,8 @@ namespace MEATaste.Views.PlotSignal
         {
             var currentExperiment = state.CurrentExperiment.Get();
             var plot = Model.PlotControl.Plot;
-            plot.Clear();
+            if (!Model.KeepChecked)
+                plot.Clear();
             var sig = plot.AddSignal(result, currentExperiment.DataAcquisitionSettings.SamplingRate);
 
             var acqSettings = currentExperiment.DataAcquisitionSettings;
@@ -125,7 +138,7 @@ namespace MEATaste.Views.PlotSignal
         private double[] TransferDataToElectrodeBuffer()
         {
             var currentExperiment = state.CurrentExperiment.Get();
-            var electrodeBuffer = state.ElectrodeBuffer.Get();
+            var electrodeBuffer = state.ElectrodeData.Get();
             var rawSignalUShort = electrodeBuffer.RawSignalUShort;
             var lsb = currentExperiment.DataAcquisitionSettings.Lsb * 1000;
             electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
@@ -155,6 +168,7 @@ namespace MEATaste.Views.PlotSignal
             if (axesMaxMin != null)
                 ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
+
 
     }
 }
