@@ -45,9 +45,9 @@ namespace MEATaste.DataMEA.MaxWell
         public MeaExperiment GetExperimentInfos()
         {
             var meaExp = new MeaExperiment(H5FileName, H5FileVersion, new DataAcquisitionSettings());
-            ReadAcquisitionSettingsDescriptors(meaExp);
+            ReadSettings(meaExp);
             ReadAcquisitionTimeIntervals(meaExp);
-            ReadElectrodesProperties(meaExp);
+            ReadMapping(meaExp);
             ReadSpikeTimes(meaExp);
             return meaExp;
         }
@@ -87,7 +87,7 @@ namespace MEATaste.DataMEA.MaxWell
             return parsedDate;
         }
 
-        private void ReadAcquisitionSettingsDescriptors(MeaExperiment meaExp)
+        private void ReadSettings(MeaExperiment meaExp)
         {
             var h5Group = H5FileRoot.Group("/settings");
 
@@ -101,13 +101,13 @@ namespace MEATaste.DataMEA.MaxWell
             meaExp.DataAcquisitionSettings.Lsb = lsbarray[0];
         }
 
-        private void ReadElectrodesProperties(MeaExperiment meaExp)
+        private void ReadMapping(MeaExperiment meaExp)
         {
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("mapping");
             var compoundData = h5Dataset.Read<FileMapElectrodeProperties.DatasetMembers>();
 
-            meaExp.Electrodes = new ElectrodeProperties[compoundData.Length];
+            meaExp.Electrodes = new ElectrodeData[compoundData.Length];
             for (var i = 0; i < compoundData.Length; i++)
             {
                 var ec = new ElectrodeProperties(
@@ -115,7 +115,7 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].electrode,
                     compoundData[i].x,
                     compoundData[i].y);
-                meaExp.Electrodes[i] = ec;
+                meaExp.Electrodes[i].Electrode = ec;
             }
         }
 
@@ -125,14 +125,14 @@ namespace MEATaste.DataMEA.MaxWell
             var h5Dataset = h5Group.Dataset("spikeTimes");
             var compoundData = h5Dataset.Read<FileMapSpikeTime.DatasetMembers>();
 
-            meaExp.SpikeTimes = new SpikeDetected[compoundData.Length];
+            var SpikeTimes = new SpikeDetected[compoundData.Length];
             for (var i = 0; i < compoundData.Length; i++)
             {
                 var ec = new SpikeDetected(
                     compoundData[i].frameno,
                     compoundData[i].channel,
                     compoundData[i].amplitude);
-                meaExp.SpikeTimes[i] = ec;
+                SpikeTimes[i] = ec;
             }
         }
 

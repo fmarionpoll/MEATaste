@@ -9,7 +9,7 @@ namespace MEATaste.Views.PlotSignal
     {
         private bool displayChecked;
         private bool keepChecked;
-
+        private int selectedFilterIndex = 0;
         private string acquisitionSettingsLabel = string.Empty;
         private WpfPlot plotControl;
 
@@ -48,6 +48,17 @@ namespace MEATaste.Views.PlotSignal
                 if (displayChecked == value) return;
                 displayChecked = value;
                 OnPropertyChanged(nameof(DisplayChecked));
+            }
+        }
+
+        public int SelectedFilterIndex
+        {
+            get => selectedFilterIndex;
+            set
+            {
+                if (selectedFilterIndex == value) return;
+                selectedFilterIndex = value;
+                OnPropertyChanged(nameof(SelectedFilterIndex));
             }
         }
 

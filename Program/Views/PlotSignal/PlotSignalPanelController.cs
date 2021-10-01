@@ -18,7 +18,8 @@ namespace MEATaste.Views.PlotSignal
         private ElectrodeProperties selectedElectrode;
         
 
-        public PlotSignalPanelController(ApplicationState state,
+        public PlotSignalPanelController(
+            ApplicationState state,
             H5FileReader h5FileReader,
             IEventSubscriber eventSubscriber)
         {

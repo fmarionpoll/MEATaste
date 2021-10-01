@@ -10,6 +10,7 @@
             <RowDefinition Height="26"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
         <WpfPlot x:Name="PlotControl" Grid.Row="1" Loaded="PlotControl_Loaded_1" AxesChanged="PlotControl_AxesChanged_1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         <CheckBox Grid.Row="0" HorizontalAlignment="Left" Margin="10,0,0,0"
                   VerticalAlignment="Center" Click="CheckBox_Click"  >

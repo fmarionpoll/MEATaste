@@ -17,7 +17,6 @@ namespace MEATaste.Views.PlotSignal
             InitializeComponent();
         }
 
-
         private void PlotControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             var wpfControl = sender as WpfPlot;

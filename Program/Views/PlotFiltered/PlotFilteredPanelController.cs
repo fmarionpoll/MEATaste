@@ -14,7 +14,9 @@ namespace MEATaste.Views.PlotFiltered
         private ElectrodeProperties selectedElectrode;
 
 
-        public PlotFilteredPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
+        public PlotFilteredPanelController(
+            ApplicationState state, 
+            IEventSubscriber eventSubscriber)
         {
             this.state = state;
 
