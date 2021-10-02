@@ -7,7 +7,7 @@ namespace MEATaste.Views.ElectrodesList
 {
     public class ElectrodesListPanelModel : INotifyPropertyChanged
     {
-        private ElectrodeProperties selectedElectrodeProperties;
+        private ElectrodePropertiesExtended selectedElectrodeProperties;
         private ICollectionView electrodeListView;
 
         public ICollectionView ElectrodeListView
@@ -21,7 +21,7 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-       public ElectrodeProperties SelectedElectrodeProperties
+       public ElectrodePropertiesExtended SelectedElectrodeProperties
         {
             get => selectedElectrodeProperties;
             set
