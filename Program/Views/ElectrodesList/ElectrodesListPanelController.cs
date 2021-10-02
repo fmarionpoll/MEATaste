@@ -11,7 +11,7 @@ namespace MEATaste.Views.ElectrodesList
     public class ElectrodesListPanelController
     {
         public ElectrodesListPanelModel Model { get; }
-        private ObservableCollection<ElectrodeProperties> electrodesList;
+        private ObservableCollection<ElectrodePropertiesExtended> electrodesList;
         private DataGrid dataGrid;
         private readonly ApplicationState state;
 
@@ -26,7 +26,7 @@ namespace MEATaste.Views.ElectrodesList
         
         public void SelectElectrode(ElectrodeProperties electrodeProperties)
         {
-            Trace.WriteLine($"SelectElectrode({electrodeProperties.Electrode})");
+            //Trace.WriteLine($"SelectElectrode({electrodeProperties.ElectrodeNumber})");
 
             state.CurrentElectrode.Set(electrodeProperties);
             ChangeSelectedElectrode();
@@ -34,18 +34,18 @@ namespace MEATaste.Views.ElectrodesList
 
         private void ChangeSelectedElectrode()
         {
-            Trace.WriteLine("ChangeSelectedElectrode()");
+            //Trace.WriteLine("ChangeSelectedElectrode()");
 
             var stateElectrodeProperties = state.CurrentElectrode.Get();
             if (Model.SelectedElectrodeProperties == null)
             {
-                Trace.WriteLine("ChangeSelectedElectrode() -- State.SelectedElectrode=NULL");
+                //Trace.WriteLine("ChangeSelectedElectrode() -- State.SelectedElectrode=NULL");
                 return;
             }
 
             Model.SelectedElectrodeProperties = stateElectrodeProperties;
             Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeProperties);
-            Trace.WriteLine($"ChangeSelectedElectrode() -- dataGrid.SelectedItem={dataGrid.SelectedItem}");
+            //Trace.WriteLine($"ChangeSelectedElectrode() -- dataGrid.SelectedItem={dataGrid.SelectedItem}");
 
             dataGrid?.ScrollIntoView(dataGrid.SelectedItem); 
            
@@ -53,8 +53,13 @@ namespace MEATaste.Views.ElectrodesList
 
         private void LoadElectrodeListItems()
         {
-            var array = state.CurrentExperiment.Get().Electrodes;
-            electrodesList = new ObservableCollection<ElectrodeProperties>(array);
+            var array = state.MeaExperiment.Get().Electrodes;
+            electrodesList = new ObservableCollection<ElectrodePropertiesExtended>();
+            foreach (var item in array.Values)
+            {
+                var electrodePropertiesExtended = new ElectrodePropertiesExtended(item);
+                electrodesList.Add(electrodePropertiesExtended);
+            }
             Model.ElectrodeListView = CollectionViewSource.GetDefaultView(electrodesList);
         }
 
@@ -68,12 +73,12 @@ namespace MEATaste.Views.ElectrodesList
             var elState = state.CurrentElectrode.Get();
             if (elState != null)
             {
-                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.Electrode}"
-                                + $" with Current electrode={elState.Electrode}");
+                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.ElectrodeNumber}"
+                                + $" with Current electrode={elState.ElectrodeNumber}");
             }
             else
             {
-                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.Electrode} state electrode=NULL");
+                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.ElectrodeNumber} state electrode=NULL");
             }
             SelectElectrode(electrodeProperties);
         }
@@ -85,8 +90,8 @@ namespace MEATaste.Views.ElectrodesList
             dataGrid = electrodesGrid;
             var electrodeProperties = (ElectrodeProperties)dataGrid.SelectedItem;
             var elState = state.CurrentElectrode.Get();
-            Trace.WriteLine($"===> SelectedCellsChanged to dataGrid electrode={electrodeProperties.Electrode}"
-                            + $" with Current electrode={elState.Electrode}");
+            Trace.WriteLine($"===> SelectedCellsChanged to dataGrid electrode={electrodeProperties.ElectrodeNumber}"
+                            + $" with Current electrode={elState.ElectrodeNumber}");
         }
 
     }

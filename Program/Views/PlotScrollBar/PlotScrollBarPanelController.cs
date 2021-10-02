@@ -36,11 +36,17 @@ namespace MEATaste.Views.PlotScrollBar
 
         private void FileHasChanged()
         {
-            var electrodeBuffer = state.ElectrodeData.Get();
-            if (electrodeBuffer == null || electrodeBuffer.RawSignalDouble == null) return;
+            var meaExp = state.MeaExperiment.Get();
+            var currentElectrode = state.CurrentElectrode.Get();
+            if (currentElectrode == null)
+                return;
+            var channel = currentElectrode.Channel;
+            var electrodeData = meaExp.Electrodes[channel];
+            if (electrodeData == null || electrodeData.RawSignalDouble == null) 
+                return;
 
-            var meaExperiment = state.CurrentExperiment.Get();
-            fileDuration = electrodeBuffer.RawSignalDouble.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;
+            var meaExperiment = state.MeaExperiment.Get();
+            fileDuration = electrodeData.RawSignalDouble.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;
             Model.ScrollMinimum = 0;
             Model.ScrollMaximum = fileDuration;
         }

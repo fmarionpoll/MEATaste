@@ -2,7 +2,7 @@
 {
     public record ElectrodeProperties(
         int Channel,
-        int Electrode,
+        int ElectrodeNumber,
         double XuM,
         double YuM);
 

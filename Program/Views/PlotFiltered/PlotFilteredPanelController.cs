@@ -67,15 +67,15 @@ namespace MEATaste.Views.PlotFiltered
 
         private void UpdateSelectedElectrodeFilteredData()
         {
-            var currentExperiment = state.CurrentExperiment.Get();
+            var currentExperiment = state.MeaExperiment.Get();
             if (currentExperiment == null) 
                 return;
 
-            var electrodeBuffer = state.ElectrodeData.Get();
-            if (electrodeBuffer == null)
-                return;
-            var rawSignalDouble = electrodeBuffer.RawSignalDouble;
-            if (rawSignalDouble == null) 
+            var meaExp = state.MeaExperiment.Get();
+            var channel = state.CurrentElectrode.Get().Channel;
+            var electrodeData = meaExp.Electrodes[channel];
+            var rawSignalDouble = electrodeData?.RawSignalDouble;
+            if (rawSignalDouble == null)
                 return;
 
             PlotData(ComputeFilteredData(rawSignalDouble));
@@ -102,7 +102,7 @@ namespace MEATaste.Views.PlotFiltered
 
         private void PlotData(double[] result)
         {
-            var currentExperiment = state.CurrentExperiment.Get();
+            var currentExperiment = state.MeaExperiment.Get();
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             plot.AddSignal(result, 

@@ -19,17 +19,16 @@
             <TextBlock Text="Display data for selected electrode" Width="190" />
         </CheckBox>
 
-        <ComboBox Grid.Row="0" HorizontalAlignment="Left" Margin="140,0,0,0" VerticalAlignment="Center" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+        <ComboBox Grid.Row="0" HorizontalAlignment="Left" Margin="220,0,0,0" VerticalAlignment="Center" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged" >
             <ComboBoxItem Content="Raw signal" />
             <ComboBoxItem Content="Derivative BDeriv2f3" />
-            <ComboBoxItem Content="Derivative BDerivFast2f3" />
             <ComboBoxItem Content="Running median" />
         </ComboBox>
 
         <Label VerticalAlignment="Center" Content="{Binding AcquisitionSettingsLabel, Mode = OneWay}"
                HorizontalAlignment="Right" Visibility="Visible" Height="26" Grid.Row="0" Grid.Column ="0" Margin="0,0,0,0"/>
 
-        <CheckBox x:Name="keep" Content="Keep in memory" HorizontalAlignment="Left" Margin="0,0,0,0"
+        <CheckBox x:Name="Keep" Content="Keep in memory" HorizontalAlignment="Left" Margin="0,0,0,0"
                   VerticalAlignment="Top" Grid.Row="1" Click="keep_Click" 
                   IsChecked="{Binding KeepChecked, Mode=TwoWay}"/>
     </Grid>

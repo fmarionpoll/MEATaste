@@ -39,6 +39,11 @@ namespace MEATaste.Views.PlotSignal
             var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
             controller.KeepCurveChecked(flag);
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 
 }

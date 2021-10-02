@@ -8,8 +8,8 @@
              mc:Ignorable="d">
 
     <DataGrid x:Name="ElectrodesGrid"
-              Margin="35, 0, 10, 0"
-              SelectionMode="Single"
+              Margin="35, 0, 0, 0"
+              SelectionMode="Extended"
               CanUserDeleteRows="False" 
               AlternationCount="2"
               AlternatingRowBackground="LightBlue"
@@ -25,7 +25,8 @@
               CanUserAddRows="False"  
               ClipToBounds="True" CanUserResizeRows="False" 
               RowDetailsVisibilityMode="Visible" 
-              SelectionChanged="ElectrodesGrid_SelectionChanged" SelectedCellsChanged="ElectrodesGrid_SelectedCellsChanged">
+              SelectionChanged="ElectrodesGrid_SelectionChanged" 
+              SelectedCellsChanged="ElectrodesGrid_SelectedCellsChanged">
                   
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using HDF5.NET;
@@ -107,7 +108,9 @@ namespace MEATaste.DataMEA.MaxWell
             var h5Dataset = h5Group.Dataset("mapping");
             var compoundData = h5Dataset.Read<FileMapElectrodeProperties.DatasetMembers>();
 
-            meaExp.Electrodes = new ElectrodeData[compoundData.Length];
+            meaExp.Electrodes = new Dictionary<int, ElectrodeData>();
+            meaExp.Electrodes.EnsureCapacity(compoundData.Length);
+            
             for (var i = 0; i < compoundData.Length; i++)
             {
                 var ec = new ElectrodeProperties(
@@ -115,7 +118,7 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].electrode,
                     compoundData[i].x,
                     compoundData[i].y);
-                meaExp.Electrodes[i].Electrode = ec;
+                meaExp.Electrodes.Add(ec.Channel, new ElectrodeData(ec));
             }
         }
 
@@ -125,14 +128,27 @@ namespace MEATaste.DataMEA.MaxWell
             var h5Dataset = h5Group.Dataset("spikeTimes");
             var compoundData = h5Dataset.Read<FileMapSpikeTime.DatasetMembers>();
 
-            var SpikeTimes = new SpikeDetected[compoundData.Length];
             for (var i = 0; i < compoundData.Length; i++)
             {
                 var ec = new SpikeDetected(
                     compoundData[i].frameno,
                     compoundData[i].channel,
                     compoundData[i].amplitude);
-                SpikeTimes[i] = ec;
+                if (meaExp.Electrodes.ContainsKey(ec.Channel))
+                {
+                    List<SpikeDetected> spikeTimes = meaExp.Electrodes[ec.Channel].SpikeTimes;
+                    if (spikeTimes == null)
+                    {
+                        spikeTimes = new List<SpikeDetected>();
+                        meaExp.Electrodes[ec.Channel].SpikeTimes = spikeTimes;
+                    }
+
+                    spikeTimes.Add(ec);
+                }
+                else
+                {
+                    Trace.WriteLine(@"channel not found: "+ ec.Channel);
+                }
             }
         }
 

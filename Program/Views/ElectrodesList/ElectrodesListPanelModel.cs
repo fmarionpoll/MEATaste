@@ -21,7 +21,6 @@ namespace MEATaste.Views.ElectrodesList
             }
         }
 
-        
        public ElectrodeProperties SelectedElectrodeProperties
         {
             get => selectedElectrodeProperties;
@@ -32,7 +31,6 @@ namespace MEATaste.Views.ElectrodesList
                 OnPropertyChanged(nameof(SelectedElectrodeProperties));
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

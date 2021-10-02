@@ -34,15 +34,16 @@ namespace MEATaste.DataMEA.dbWave
         private const int AcqcomLen = 80;
         private const int Data = 1024;
 
-        public bool SaveCurrentElectrodeDataToAtlabFile(MeaExperiment experiment, ElectrodeProperties electrode,
+        public bool SaveCurrentElectrodeDataToAtlabFile(
+            MeaExperiment meaExperiment,
             ElectrodeData electrodeData)
         {
 
-            var directoryName = CreateDirectoryFromExperimentFileName(experiment);
+            var directoryName = CreateDirectoryFromExperimentFileName(meaExperiment);
             var fileName = directoryName +
                               Path.DirectorySeparatorChar +
                               "data_electrode_" +
-                              electrode.Electrode +
+                              electrodeData.Electrode.ElectrodeNumber +
                               ".dat";
 
             bool flag;
@@ -51,7 +52,7 @@ namespace MEATaste.DataMEA.dbWave
             {
                 using (var binWriterToFile = new BinaryWriter(File.Open(fileName, FileMode.Create)))
                 {
-                    WriteHeaderAtlab(binWriterToFile, experiment, electrode, electrodeData);
+                    WriteHeaderAtlab(binWriterToFile, meaExperiment, electrodeData);
                     WriteDataAtlab(binWriterToFile, electrodeData);
                     binWriterToFile.Close();
                     Trace.WriteLine("dat file created and closed");
@@ -68,9 +69,9 @@ namespace MEATaste.DataMEA.dbWave
             return flag;
         }
 
-        private string  CreateDirectoryFromExperimentFileName(MeaExperiment experiment)
+        private string  CreateDirectoryFromExperimentFileName(MeaExperiment meaExperiment)
         {
-            var directoryName = experiment.FileName.Substring(0, experiment.FileName.Length-3);
+            var directoryName = meaExperiment.FileName.Substring(0, meaExperiment.FileName.Length-3);
             if (!Directory.Exists(directoryName))
             {
                 Directory.CreateDirectory(directoryName);
@@ -79,8 +80,9 @@ namespace MEATaste.DataMEA.dbWave
             return directoryName;
         }
 
-        private static void WriteHeaderAtlab(BinaryWriter binaryWriter, MeaExperiment experiment,
-            ElectrodeProperties electrode,
+        private static void WriteHeaderAtlab(
+            BinaryWriter binaryWriter, 
+            MeaExperiment meaExperiment,
             ElectrodeData electrodeData)
         {
             binaryWriter.Seek(0, SeekOrigin.Begin);
@@ -90,19 +92,19 @@ namespace MEATaste.DataMEA.dbWave
             binaryWriter.Seek(Scncnt, SeekOrigin.Begin); 
             binaryWriter.Write((short)1);
             binaryWriter.Seek(Chanlst, SeekOrigin.Begin);
-            binaryWriter.Write((short)electrode.Channel);
+            binaryWriter.Write((short)electrodeData.Electrode.Channel);
             binaryWriter.Seek(Gainlst, SeekOrigin.Begin);
             binaryWriter.Write((short)1);
             binaryWriter.Seek(Chancom, SeekOrigin.Begin);
-            binaryWriter.Write(electrode.Electrode.ToString().ToCharArray());
+            binaryWriter.Write(electrodeData.Electrode.ElectrodeNumber.ToString().ToCharArray());
 
             binaryWriter.Seek(Acqdate, SeekOrigin.Begin);
-            var timeStart = experiment.DataAcquisitionSettings.TimeStart;
+            var timeStart = meaExperiment.DataAcquisitionSettings.TimeStart;
             var acqDate = timeStart.ToString(@"MM'/'dd'/'yyyy HH:mm:ss");
             binaryWriter.Write(acqDate.ToCharArray());
 
             binaryWriter.Seek(Clkper, SeekOrigin.Begin);
-            var clockperiod = 4E6f / experiment.DataAcquisitionSettings.SamplingRate;
+            var clockperiod = 4E6f / meaExperiment.DataAcquisitionSettings.SamplingRate;
             binaryWriter.Write((Int32)clockperiod);
 
             var length = electrodeData.RawSignalUShort.LongLength;
@@ -110,16 +112,16 @@ namespace MEATaste.DataMEA.dbWave
             binaryWriter.Write((Int32)length);
 
             binaryWriter.Seek(Acqcom, SeekOrigin.Begin);
-            binaryWriter.Write(electrode.Electrode.ToString().ToCharArray());
+            binaryWriter.Write(electrodeData.Electrode.ElectrodeNumber.ToString().ToCharArray());
 
             binaryWriter.Seek(Acqcom + 20, SeekOrigin.Begin);
-            binaryWriter.Write(("X=" + electrode.XuM).ToCharArray());
+            binaryWriter.Write(("X=" + electrodeData.Electrode.XuM).ToCharArray());
 
             binaryWriter.Seek(Acqcom + 30, SeekOrigin.Begin);
-            binaryWriter.Write(("Y=" + electrode.YuM).ToCharArray());
+            binaryWriter.Write(("Y=" + electrodeData.Electrode.YuM).ToCharArray());
 
             binaryWriter.Seek(Xgain, SeekOrigin.Begin);
-            double xgain = 20/(4096 * experiment.DataAcquisitionSettings.Lsb);
+            double xgain = 20/(4096 * meaExperiment.DataAcquisitionSettings.Lsb);
             binaryWriter.Write((float)xgain);
         }
 

@@ -46,11 +46,9 @@
                 <Grid Grid.Column="1" Grid.Row="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
                         <RowDefinition Height="26"/>
                     </Grid.RowDefinitions>
                     <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                    <plotfilter:PlotFilteredPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                     <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                 </Grid>
             </Grid>

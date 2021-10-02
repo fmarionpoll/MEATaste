@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
@@ -34,7 +35,7 @@ namespace MEATaste.Views.PlotSignal
 
         private void LoadAcquisitionParameters()
         {
-            var currentExperiment = state.CurrentExperiment.Get();
+            var currentExperiment = state.MeaExperiment.Get();
             Model.AcquisitionSettingsLabel = " High-pass=" + currentExperiment.DataAcquisitionSettings.Hpf + " Hz " 
                                            + " Sampling rate=" + currentExperiment.DataAcquisitionSettings.SamplingRate /1000 + " kHz "
                                            + " resolution=" + (currentExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
@@ -93,18 +94,21 @@ namespace MEATaste.Views.PlotSignal
 
         private void UpdateSelectedElectrodeData(ElectrodeProperties properties)
         {
-            var buffer = state.ElectrodeData.Get();
-            var flag = buffer == null;
+            var meaExp = state.MeaExperiment.Get();
+
+            ElectrodeData electrodeData = meaExp.Electrodes[properties.Channel];
+            var flag = electrodeData.RawSignalUShort == null;
             if (flag)
             {
-                state.ElectrodeData.Set(new ElectrodeData());
-                buffer = state.ElectrodeData.Get();
+                //state.ElectrodeData.Set(new ElectrodeData());
+                //electrodeData = state.ElectrodeData.Get();
+                electrodeData.RawSignalUShort = new ushort[1];
             }
 
             if (properties != selectedElectrode || flag)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-                buffer.RawSignalUShort = h5FileReader.ReadChannelDataAll(properties.Channel);
+                electrodeData.RawSignalUShort = h5FileReader.ReadChannelDataAll(properties.Channel);
                 selectedElectrode = properties;
                 Mouse.OverrideCursor = null;
             }
@@ -115,7 +119,7 @@ namespace MEATaste.Views.PlotSignal
 
         private void DisplayNewData(ElectrodeProperties properties, double[] result)
         {
-            var currentExperiment = state.CurrentExperiment.Get();
+            var currentExperiment = state.MeaExperiment.Get();
             var plot = Model.PlotControl.Plot;
             if (!Model.KeepChecked)
                 plot.Clear();
@@ -123,7 +127,7 @@ namespace MEATaste.Views.PlotSignal
 
             var acqSettings = currentExperiment.DataAcquisitionSettings;
             var duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
-            var title = "electrode: "+ properties.Electrode
+            var title = "electrode: "+ properties.ElectrodeNumber
                                      + " channel: " +properties.Channel
                                      + $" (position : x={properties.XuM}, y={properties.YuM} µm)";
             plot.Title(title);
@@ -138,12 +142,14 @@ namespace MEATaste.Views.PlotSignal
 
         private double[] TransferDataToElectrodeBuffer()
         {
-            var currentExperiment = state.CurrentExperiment.Get();
-            var electrodeBuffer = state.ElectrodeData.Get();
-            var rawSignalUShort = electrodeBuffer.RawSignalUShort;
-            var lsb = currentExperiment.DataAcquisitionSettings.Lsb * 1000;
-            electrodeBuffer.RawSignalDouble = rawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
-            return electrodeBuffer.RawSignalDouble;
+            var meaExp = state.MeaExperiment.Get();
+            var channel = state.CurrentElectrode.Get().Channel;
+            var electrodeData = meaExp.Electrodes[channel];
+
+            var rawSignalUShort = electrodeData.RawSignalUShort;
+            var lsb = meaExp.DataAcquisitionSettings.Lsb * 1000;
+            electrodeData.RawSignalDouble = rawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
+            return electrodeData.RawSignalDouble;
         }
 
         public void OnAxesChanged(object sender, EventArgs e)
