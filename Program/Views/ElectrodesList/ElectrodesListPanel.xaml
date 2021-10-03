@@ -7,12 +7,14 @@
              mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=electrodesList:ElectrodesListPanelModel}">
 
     <DataGrid x:Name="ElectrodesGrid"
+              AutoGenerateColumns="False" 
+              ItemsSource="{Binding ElectrodeListView}" 
               Margin="30, 0, 10, 0"
               SelectionMode="Extended"
               CanUserDeleteRows="False" 
               AlternationCount="2"
               AlternatingRowBackground="LightBlue"
-              ItemsSource="{Binding ElectrodeListView, Mode=TwoWay}" 
+              
               SelectedItem="{Binding SelectedElectrodeExtendedProperties, Mode=TwoWay}" 
               SelectionUnit="FullRow"
               HorizontalAlignment ="Stretch" 
@@ -32,6 +34,14 @@
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FF0000" />
             </DataGrid.Resources>
-           
-        </DataGrid>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="chan" Binding = "{Binding Channel}"/>
+                <DataGridTextColumn Header="electrode" Binding = "{Binding ElectrodeNumber}"/>
+                <DataGridTextColumn Header="X µm"  Binding = "{Binding XuM}"/>
+                <DataGridTextColumn Header="Y µm"  Binding = "{Binding YuM}"/>
+                <DataGridTextColumn Header="N spikes"  Binding = "{Binding Nspikes}"/>
+            </DataGrid.Columns>
+
+    </DataGrid>
 </UserControl>

@@ -66,6 +66,7 @@ namespace MEATaste.Views.ElectrodesList
            
             dataGrid = electrodesGrid;
             var electrodePropertiesExtended = (ElectrodePropertiesExtended)dataGrid.SelectedItem;
+            if (electrodePropertiesExtended == null) return;
             SelectElectrode(electrodePropertiesExtended.Channel);
         }
 

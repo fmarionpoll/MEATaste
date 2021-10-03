@@ -22,7 +22,7 @@ namespace MEATaste.Views.ElectrodesList
         }
 
        public ElectrodePropertiesExtended SelectedElectrodeExtendedProperties
-        {
+       {
             get => selectedElectrodeExtendedProperties;
             set
             {
@@ -30,12 +30,14 @@ namespace MEATaste.Views.ElectrodesList
                 selectedElectrodeExtendedProperties = value;
                 OnPropertyChanged(nameof(SelectedElectrodeExtendedProperties));
             }
-        }
+       }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+
+       public event PropertyChangedEventHandler PropertyChanged;
+
+       [NotifyPropertyChangedInvocator]
+       protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
