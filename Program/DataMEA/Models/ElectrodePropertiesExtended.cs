@@ -3,13 +3,13 @@ using System.Runtime.CompilerServices;
 
 namespace MEATaste.DataMEA.Models
 {
-    public class ElectrodePropertiesExtended
+    public record ElectrodePropertiesExtended
     {
-        private int Channel;
-        private int ElectrodeNumber;
-        private double XuM;
-        private double YuM;
-        private int nspikes;
+        public int Channel;
+        public int ElectrodeNumber;
+        public double XuM;
+        public double YuM;
+        public int nspikes;
         
         public ElectrodePropertiesExtended (ElectrodeData electrodeData)
         {

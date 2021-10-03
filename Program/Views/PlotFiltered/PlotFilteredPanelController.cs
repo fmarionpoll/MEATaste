@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using MEATaste.DataMEA.Models;
 using MEATaste.DataMEA.Utilities;
@@ -73,7 +74,8 @@ namespace MEATaste.Views.PlotFiltered
 
             var meaExp = state.MeaExperiment.Get();
             var channel = state.CurrentElectrode.Get().Channel;
-            var electrodeData = meaExp.Electrodes[channel];
+
+            var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
             var rawSignalDouble = electrodeData?.RawSignalDouble;
             if (rawSignalDouble == null)
                 return;

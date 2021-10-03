@@ -1,4 +1,5 @@
-﻿using MEATaste.DataMEA.dbWave;
+﻿using System.Linq;
+using MEATaste.DataMEA.dbWave;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.Infrastructure;
 using Microsoft.Win32;
@@ -42,14 +43,14 @@ namespace MEATaste.Views.FileOpen
         {
             var meaExp = state.MeaExperiment.Get();
             var channel = state.CurrentElectrode.Get().Channel;
-            var electrodeData = meaExp.Electrodes[channel];
+            var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
             dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData);
         }
 
         public void SaveAllElectrodesDataClick()
         {
             var meaExp = state.MeaExperiment.Get();
-            foreach (var electrodeData in meaExp.Electrodes.Values)
+            foreach (var electrodeData in meaExp.Electrodes)
             {
                 electrodeData.RawSignalUShort = h5FileReader.ReadChannelDataAll(electrodeData.Electrode.Channel);
                 dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData);

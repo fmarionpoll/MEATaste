@@ -108,8 +108,7 @@ namespace MEATaste.DataMEA.MaxWell
             var h5Dataset = h5Group.Dataset("mapping");
             var compoundData = h5Dataset.Read<FileMapElectrodeProperties.DatasetMembers>();
 
-            meaExp.Electrodes = new Dictionary<int, ElectrodeData>();
-            meaExp.Electrodes.EnsureCapacity(compoundData.Length);
+            meaExp.Electrodes = new ElectrodeData[compoundData.Length];
             
             for (var i = 0; i < compoundData.Length; i++)
             {
@@ -118,7 +117,7 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].electrode,
                     compoundData[i].x,
                     compoundData[i].y);
-                meaExp.Electrodes.Add(ec.Channel, new ElectrodeData(ec));
+                meaExp.Electrodes[i] = new ElectrodeData(ec);
             }
         }
 
@@ -134,18 +133,24 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].frameno,
                     compoundData[i].channel,
                     compoundData[i].amplitude);
-                if (meaExp.Electrodes.ContainsKey(ec.Channel))
+
+                var flag = false;
+                foreach (var t in meaExp.Electrodes)
                 {
-                    List<SpikeDetected> spikeTimes = meaExp.Electrodes[ec.Channel].SpikeTimes;
+                    if (t.Electrode.Channel != ec.Channel)
+                        continue;
+
+                    List<SpikeDetected> spikeTimes = t.SpikeTimes;
                     if (spikeTimes == null)
                     {
                         spikeTimes = new List<SpikeDetected>();
-                        meaExp.Electrodes[ec.Channel].SpikeTimes = spikeTimes;
+                        t.SpikeTimes = spikeTimes;
                     }
-
                     spikeTimes.Add(ec);
+                    flag = true;
+                    break;
                 }
-                else
+                if (!flag)
                 {
                     Trace.WriteLine(@"channel not found: "+ ec.Channel);
                 }

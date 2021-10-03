@@ -8,7 +8,7 @@ namespace MEATaste.DataMEA.Models
         public string FileName { get; set; }
         public string FileVersion { get; set; } = "unknown";
         public DataAcquisitionSettings DataAcquisitionSettings;
-        public Dictionary<int, ElectrodeData> Electrodes { get; set; }
+        public ElectrodeData[] Electrodes { get; set; }
 
         public MeaExperiment(string fileName, string fileVersion, DataAcquisitionSettings dataAcquisitionSettings)
         {

@@ -96,7 +96,7 @@ namespace MEATaste.Views.PlotSignal
         {
             var meaExp = state.MeaExperiment.Get();
 
-            ElectrodeData electrodeData = meaExp.Electrodes[properties.Channel];
+            var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == properties.Channel);
             var flag = electrodeData.RawSignalUShort == null;
             if (flag)
             {
@@ -123,7 +123,10 @@ namespace MEATaste.Views.PlotSignal
             var plot = Model.PlotControl.Plot;
             if (!Model.KeepChecked)
                 plot.Clear();
-            var sig = plot.AddSignal(result, currentExperiment.DataAcquisitionSettings.SamplingRate);
+            var sig = plot.AddSignal(result, 
+                currentExperiment.DataAcquisitionSettings.SamplingRate,
+                null,
+                properties.Channel.ToString());
 
             var acqSettings = currentExperiment.DataAcquisitionSettings;
             var duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
@@ -134,6 +137,8 @@ namespace MEATaste.Views.PlotSignal
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (mV)");
 
+            var legend = plot.Legend();
+            legend.FontSize = 10; 
             plot.SetAxisLimits(0, duration);
             sig.MaxRenderIndex = (int)(acqSettings.nDataAcquisitionPoints - 1);
             plot.Render();
@@ -144,7 +149,7 @@ namespace MEATaste.Views.PlotSignal
         {
             var meaExp = state.MeaExperiment.Get();
             var channel = state.CurrentElectrode.Get().Channel;
-            var electrodeData = meaExp.Electrodes[channel];
+            var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
 
             var rawSignalUShort = electrodeData.RawSignalUShort;
             var lsb = meaExp.DataAcquisitionSettings.Lsb * 1000;

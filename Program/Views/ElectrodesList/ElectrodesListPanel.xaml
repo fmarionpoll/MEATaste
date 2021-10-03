@@ -2,18 +2,18 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:electrodes-list="clr-namespace:MEATaste.Views.ElectrodesList" 
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=electrodes-list:ElectrodesListPanelModel}">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=electrodesList:ElectrodesListPanelModel}">
 
     <DataGrid x:Name="ElectrodesGrid"
-              Margin="30, 0, 0, 0"
+              Margin="30, 0, 10, 0"
               SelectionMode="Extended"
               CanUserDeleteRows="False" 
               AlternationCount="2"
               AlternatingRowBackground="LightBlue"
               ItemsSource="{Binding ElectrodeListView, Mode=TwoWay}" 
-              SelectedItem="{Binding SelectedElectrodeProperties, Mode=TwoWay}" 
+              SelectedItem="{Binding SelectedElectrodeExtendedProperties, Mode=TwoWay}" 
               SelectionUnit="FullRow"
               HorizontalAlignment ="Stretch" 
               VerticalAlignment ="Stretch" 
@@ -22,7 +22,8 @@
               EnableColumnVirtualization="True" 
               IsReadOnly="True" 
               CanUserAddRows="False"  
-              ClipToBounds="True" CanUserResizeRows="False" 
+              ClipToBounds="True" 
+              CanUserResizeRows="False" 
               RowDetailsVisibilityMode="Visible" 
               SelectionChanged="ElectrodesGrid_SelectionChanged" 
               SelectedCellsChanged="ElectrodesGrid_SelectedCellsChanged">

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Channels;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using OxyPlot;
@@ -72,7 +73,7 @@ namespace MEATaste.Views.ElectrodesMap
                 MarkerFill = OxyColors.LightBlue
             };
 
-            foreach (var item in state.MeaExperiment.Get().Electrodes.Values)
+            foreach (var item in state.MeaExperiment.Get().Electrodes)
             {
                 var point = new ScatterPoint(item.Electrode.XuM, item.Electrode.YuM);
                 series.Points.Add(point);

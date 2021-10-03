@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
@@ -11,7 +13,7 @@ namespace MEATaste.Views.ElectrodesList
     public class ElectrodesListPanelController
     {
         public ElectrodesListPanelModel Model { get; }
-        private ObservableCollection<ElectrodePropertiesExtended> electrodesList;
+        private ObservableCollection<ElectrodePropertiesExtended> electrodesExtendedPropertiesCollection;
         private DataGrid dataGrid;
         private readonly ApplicationState state;
 
@@ -24,43 +26,38 @@ namespace MEATaste.Views.ElectrodesList
             eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
         }
         
-        public void SelectElectrode(ElectrodeProperties electrodeProperties)
+        public void SelectElectrode(int channel)
         {
-            //Trace.WriteLine($"SelectElectrode({electrodeProperties.ElectrodeNumber})");
-
-            state.CurrentElectrode.Set(electrodeProperties);
+            var electrodeDatas = state.MeaExperiment.Get().Electrodes;
+            var electrodeData = electrodeDatas.Single(x => x.Electrode.Channel == channel);
+            state.CurrentElectrode.Set(electrodeData.Electrode);
             ChangeSelectedElectrode();
         }
 
         private void ChangeSelectedElectrode()
         {
-            //Trace.WriteLine("ChangeSelectedElectrode()");
-
-            var stateElectrodeProperties = state.CurrentElectrode.Get();
-            if (Model.SelectedElectrodeProperties == null)
+            var currentElectrode = state.CurrentElectrode.Get();
+            ElectrodePropertiesExtended item = null;
+            if (currentElectrode != null)
             {
-                //Trace.WriteLine("ChangeSelectedElectrode() -- State.SelectedElectrode=NULL");
-                return;
+                var channel = currentElectrode.Channel;
+                item = electrodesExtendedPropertiesCollection.Single(x => x.Channel == channel);
             }
-
-            Model.SelectedElectrodeProperties = stateElectrodeProperties;
-            Model.ElectrodeListView.MoveCurrentTo(Model.SelectedElectrodeProperties);
-            //Trace.WriteLine($"ChangeSelectedElectrode() -- dataGrid.SelectedItem={dataGrid.SelectedItem}");
-
-            dataGrid?.ScrollIntoView(dataGrid.SelectedItem); 
+            Model.SelectedElectrodeExtendedProperties = item;
+            dataGrid?.ScrollIntoView(item); 
            
         }
 
         private void LoadElectrodeListItems()
         {
-            var array = state.MeaExperiment.Get().Electrodes;
-            electrodesList = new ObservableCollection<ElectrodePropertiesExtended>();
-            foreach (var item in array.Values)
+            var electrodeDatas = state.MeaExperiment.Get().Electrodes;
+            electrodesExtendedPropertiesCollection = new ObservableCollection<ElectrodePropertiesExtended>();
+            foreach (var electrodeData in electrodeDatas)
             {
-                var electrodePropertiesExtended = new ElectrodePropertiesExtended(item);
-                electrodesList.Add(electrodePropertiesExtended);
+                var electrodePropertiesExtended = new ElectrodePropertiesExtended(electrodeData);
+                electrodesExtendedPropertiesCollection.Add(electrodePropertiesExtended);
             }
-            Model.ElectrodeListView = CollectionViewSource.GetDefaultView(electrodesList);
+            Model.ElectrodeListView = CollectionViewSource.GetDefaultView(electrodesExtendedPropertiesCollection);
         }
 
         public void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -68,19 +65,8 @@ namespace MEATaste.Views.ElectrodesList
             if (sender is not DataGrid electrodesGrid) return;
            
             dataGrid = electrodesGrid;
-            var electrodeProperties = (ElectrodeProperties)dataGrid.SelectedItem;
-
-            var elState = state.CurrentElectrode.Get();
-            if (elState != null)
-            {
-                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.ElectrodeNumber}"
-                                + $" with Current electrode={elState.ElectrodeNumber}");
-            }
-            else
-            {
-                Trace.WriteLine($"SelectionChanged to dataGrid electrode={electrodeProperties.ElectrodeNumber} state electrode=NULL");
-            }
-            SelectElectrode(electrodeProperties);
+            var electrodePropertiesExtended = (ElectrodePropertiesExtended)dataGrid.SelectedItem;
+            SelectElectrode(electrodePropertiesExtended.Channel);
         }
 
         public void ElectrodesGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -88,10 +74,8 @@ namespace MEATaste.Views.ElectrodesList
             if (sender is not DataGrid electrodesGrid) return;
 
             dataGrid = electrodesGrid;
-            var electrodeProperties = (ElectrodeProperties)dataGrid.SelectedItem;
+            var electrodeProperties = (ElectrodePropertiesExtended)dataGrid.SelectedItem;
             var elState = state.CurrentElectrode.Get();
-            Trace.WriteLine($"===> SelectedCellsChanged to dataGrid electrode={electrodeProperties.ElectrodeNumber}"
-                            + $" with Current electrode={elState.ElectrodeNumber}");
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 
@@ -41,7 +42,7 @@ namespace MEATaste.Views.PlotScrollBar
             if (currentElectrode == null)
                 return;
             var channel = currentElectrode.Channel;
-            var electrodeData = meaExp.Electrodes[channel];
+            var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
             if (electrodeData == null || electrodeData.RawSignalDouble == null) 
                 return;
 
