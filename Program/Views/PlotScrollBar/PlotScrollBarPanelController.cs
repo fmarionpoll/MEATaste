@@ -41,7 +41,7 @@ namespace MEATaste.Views.PlotScrollBar
             var currentElectrode = state.ListSelectedChannels.Get();
             if (currentElectrode == null)
                 return;
-            var channel = currentElectrode.Channel;
+            int channel = currentElectrode.First();
             var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
             if (electrodeData == null || electrodeData.RawSignalDouble == null) 
                 return;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using MEATaste.DataMEA.Models;
@@ -12,7 +13,7 @@ namespace MEATaste.Views.PlotFiltered
     {
         public PlotFilteredPanelModel Model { get; }
         private readonly ApplicationState state;
-        private ElectrodeProperties selectedElectrode;
+        private List<int> selectedElectrodes;
 
 
         public PlotFilteredPanelController(
@@ -53,34 +54,27 @@ namespace MEATaste.Views.PlotFiltered
 
         private void ChangeSelectedElectrode()
         {
-            if (!Model.DisplayChecked)
-            {
-                selectedElectrode = null;
+            var listSelectedChannels = state.ListSelectedChannels.Get();
+            if (listSelectedChannels == null || listSelectedChannels == selectedElectrodes)
                 return;
-            }
-
-            var properties = state.ListSelectedChannels.Get();
-            if (properties == null || properties == selectedElectrode)
-                return;
-            selectedElectrode = properties;
-            UpdateSelectedElectrodeFilteredData();
+       
+            UpdateSelectedElectrodeFilteredData(listSelectedChannels);
         }
 
-        private void UpdateSelectedElectrodeFilteredData()
+        private void UpdateSelectedElectrodeFilteredData(List<int> listSelectedChannels)
         {
-            var currentExperiment = state.MeaExperiment.Get();
-            if (currentExperiment == null) 
-                return;
-
+            selectedElectrodes = listSelectedChannels;
             var meaExp = state.MeaExperiment.Get();
-            var channel = state.ListSelectedChannels.Get().Channel;
 
-            var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
-            var rawSignalDouble = electrodeData?.RawSignalDouble;
-            if (rawSignalDouble == null)
-                return;
+            foreach (var channel in selectedElectrodes)
+            {
+                var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
+                var rawSignalDouble = electrodeData?.RawSignalDouble;
+                if (rawSignalDouble == null)
+                    continue;
 
-            PlotData(ComputeFilteredData(rawSignalDouble));
+                PlotData(ComputeFilteredData(rawSignalDouble));
+            }
         }
 
         private double[] ComputeFilteredData(double[] rawSignalDouble)
@@ -150,8 +144,8 @@ namespace MEATaste.Views.PlotFiltered
         public void ChangeFilter(int selectedFilterIndex)
         {
             Model.SelectedFilterIndex = selectedFilterIndex;
-            if (selectedElectrode != null)
-                UpdateSelectedElectrodeFilteredData();
+            if (selectedElectrodes.Count > 0)
+                UpdateSelectedElectrodeFilteredData(selectedElectrodes);
         }
 
     }

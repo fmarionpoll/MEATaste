@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Threading.Channels;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using OxyPlot;
@@ -43,7 +42,7 @@ namespace MEATaste.Views.ElectrodesMap
             var selectedElectrode = state.ListSelectedChannels.Get();
             var plotModel = Model.ScatterPlotModel;
 
-            if (selectedElectrode == null)
+            if (selectedElectrode.Count == 0)
                 SuppressSelectedPoint(plotModel);
             else 
             {

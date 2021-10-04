@@ -83,8 +83,6 @@ namespace MEATaste.Views.PlotSignal
 
         private void ChangeSelectedElectrode()
         {
-            if (!Model.DisplayChecked) return;
-            
             var listSelectedChannels = state.ListSelectedChannels.Get();
             if (listSelectedChannels == null || listSelectedChannels == selectedElectrodes)
                 return;
