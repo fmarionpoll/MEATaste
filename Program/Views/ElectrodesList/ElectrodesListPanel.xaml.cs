@@ -21,9 +21,5 @@ namespace MEATaste.Views.ElectrodesList
            controller.ElectrodesGrid_SelectionChanged(sender, e);
         }
 
-        private void ElectrodesGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
-        {
-            controller.ElectrodesGrid_SelectedCellsChanged(sender, e);
-        }
     }
 }

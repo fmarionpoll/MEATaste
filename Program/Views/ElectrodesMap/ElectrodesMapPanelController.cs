@@ -12,7 +12,6 @@ namespace MEATaste.Views.ElectrodesMap
     public class ElectrodesMapPanelController
     {
         public ElectrodesMapPanelModel Model { get; }
-
         private readonly ApplicationState state;
 
         public ElectrodesMapPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
@@ -22,7 +21,7 @@ namespace MEATaste.Views.ElectrodesMap
             Model = new ElectrodesMapPanelModel();
 
             eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, PlotElectrodesMap);
-            eventSubscriber.Subscribe(EventType.SelectedElectrodeChanged, ChangeSelectedElectrode);
+            eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
         }
 
         private void PlotElectrodesMap()
@@ -41,7 +40,7 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void ChangeSelectedElectrode()
         {
-            var selectedElectrode = state.CurrentElectrode.Get();
+            var selectedElectrode = state.ListSelectedChannels.Get();
             var plotModel = Model.ScatterPlotModel;
 
             if (selectedElectrode == null)
@@ -143,9 +142,9 @@ namespace MEATaste.Views.ElectrodesMap
 
         public void SelectElectrode(ElectrodeProperties electrodeProperties)
         {
-            if (state.CurrentElectrode.Get() != null &&
-                electrodeProperties.ElectrodeNumber == state.CurrentElectrode.Get().ElectrodeNumber) return;
-            state.CurrentElectrode.Set(electrodeProperties);
+            if (state.ListSelectedChannels.Get() != null &&
+                electrodeProperties.ElectrodeNumber == state.ListSelectedChannels.Get().ElectrodeNumber) return;
+            state.ListSelectedChannels.Set(electrodeProperties);
         }
 
     }

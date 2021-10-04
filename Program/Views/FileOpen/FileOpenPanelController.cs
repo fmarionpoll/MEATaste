@@ -42,7 +42,7 @@ namespace MEATaste.Views.FileOpen
         public void SaveCurrentElectrodeDataClick()
         {
             var meaExp = state.MeaExperiment.Get();
-            var channel = state.CurrentElectrode.Get().Channel;
+            var channel = state.ListSelectedChannels.Get().Channel;
             var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
             dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData);
         }

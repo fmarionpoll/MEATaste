@@ -38,7 +38,7 @@ namespace MEATaste.Views.PlotScrollBar
         private void FileHasChanged()
         {
             var meaExp = state.MeaExperiment.Get();
-            var currentElectrode = state.CurrentElectrode.Get();
+            var currentElectrode = state.ListSelectedChannels.Get();
             if (currentElectrode == null)
                 return;
             var channel = currentElectrode.Channel;

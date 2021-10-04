@@ -10,13 +10,14 @@ namespace MEATaste.DataMEA.Models
         public ushort[] RawSignalUShort { get; set; }
         public double[] RawSignalDouble { get; set; }
         public List<SpikeDetected> SpikeTimes { get; set; }
+        public bool Selected { get; set; }
 
         public ElectrodeData(ElectrodeProperties ec)
         {
             Electrode = ec;
+            Selected = false;
         }
+
     }
-
-
 }
  

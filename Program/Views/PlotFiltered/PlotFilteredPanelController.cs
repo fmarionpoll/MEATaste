@@ -59,7 +59,7 @@ namespace MEATaste.Views.PlotFiltered
                 return;
             }
 
-            var properties = state.CurrentElectrode.Get();
+            var properties = state.ListSelectedChannels.Get();
             if (properties == null || properties == selectedElectrode)
                 return;
             selectedElectrode = properties;
@@ -73,7 +73,7 @@ namespace MEATaste.Views.PlotFiltered
                 return;
 
             var meaExp = state.MeaExperiment.Get();
-            var channel = state.CurrentElectrode.Get().Channel;
+            var channel = state.ListSelectedChannels.Get().Channel;
 
             var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
             var rawSignalDouble = electrodeData?.RawSignalDouble;

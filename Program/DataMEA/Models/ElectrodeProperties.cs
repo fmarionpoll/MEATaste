@@ -5,6 +5,4 @@
         int ElectrodeNumber,
         double XuM,
         double YuM);
-
-    
 }

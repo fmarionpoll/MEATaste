@@ -27,8 +27,7 @@
               ClipToBounds="True" 
               CanUserResizeRows="False" 
               RowDetailsVisibilityMode="Visible" 
-              SelectionChanged="ElectrodesGrid_SelectionChanged" 
-              SelectedCellsChanged="ElectrodesGrid_SelectedCellsChanged">
+              SelectionChanged="ElectrodesGrid_SelectionChanged">
                   
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
