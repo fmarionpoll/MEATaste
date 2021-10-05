@@ -5,7 +5,7 @@ using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
-
+using System.Diagnostics;
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -24,17 +24,15 @@ namespace MEATaste.Views.ElectrodesList
             eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, LoadElectrodeListItems);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, SetSelectedChannels);
         }
-        
+
         private void SetSelectedChannels()
         {
+            return;
             var selectedChannels = state.ListSelectedChannels.Get();
-            if (dataGrid == null) return;
+            if (dataGrid == null || selectedChannels == null) return;
 
-            if (selectedChannels.Count == 0)
-                return;
-
-            var listSelectedElectrodes = GetDataGridSelectedChannels();
-            if (!IsChannelsListDifferentFromSelectedItems(listSelectedElectrodes)) return;
+            List<int> listSelectedElectrodes = GetSelectedChannelsFromDataGrid();
+            if (IsChannelsListEqualToSelectedItems(listSelectedElectrodes)) return;
 
             foreach (var item in dataGrid.Items)
             {
@@ -71,27 +69,36 @@ namespace MEATaste.Views.ElectrodesList
             if (addedRows.Count == 0 && removedRows.Count == 0)
                 return;
             dataGrid = electrodesGrid;
-            var listSelectedElectrodes = GetDataGridSelectedChannels(); 
+            var listSelectedElectrodes = GetSelectedChannelsFromDataGrid(); 
 
-            if (IsChannelsListDifferentFromSelectedItems(listSelectedElectrodes))
+            if (!IsChannelsListEqualToSelectedItems(listSelectedElectrodes))
             {
+                Trace.WriteLine("before " + listSelectedElectrodes.Count );
                 state.ListSelectedChannels.Set(listSelectedElectrodes);
+                Trace.WriteLine("after set, state= " + state.ListSelectedChannels.Get().Count);
+
             }
             
         }
 
-        private List<int> GetDataGridSelectedChannels()
+        private List<int> GetSelectedChannelsFromDataGrid()
         {
             var electrodePropertiesExtended = dataGrid.SelectedItems.Cast<ElectrodePropertiesExtended>().ToList();
             var listSelectedElectrodes = new List<int>();
             listSelectedElectrodes.AddRange(electrodePropertiesExtended.Select(item => item.Channel));
             return listSelectedElectrodes;
         }
-        private bool IsChannelsListDifferentFromSelectedItems(List<int> listSelectedElectrodes)
+
+        private bool IsChannelsListEqualToSelectedItems(List<int> listSelectedElectrodes)
         {
-            var set = new HashSet<int>(state.ListSelectedChannels.Get());
+            List<int> listState = state.ListSelectedChannels.Get();
+            if (listState == null)
+            {
+                return false;
+            }
+            var set = new HashSet<int>(listState);
             var equals = set.SetEquals(listSelectedElectrodes);
-            return !equals;
+            return equals;
         }
 
     }

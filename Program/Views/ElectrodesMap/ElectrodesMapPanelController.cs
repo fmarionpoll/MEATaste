@@ -48,7 +48,9 @@ namespace MEATaste.Views.ElectrodesMap
             var plotModel = Model.ScatterPlotModel;
 
             if (listSelectedChannels.Count == 0)
+            {
                 SuppressSelectedPoints(plotModel);
+            }
             else 
             {
                 SetSelectedPoints(plotModel, listSelectedChannels);

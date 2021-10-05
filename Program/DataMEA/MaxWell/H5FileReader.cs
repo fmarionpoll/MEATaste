@@ -134,7 +134,7 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].channel,
                     compoundData[i].amplitude);
 
-                var flag = false;
+                //var flag = false;
                 foreach (var t in meaExp.Electrodes)
                 {
                     if (t.Electrode.Channel != ec.Channel)
@@ -147,7 +147,7 @@ namespace MEATaste.DataMEA.MaxWell
                         t.SpikeTimes = spikeTimes;
                     }
                     spikeTimes.Add(ec);
-                    flag = true;
+                    //flag = true;
                     break;
                 }
                 //if (!flag)
