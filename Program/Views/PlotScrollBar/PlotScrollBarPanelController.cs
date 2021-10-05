@@ -39,11 +39,11 @@ namespace MEATaste.Views.PlotScrollBar
         {
             var meaExp = state.MeaExperiment.Get();
             var currentElectrode = state.ListSelectedChannels.Get();
-            if (currentElectrode == null)
+            if (currentElectrode == null || currentElectrode.Count == 0)
                 return;
-            int channel = currentElectrode.First();
+            var channel = currentElectrode.First();
             var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
-            if (electrodeData == null || electrodeData.RawSignalDouble == null) 
+            if (electrodeData.RawSignalDouble == null) 
                 return;
 
             var meaExperiment = state.MeaExperiment.Get();

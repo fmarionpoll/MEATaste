@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -84,6 +85,10 @@ namespace MEATaste.Views.PlotSignal
         private void ChangeSelectedElectrode()
         {
             var listSelectedChannels = state.ListSelectedChannels.Get();
+            if (listSelectedChannels == null)
+                return; 
+            Trace.WriteLine("PlotSignalPanelController: " + listSelectedChannels.Count);
+            return;
             if (listSelectedChannels == null || listSelectedChannels == selectedElectrodes)
                 return;
 

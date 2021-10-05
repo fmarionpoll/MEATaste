@@ -30,8 +30,12 @@ namespace MEATaste.Views.ElectrodesList
             var selectedChannels = state.ListSelectedChannels.Get();
             if (dataGrid == null) return;
 
-            dataGrid.SelectedItems.Clear();
-            
+            if (selectedChannels.Count == 0)
+                return;
+
+            var listSelectedElectrodes = GetDataGridSelectedChannels();
+            if (!IsChannelsListDifferentFromSelectedItems(listSelectedElectrodes)) return;
+
             foreach (var item in dataGrid.Items)
             {
                 var row = (ElectrodePropertiesExtended) item;
@@ -42,10 +46,8 @@ namespace MEATaste.Views.ElectrodesList
                     dataGrid.SelectedItems.Add(row);
                     break;
                 }
-
             }
 
-           
         }
 
         private void LoadElectrodeListItems()
@@ -68,13 +70,28 @@ namespace MEATaste.Views.ElectrodesList
             var removedRows = e.RemovedItems;
             if (addedRows.Count == 0 && removedRows.Count == 0)
                 return;
-
             dataGrid = electrodesGrid;
-            var electrodePropertiesExtended = (IList<ElectrodePropertiesExtended>)dataGrid.SelectedItems;
-            var listSelectedElectrodes = state.ListSelectedChannels.Get();
-            listSelectedElectrodes.Clear();
+            var listSelectedElectrodes = GetDataGridSelectedChannels(); 
+
+            if (IsChannelsListDifferentFromSelectedItems(listSelectedElectrodes))
+            {
+                state.ListSelectedChannels.Set(listSelectedElectrodes);
+            }
+            
+        }
+
+        private List<int> GetDataGridSelectedChannels()
+        {
+            var electrodePropertiesExtended = dataGrid.SelectedItems.Cast<ElectrodePropertiesExtended>().ToList();
+            var listSelectedElectrodes = new List<int>();
             listSelectedElectrodes.AddRange(electrodePropertiesExtended.Select(item => item.Channel));
-            state.ListSelectedChannels.Set(listSelectedElectrodes);
+            return listSelectedElectrodes;
+        }
+        private bool IsChannelsListDifferentFromSelectedItems(List<int> listSelectedElectrodes)
+        {
+            var set = new HashSet<int>(state.ListSelectedChannels.Get());
+            var equals = set.SetEquals(listSelectedElectrodes);
+            return !equals;
         }
 
     }

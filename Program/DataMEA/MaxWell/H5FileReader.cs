@@ -150,10 +150,10 @@ namespace MEATaste.DataMEA.MaxWell
                     flag = true;
                     break;
                 }
-                if (!flag)
-                {
-                    Trace.WriteLine(@"channel not found: "+ ec.Channel);
-                }
+                //if (!flag)
+                //{
+                //    Trace.WriteLine(@"channel not found: "+ ec.Channel);
+                //}
             }
         }
 
