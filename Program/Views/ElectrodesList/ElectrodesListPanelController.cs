@@ -5,7 +5,6 @@ using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
-using System.Diagnostics;
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -27,12 +26,11 @@ namespace MEATaste.Views.ElectrodesList
 
         private void SetSelectedChannels()
         {
-            return;
             var selectedChannels = state.ListSelectedChannels.Get();
             if (dataGrid == null || selectedChannels == null) return;
 
-            List<int> listSelectedElectrodes = GetSelectedChannelsFromDataGrid();
-            if (IsChannelsListEqualToSelectedItems(listSelectedElectrodes)) return;
+            var listSelectedElectrodes = GetSelectedChannelsFromDataGrid();
+            if (IsListEqualToStateSelectedItems(listSelectedElectrodes)) return;
 
             foreach (var item in dataGrid.Items)
             {
@@ -51,6 +49,13 @@ namespace MEATaste.Views.ElectrodesList
         private void LoadElectrodeListItems()
         {
             var electrodeDatas = state.MeaExperiment.Get().Electrodes;
+            if (electrodesExtendedPropertiesCollection != null &&
+                electrodeDatas.Length == electrodesExtendedPropertiesCollection.Count)
+            {
+                if (IsDataGridChannelsContentEqualToStateElectrodeData())
+                    return;
+            }
+
             electrodesExtendedPropertiesCollection = new ObservableCollection<ElectrodePropertiesExtended>();
             foreach (var electrodeData in electrodeDatas)
             {
@@ -58,6 +63,19 @@ namespace MEATaste.Views.ElectrodesList
                 electrodesExtendedPropertiesCollection.Add(electrodePropertiesExtended);
             }
             Model.ElectrodeListView = CollectionViewSource.GetDefaultView(electrodesExtendedPropertiesCollection);
+        }
+
+        private bool IsDataGridChannelsContentEqualToStateElectrodeData()
+        {
+            var list1 = new List<int>();
+            foreach (ElectrodePropertiesExtended item in dataGrid.Items) list1.Add( item.Channel);
+            
+            var list2 = new List<int>();
+            foreach (var electrodeData in state.MeaExperiment.Get().Electrodes) list2.Add(electrodeData.Electrode.Channel);
+
+            var set = new HashSet<int>(list1);
+            var equals = set.SetEquals(list2);
+            return equals;
         }
 
         public void ElectrodesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -71,12 +89,9 @@ namespace MEATaste.Views.ElectrodesList
             dataGrid = electrodesGrid;
             var listSelectedElectrodes = GetSelectedChannelsFromDataGrid(); 
 
-            if (!IsChannelsListEqualToSelectedItems(listSelectedElectrodes))
+            if (!IsListEqualToStateSelectedItems(listSelectedElectrodes))
             {
-                Trace.WriteLine("before " + listSelectedElectrodes.Count );
                 state.ListSelectedChannels.Set(listSelectedElectrodes);
-                Trace.WriteLine("after set, state= " + state.ListSelectedChannels.Get().Count);
-
             }
             
         }
@@ -89,9 +104,9 @@ namespace MEATaste.Views.ElectrodesList
             return listSelectedElectrodes;
         }
 
-        private bool IsChannelsListEqualToSelectedItems(List<int> listSelectedElectrodes)
+        private bool IsListEqualToStateSelectedItems(List<int> listSelectedElectrodes)
         {
-            List<int> listState = state.ListSelectedChannels.Get();
+            var listState = state.ListSelectedChannels.Get();
             if (listState == null)
             {
                 return false;

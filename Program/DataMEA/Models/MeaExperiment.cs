@@ -1,6 +1,4 @@
 ﻿
-using System.Collections.Generic;
-
 namespace MEATaste.DataMEA.Models
 {
     public class MeaExperiment

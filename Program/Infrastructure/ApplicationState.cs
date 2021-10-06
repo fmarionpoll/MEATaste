@@ -6,8 +6,8 @@ namespace MEATaste.Infrastructure
     public class ApplicationState
     {
         public StateProperty<MeaExperiment> MeaExperiment { get; }
-        public StateProperty<List<int>> ListSelectedChannels { get; set; }
-        public StateProperty<AxesExtrema> AxesMaxMin { get; set; }
+        public StateProperty<List<int>> ListSelectedChannels { get; }
+        public StateProperty<AxesExtrema> AxesMaxMin { get; }
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {

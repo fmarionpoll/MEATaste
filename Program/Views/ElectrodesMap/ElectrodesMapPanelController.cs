@@ -42,8 +42,6 @@ namespace MEATaste.Views.ElectrodesMap
         {
             var listSelectedChannels = state.ListSelectedChannels.Get();
             if (listSelectedChannels == null) return;
-            Trace.WriteLine("ElectrodesMapPanelController: " + listSelectedChannels.Count);
-            return;
 
             var plotModel = Model.ScatterPlotModel;
 
@@ -90,34 +88,41 @@ namespace MEATaste.Views.ElectrodesMap
         
         private void CenterPlotOnElectrodes(PlotModel plotModel, List<int> listSelectedChannels)
         {
+            return;
             var xAxis = plotModel.Axes[0];
             var yAxis = plotModel.Axes[1];
             xAxis.Reset();
             yAxis.Reset();
 
-            const int deltaX = 150;
-            var maxMin = GetSelectedElectrodesArea();
-            xAxis.Minimum = maxMin[0] - deltaX;
-            xAxis.Maximum = maxMin[1] + deltaX;
+            const int delta = 150;
+            var maxMin = GetSelectedElectrodesArea(listSelectedChannels);
 
-            var deltaY = deltaX; 
-            yAxis.Minimum = maxMin[2] - deltaY;
-            yAxis.Maximum = maxMin[3] + deltaY;
+            xAxis.Minimum = maxMin[0] - delta;
+            xAxis.Maximum = maxMin[1] + delta;
+
+            yAxis.Minimum = maxMin[0] - delta;
+            yAxis.Maximum = maxMin[1] + delta;
         }
 
-        private double[] GetSelectedElectrodesArea()
+        private double[] GetSelectedElectrodesArea(List<int> listSelectedChannels)
         {
             var meaExp = state.MeaExperiment.Get();
-            double[] maxMin = new double[4];
+            var maxMin = new double[2];
 
-            foreach (var channel in selectedChannels)
+            if (listSelectedChannels == null) return maxMin;
+            var electr = meaExp.Electrodes.Single(x => x.Electrode.Channel == listSelectedChannels[0]).Electrode;
+            maxMin[0] = electr.XuM;
+            maxMin[1] = electr.XuM;
+
+            foreach (var channel in listSelectedChannels)
             {
                 var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
                 if (maxMin[0] > electrode.XuM) maxMin[0] = electrode.XuM;
                 if (maxMin[1] < electrode.XuM) maxMin[1] = electrode.XuM;
-                if (maxMin[2] > electrode.YuM) maxMin[2] = electrode.YuM;
-                if (maxMin[3] < electrode.YuM) maxMin[3] = electrode.YuM;
+                if (maxMin[0] > electrode.YuM) maxMin[0] = electrode.YuM;
+                if (maxMin[1] < electrode.YuM) maxMin[1] = electrode.YuM;
             }
+
             return maxMin;
         }
 

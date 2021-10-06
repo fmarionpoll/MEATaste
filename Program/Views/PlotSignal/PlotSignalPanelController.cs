@@ -86,10 +86,9 @@ namespace MEATaste.Views.PlotSignal
         {
             var listSelectedChannels = state.ListSelectedChannels.Get();
             if (listSelectedChannels == null)
-                return; 
-            Trace.WriteLine("PlotSignalPanelController: " + listSelectedChannels.Count);
-            return;
-            if (listSelectedChannels == null || listSelectedChannels == selectedElectrodes)
+                return;
+
+            if (listSelectedChannels == selectedElectrodes)
                 return;
 
             UpdateSelectedElectrodeData(listSelectedChannels);
