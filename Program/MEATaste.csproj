@@ -20,8 +20,8 @@
     <PackageReference Include="HDF5.NET" Version="1.0.0-alpha.11.final" />
     <PackageReference Include="Intrinsics.ISA-L.PInvoke" Version="2.30.0-preview.6.final" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.1.21451.13" />
-    <PackageReference Include="OxyPlot.Wpf" Version="2.1.0-Preview1" />
-    <PackageReference Include="ScottPlot.WPF" Version="4.1.24" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
+    <PackageReference Include="ScottPlot.WPF" Version="4.1.25" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

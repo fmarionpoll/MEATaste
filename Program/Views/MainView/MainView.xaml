@@ -8,6 +8,7 @@
         xmlns:plotfilter="clr-namespace:MEATaste.Views.PlotFiltered"
         xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
         xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
+        xmlns:heatMap="clr-namespace:MEATaste.Views.PlotHeatMap"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
         mc:Ignorable="d"
@@ -24,10 +25,9 @@
         </Grid>
 
         <Grid  Grid.Row="1">
-            
             <Grid >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="280" />
+                    <ColumnDefinition Width="350" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
@@ -40,7 +40,7 @@
                         <RowDefinition Height="280"/>
                     </Grid.RowDefinitions>
                     <electrodesList:ElectrodesListPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
-                    <electrodesMap:ElectrodesMapPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+                    <heatMap:HeatMapPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
                 </Grid>
 
                 <Grid Grid.Column="1" Grid.Row="0">

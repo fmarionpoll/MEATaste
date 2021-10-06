@@ -15,7 +15,8 @@
                  Loaded = "PlotControl_Loaded" 
                  AxesChanged = "PlotControl_AxesChanged" />
 
-        <ComboBox Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged" >
+        <ComboBox Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Width="120"
+                  SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged" IsEnabled="False">
             <ComboBoxItem Content="Raw signal" />
             <ComboBoxItem Content="Derivative BDeriv2f3" />
             <ComboBoxItem Content="Running median" />

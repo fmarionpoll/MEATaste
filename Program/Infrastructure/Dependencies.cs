@@ -6,6 +6,7 @@ using MEATaste.Views.FileOpen;
 using MEATaste.Views.MainView;
 using MEATaste.Views.PlotSignal;
 using MEATaste.Views.PlotFiltered;
+using MEATaste.Views.PlotHeatMap;
 using MEATaste.Views.PlotScrollBar;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,6 +40,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<PlotSignalPanelController>();
                 services.AddSingleton<PlotFilteredPanelController>();
                 services.AddSingleton<PlotScrollBarPanelController>();
+                services.AddSingleton<HeatMapPanelController>();
                 services.AddSingleton<MainViewModel>();
             }
         }

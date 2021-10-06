@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste
 {
-    public partial class App : Application
+    public partial class App
     {
         public static ServiceProvider ServiceProvider { get ; private set; }
         private readonly ServiceProvider serviceProvider;
