@@ -88,40 +88,49 @@ namespace MEATaste.Views.ElectrodesMap
         
         private void CenterPlotOnElectrodes(PlotModel plotModel, List<int> listSelectedChannels)
         {
-            return;
+            if (listSelectedChannels == null) return;
+
+            var maxMin = GetSelectedElectrodesArea(listSelectedChannels); 
+            
             var xAxis = plotModel.Axes[0];
             var yAxis = plotModel.Axes[1];
             xAxis.Reset();
             yAxis.Reset();
 
             const int delta = 150;
-            var maxMin = GetSelectedElectrodesArea(listSelectedChannels);
 
             xAxis.Minimum = maxMin[0] - delta;
             xAxis.Maximum = maxMin[1] + delta;
 
-            yAxis.Minimum = maxMin[0] - delta;
-            yAxis.Maximum = maxMin[1] + delta;
+            yAxis.Minimum = maxMin[2] - delta;
+            yAxis.Maximum = maxMin[3] + delta;
         }
 
         private double[] GetSelectedElectrodesArea(List<int> listSelectedChannels)
         {
             var meaExp = state.MeaExperiment.Get();
-            var maxMin = new double[2];
+            var maxMin = new double[4];
 
-            if (listSelectedChannels == null) return maxMin;
             var electr = meaExp.Electrodes.Single(x => x.Electrode.Channel == listSelectedChannels[0]).Electrode;
             maxMin[0] = electr.XuM;
             maxMin[1] = electr.XuM;
+            maxMin[2] = electr.YuM;
+            maxMin[3] = electr.YuM;
 
             foreach (var channel in listSelectedChannels)
             {
                 var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
                 if (maxMin[0] > electrode.XuM) maxMin[0] = electrode.XuM;
                 if (maxMin[1] < electrode.XuM) maxMin[1] = electrode.XuM;
-                if (maxMin[0] > electrode.YuM) maxMin[0] = electrode.YuM;
-                if (maxMin[1] < electrode.YuM) maxMin[1] = electrode.YuM;
+                if (maxMin[2] > electrode.YuM) maxMin[2] = electrode.YuM;
+                if (maxMin[3] < electrode.YuM) maxMin[3] = electrode.YuM;
             }
+
+            var delta = maxMin[1] - maxMin[0];
+            var deltaY = maxMin[2] - maxMin[3];
+            if (delta < deltaY) delta = deltaY;
+            maxMin[1] = maxMin[0] + delta;
+            maxMin[3] = maxMin[2] + delta;
 
             return maxMin;
         }

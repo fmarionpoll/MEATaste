@@ -68,7 +68,6 @@ namespace MEATaste.Views.PlotScrollBar
             var xFirst = Model.ScrollValue - Model.ScrollViewPortSize / 2;
             var xLast = Model.ScrollValue + Model.ScrollViewPortSize / 2;
             state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
-
         }
     }
 }

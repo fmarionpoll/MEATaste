@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -98,7 +97,7 @@ namespace MEATaste.Views.PlotSignal
         {
             selectedElectrodes = listSelectedChannels;
             var meaExp = state.MeaExperiment.Get();
-            double samplingRate = meaExp.DataAcquisitionSettings.SamplingRate;
+            var samplingRate = meaExp.DataAcquisitionSettings.SamplingRate;
             PreparePlot();
 
             foreach (var channel in selectedElectrodes)
