@@ -41,41 +41,6 @@ namespace MEATaste.Views.PlotSignal
                                            + " resolution=" + (currentExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
         }
 
-        public void DisplayCurveChecked(bool value)
-        {
-            if (Model.DisplayChecked != value)
-                MakeCurvesVisible(value);
-            Model.DisplayChecked = value;
-
-            if (value && 
-                (Model.PlotControl.Plot.GetPlottables().Length == 0
-                || state.ListSelectedChannels.Get() != selectedElectrodes))
-                ChangeSelectedElectrode();
-        }
-
-        public void KeepCurveChecked(bool value)
-        {
-            if (Model.KeepChecked != value)
-                MakeCurvesVisible(value);
-            Model.KeepChecked = value;
-
-            if (value &&
-                (Model.PlotControl.Plot.GetPlottables().Length == 0
-                 || state.ListSelectedChannels.Get() != selectedElectrodes))
-                ChangeSelectedElectrode();
-        }
-
-        private void MakeCurvesVisible(bool visible)
-        {
-            var plot = Model.PlotControl.Plot;
-            var plottables = plot.GetPlottables();
-            foreach (var t in plottables)
-            {
-                t.IsVisible = visible;
-            }
-            Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
-        }
-
         public void AttachControlToModel(WpfPlot wpfControl)
         {
             Model.PlotControl = wpfControl;
@@ -110,9 +75,9 @@ namespace MEATaste.Views.PlotSignal
                     Mouse.OverrideCursor = null;
                 }
                 TransferDataToElectrodeBuffer(electrodeData);
-                string legend = "channel " + electrodeData.Electrode.Channel
-                                           + "(" + electrodeData.Electrode.XuM + ", " +
-                                           electrodeData.Electrode.YuM + ")";
+                var legend = "channel " + electrodeData.Electrode.Channel
+                                        + "(" + electrodeData.Electrode.XuM + ", " +
+                                        electrodeData.Electrode.YuM + " µm)";
                 AddPlot(electrodeData.RawSignalDouble, samplingRate, legend);
             }
             DisplayPlot();
@@ -121,8 +86,7 @@ namespace MEATaste.Views.PlotSignal
         private void PreparePlot()
         {
             var plot = Model.PlotControl.Plot;
-            if (!Model.KeepChecked)
-                plot.Clear();
+            plot.Clear();
             plot.XLabel("Time (s)");
             plot.YLabel("Voltage (mV)");
         }
@@ -137,12 +101,20 @@ namespace MEATaste.Views.PlotSignal
 
         private void DisplayPlot()
         {
-            var acqSettings = state.MeaExperiment.Get().DataAcquisitionSettings;
-            var duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
             var plot = Model.PlotControl.Plot;
             var legend = plot.Legend();
-            legend.FontSize = 10; 
-            plot.SetAxisLimits(0, duration);
+            legend.FontSize = 10;
+
+            if (state.AxesMaxMin.Get() == null)
+            {
+                var acqSettings = state.MeaExperiment.Get().DataAcquisitionSettings;
+                var duration = acqSettings.nDataAcquisitionPoints / acqSettings.SamplingRate;
+                var newAxisLimits = plot.GetAxisLimits();
+                state.AxesMaxMin.Set(new AxesExtrema(0, duration, newAxisLimits.YMin, newAxisLimits.YMax));
+            }
+            var axesMaxMin = state.AxesMaxMin.Get(); 
+            plot.SetAxisLimits(axesMaxMin.XMin, axesMaxMin.XMax);
+
             plot.Render();
             Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
         }
@@ -172,7 +144,6 @@ namespace MEATaste.Views.PlotSignal
 
         private void AxesChanged()
         {
-            if (!Model.DisplayChecked) return;
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
                 ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);

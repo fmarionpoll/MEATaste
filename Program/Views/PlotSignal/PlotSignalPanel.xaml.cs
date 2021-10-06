@@ -28,18 +28,6 @@ namespace MEATaste.Views.PlotSignal
             controller.OnAxesChanged(sender, e);
         }
 
-        private void CheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
-            controller.DisplayCurveChecked(flag);
-        }
-
-        private void keep_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var flag = sender is CheckBox checkBox && checkBox.IsChecked == true;
-            controller.KeepCurveChecked(flag);
-        }
-
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 

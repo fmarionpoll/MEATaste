@@ -7,8 +7,6 @@ namespace MEATaste.Views.PlotSignal
 {
     public class PlotSignalPanelModel : INotifyPropertyChanged
     {
-        private bool displayChecked;
-        private bool keepChecked;
         private int selectedFilterIndex = 0;
         private string acquisitionSettingsLabel = string.Empty;
         private WpfPlot plotControl;
@@ -27,28 +25,6 @@ namespace MEATaste.Views.PlotSignal
         public PlotSignalPanelModel()
         {
             PlotControl = new WpfPlot();
-        }
-
-        public bool KeepChecked
-        {
-            get => keepChecked;
-            set
-            {
-                if (keepChecked == value) return;
-                keepChecked = value;
-                OnPropertyChanged(nameof(KeepChecked));
-            }
-        }
-
-        public bool DisplayChecked
-        {
-            get => displayChecked;
-            set
-            {
-                if (displayChecked == value) return;
-                displayChecked = value;
-                OnPropertyChanged(nameof(DisplayChecked));
-            }
         }
 
         public int SelectedFilterIndex
