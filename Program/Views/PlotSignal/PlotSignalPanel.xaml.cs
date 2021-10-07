@@ -30,7 +30,8 @@ namespace MEATaste.Views.PlotSignal
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (controller != null && sender is ComboBox combo)
+                controller.ChangeFilter(combo.SelectedIndex);
         }
     }
 

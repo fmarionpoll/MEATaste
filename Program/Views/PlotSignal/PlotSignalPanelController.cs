@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
+using MEATaste.DataMEA.Utilities;
 using MEATaste.Infrastructure;
 using ScottPlot;
 
@@ -77,9 +78,30 @@ namespace MEATaste.Views.PlotSignal
                 var legend = "channel " + electrodeData.Electrode.Channel
                                         + "(" + electrodeData.Electrode.XuM + ", " +
                                         electrodeData.Electrode.YuM + " µm)";
-                AddPlot(ConvertDataToVoltage(electrodeData), samplingRate, legend);
+                AddPlot(ComputeFilteredData(electrodeData), samplingRate, legend);
             }
             DisplayPlot();
+        }
+
+        private double[] ComputeFilteredData(ElectrodeData electrodeData)
+        {
+            var meaExp = state.MeaExperiment.Get();
+            var result = Filter.ConvertDataToMV(electrodeData.RawSignalUShort,
+                meaExp.DataAcquisitionSettings.Lsb * 1000, 512);
+            
+            switch (Model.SelectedFilterIndex)
+            {
+                case 1:
+                    result = Filter.BDerivFast2f3(result, result.Length);
+                    break;
+                case 2:
+                    result = Filter.BMedian(result, result.Length, 20);
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
         }
 
         private void PreparePlot()
@@ -118,13 +140,6 @@ namespace MEATaste.Views.PlotSignal
             Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
         }
 
-        private double [] ConvertDataToVoltage(ElectrodeData electrodeData)
-        {
-            var meaExp = state.MeaExperiment.Get();
-            var lsb = meaExp.DataAcquisitionSettings.Lsb * 1000;
-            return electrodeData.RawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
-        }
-
         public void OnAxesChanged(object sender, EventArgs e)
         {
             var changedPlot = (WpfPlot)sender;
@@ -146,6 +161,13 @@ namespace MEATaste.Views.PlotSignal
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
                 ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
+        }
+
+        public void ChangeFilter(int selectedFilterIndex)
+        {
+            Model.SelectedFilterIndex = selectedFilterIndex;
+            if (selectedElectrodes == null || selectedElectrodes.Count <= 0) return;
+            UpdateSelectedElectrodeData(selectedElectrodes);
         }
 
 
