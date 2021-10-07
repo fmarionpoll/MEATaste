@@ -69,12 +69,18 @@ namespace MEATaste.Views.PlotFiltered
             foreach (var channel in selectedElectrodes)
             {
                 var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
-                var rawSignalDouble = electrodeData?.RawSignalDouble;
-                if (rawSignalDouble == null)
+                if (electrodeData.RawSignalUShort == null)
                     continue;
 
-                PlotData(ComputeFilteredData(rawSignalDouble));
+                PlotData(ComputeFilteredData(ConvertDataToVoltage(electrodeData)));
             }
+        }
+
+        private double[] ConvertDataToVoltage(ElectrodeData electrodeData)
+        {
+            var meaExp = state.MeaExperiment.Get();
+            var lsb = meaExp.DataAcquisitionSettings.Lsb * 1000;
+            return electrodeData.RawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
         }
 
         private double[] ComputeFilteredData(double[] rawSignalDouble)

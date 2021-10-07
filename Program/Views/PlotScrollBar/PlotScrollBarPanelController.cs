@@ -43,11 +43,11 @@ namespace MEATaste.Views.PlotScrollBar
                 return;
             var channel = currentElectrode.First();
             var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
-            if (electrodeData.RawSignalDouble == null) 
+            if (electrodeData.RawSignalUShort == null) 
                 return;
 
             var meaExperiment = state.MeaExperiment.Get();
-            fileDuration = electrodeData.RawSignalDouble.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;
+            fileDuration = electrodeData.RawSignalUShort.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;
             Model.ScrollMinimum = 0;
             Model.ScrollMaximum = fileDuration;
         }

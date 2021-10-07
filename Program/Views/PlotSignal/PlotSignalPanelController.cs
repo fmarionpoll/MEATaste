@@ -74,11 +74,10 @@ namespace MEATaste.Views.PlotSignal
                     electrodeData.RawSignalUShort = h5FileReader.ReadChannelDataAll(channel);
                     Mouse.OverrideCursor = null;
                 }
-                TransferDataToElectrodeBuffer(electrodeData);
                 var legend = "channel " + electrodeData.Electrode.Channel
                                         + "(" + electrodeData.Electrode.XuM + ", " +
                                         electrodeData.Electrode.YuM + " µm)";
-                AddPlot(electrodeData.RawSignalDouble, samplingRate, legend);
+                AddPlot(ConvertDataToVoltage(electrodeData), samplingRate, legend);
             }
             DisplayPlot();
         }
@@ -119,11 +118,11 @@ namespace MEATaste.Views.PlotSignal
             Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
         }
 
-        private void TransferDataToElectrodeBuffer(ElectrodeData electrodeData)
+        private double [] ConvertDataToVoltage(ElectrodeData electrodeData)
         {
             var meaExp = state.MeaExperiment.Get();
             var lsb = meaExp.DataAcquisitionSettings.Lsb * 1000;
-            electrodeData.RawSignalDouble = electrodeData.RawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
+            return electrodeData.RawSignalUShort.Select(x => (x - 512) * lsb).ToArray();
         }
 
         public void OnAxesChanged(object sender, EventArgs e)

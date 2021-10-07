@@ -2,7 +2,7 @@
 {
     public static class Filter
     {
-		/*
+        /*
 		Usui S.and Amidror I. (1982)
 		Digital low-pass differentiation for biological signal processing.
 		IEEE Trans.Biomed.Eng.  20 (10) 686-693
@@ -19,7 +19,7 @@
 			from y(k), using ax, bx, and dx to store x(k+1), x(k+2)
 			and x(k+3).
 		*/
-		public static double[] BDerivFast2f3(double[] dataIn, int rowLength)
+        public static double[] BDerivFast2f3(double[] dataIn, int rowLength)
         {
 			double[] dataOut = new double[rowLength];
 			int span = 4;
@@ -175,7 +175,7 @@
 				{
 					int j = jj2;
 					for (int k = jj2; newvalue > m_parraySorted [k]; k++, j++)
-					{
+                    {
 						if (k == m_parray_size -1)
 							break;
 						m_parraySorted [j] = m_parraySorted [j + 1];
