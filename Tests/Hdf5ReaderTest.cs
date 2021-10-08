@@ -65,7 +65,7 @@ namespace Tests
             if (ndimensions != 2)
                 return null;
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
-            return h5FileReader.ReadChannelData(h5Dataset, channel, 0, nbdatapoints - 1);
+            return h5FileReader.ReadDataSingleChannel(h5Dataset, channel, 0, nbdatapoints - 1);
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Tests
             if (ndimensions != 2)
                 return null;
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
-            return h5FileReader.ReadChannelData(h5Dataset, channel, 0, nbdatapoints - 1);
+            return h5FileReader.ReadDataSingleChannel(h5Dataset, channel, 0, nbdatapoints - 1);
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace Tests
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = h5FileReader.ReadChannelData(dataset, channel, istart, iend);
+                var chunkresult = h5FileReader.ReadDataSingleChannel(dataset, channel, istart, iend);
                 Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
                 h5File.Dispose();
             });

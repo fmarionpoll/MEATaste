@@ -72,11 +72,12 @@ namespace MEATaste.Views.PlotSignal
                 if( electrodeData.RawSignalUShort == null)
                 {
                     Mouse.OverrideCursor = Cursors.Wait;
-                    electrodeData.RawSignalUShort = h5FileReader.ReadChannelDataAll(channel);
+                    electrodeData.RawSignalUShort = h5FileReader.ReadAllDataFromSingleChannel(channel);
                     Mouse.OverrideCursor = null;
                 }
-                var legend = "channel " + electrodeData.Electrode.Channel
-                                        + "(" + electrodeData.Electrode.XuM + ", " +
+                var legend = "channel: " + electrodeData.Electrode.Channel
+                                        + " electrode: " + electrodeData.Electrode.ElectrodeNumber
+                                        + " (" + electrodeData.Electrode.XuM + ", " +
                                         electrodeData.Electrode.YuM + " µm)";
                 AddPlot(ComputeFilteredData(electrodeData), samplingRate, legend);
             }
