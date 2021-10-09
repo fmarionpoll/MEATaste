@@ -29,17 +29,17 @@ namespace MEATaste.Views.PlotSignal
             this.h5FileReader = h5FileReader;
 
             Model = new PlotSignalPanelModel();
-            eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, LoadAcquisitionParameters);
+            eventSubscriber.Subscribe(EventType.MeaExperimentChanged, LoadAcquisitionParameters);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
         }
 
         private void LoadAcquisitionParameters()
         {
-            var currentExperiment = state.MeaExperiment.Get();
-            Model.AcquisitionSettingsLabel = " High-pass=" + currentExperiment.DataAcquisitionSettings.Hpf + " Hz " 
-                                           + " Sampling rate=" + currentExperiment.DataAcquisitionSettings.SamplingRate /1000 + " kHz "
-                                           + " resolution=" + (currentExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
+            var meaExperiment = state.MeaExperiment.Get();
+            Model.AcquisitionSettingsLabel = " High-pass=" + meaExperiment.DataAcquisitionSettings.Hpf + " Hz " 
+                                           + " Sampling rate=" + meaExperiment.DataAcquisitionSettings.SamplingRate /1000 + " kHz "
+                                           + " resolution=" + (meaExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)

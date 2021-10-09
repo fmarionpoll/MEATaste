@@ -109,7 +109,7 @@ namespace MEATaste.DataMEA.MaxWell
             var compoundData = h5Dataset.Read<FileMapElectrodeProperties.DatasetMembers>();
 
             meaExp.Electrodes = new ElectrodeData[compoundData.Length];
-            
+
             for (var i = 0; i < compoundData.Length; i++)
             {
                 var ec = new ElectrodeProperties(
@@ -134,9 +134,9 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].channel,
                     compoundData[i].amplitude);
 
-                //var flag = false;
-                foreach (var t in meaExp.Electrodes)
+                for (var index = 0; index < meaExp.Electrodes.Length; index++)
                 {
+                    var t = meaExp.Electrodes[index];
                     if (t.Electrode.Channel != ec.Channel)
                         continue;
 
@@ -146,30 +146,13 @@ namespace MEATaste.DataMEA.MaxWell
                         spikeTimes = new List<SpikeDetected>();
                         t.SpikeTimes = spikeTimes;
                     }
+
                     spikeTimes.Add(ec);
-                    //flag = true;
                     break;
                 }
-                //if (!flag)
-                //{
-                //    Trace.WriteLine(@"channel not found: "+ ec.Channel);
-                //}
             }
         }
-
-        /*
-        private ushort[] ReadDirectAllFromOneChannelAsInt(int Channel)
-        {
-            var h5Group = H5FileRoot.Group("/");
-            var h5Dataset = h5Group.Dataset("sig");
-            int ndimensions = h5Dataset.Space.Rank;
-            if (ndimensions != 2)
-                return null; 
-            var nbdatapoints = h5Dataset.Space.Dimensions[1]; 
-            return ReadIntervalForOneChannelAsInt(h5Dataset, Channel, 0, nbdatapoints -1);
-        }
-        */
-
+        
         public ushort[] ReadAllDataFromSingleChannel(int channel)
         {
             var h5Dataset = H5FileRoot.Group("/").Dataset("sig");

@@ -20,7 +20,7 @@ namespace MEATaste.Views.PlotHeatMap
             this.state = state;
             
             Model = new HeatMapPanelModel();
-            eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, PlotElectrodesMap);
+            eventSubscriber.Subscribe(EventType.MeaExperimentChanged, PlotElectrodesMap);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
         }
 

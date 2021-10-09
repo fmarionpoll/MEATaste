@@ -43,7 +43,7 @@ namespace MEATaste.DataMEA.Utilities
             {
 				ax = bx;			// k+1
 				bx = cx;			// k+2
-				cx = dataIn[k-1];     // k+3
+				cx = dataIn[k-1];   // k+3
 				sumk = (ax + bx + cx)/ 6 ;
 				dataOut[k] =  -sumk;   // y(k+4) = -SUM
 				dataOut[k-span] += sumk;		
@@ -52,21 +52,7 @@ namespace MEATaste.DataMEA.Utilities
 			ZeroesStartAndEnd(dataOut, rowLength, span*2);
 			return dataOut;
         }
-
-		public static double[] BDeriv2f3(double[] dataIn, int rowLength)
-		{
-			double[] dataOut = new double[rowLength];
-			int span = 4;
-			for (int k = span; k < rowLength - span; k++)
-			{
-				dataOut[k] = (dataIn[k + 1] + dataIn[k + 2] + dataIn[k + 3]
-					- dataIn[k - 1] - dataIn[k - 2] - dataIn[k - 3])/6;
-			}
-			ZeroesStartAndEnd(dataOut, rowLength, span);
-
-			return dataOut;
-		}
-
+		
 		private static void ZeroesStartAndEnd(double[] dataOut, int rowLength, int span)
 		{
 			int j = rowLength - 1;

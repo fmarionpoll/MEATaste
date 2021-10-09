@@ -20,7 +20,7 @@ namespace MEATaste.Views.ElectrodesMap
 
             Model = new ElectrodesMapPanelModel();
 
-            eventSubscriber.Subscribe(EventType.CurrentExperimentChanged, PlotElectrodesMap);
+            eventSubscriber.Subscribe(EventType.MeaExperimentChanged, PlotElectrodesMap);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
         }
 
@@ -54,7 +54,7 @@ namespace MEATaste.Views.ElectrodesMap
                 SetSelectedPoints(plotModel, listSelectedChannels);
                 CenterPlotOnElectrodes(plotModel, listSelectedChannels);
             }
-            selectedChannels = state.ListSelectedChannels.Get();
+            selectedChannels = listSelectedChannels;
 
             plotModel.InvalidatePlot(true);
         }

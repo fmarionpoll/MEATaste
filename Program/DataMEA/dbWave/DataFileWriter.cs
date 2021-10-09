@@ -55,7 +55,6 @@ namespace MEATaste.DataMEA.dbWave
                     WriteHeaderAtlab(binWriterToFile, meaExperiment, electrodeData);
                     WriteDataAtlab(binWriterToFile, electrodeData);
                     binWriterToFile.Close();
-                    Trace.WriteLine("dat file created and closed");
                 }
 
                 flag = true;

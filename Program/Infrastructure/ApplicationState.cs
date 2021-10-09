@@ -11,7 +11,7 @@ namespace MEATaste.Infrastructure
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {
-            MeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.CurrentExperimentChanged);
+            MeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.MeaExperimentChanged);
             ListSelectedChannels = statePropertyFactory.Create<List<int>>(null, EventType.SelectedChannelsChanged);
             AxesMaxMin = statePropertyFactory.Create<AxesExtrema>(null, EventType.AxesMaxMinChanged);
         }
