@@ -9,9 +9,8 @@ namespace MEATaste.Views.PlotScrollBar
     public class PlotScrollBarPanelController
     {
         public PlotScrollBarPanelModel Model { get; }
-
         private readonly ApplicationState state;
-        private double fileDuration;
+        private double fileDuration = 0;
 
 
         public PlotScrollBarPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
@@ -20,7 +19,6 @@ namespace MEATaste.Views.PlotScrollBar
 
             Model = new PlotScrollBarPanelModel();
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
-            eventSubscriber.Subscribe(EventType.ElectrodeRecordLoaded, FileHasChanged);
         }
 
         private void AxesChanged()
@@ -33,6 +31,9 @@ namespace MEATaste.Views.PlotScrollBar
 
             Model.ScrollViewPortSize = axesMaxMin.XMax - axesMaxMin.XMin; 
             Model.ScrollValue = (axesMaxMin.XMax + axesMaxMin.XMin)/2;
+
+            if (fileDuration == 0)
+                FileHasChanged();
         }
 
         private void FileHasChanged()
