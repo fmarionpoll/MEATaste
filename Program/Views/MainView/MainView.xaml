@@ -49,11 +49,11 @@
                     <electrodesList:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
 
                     <TabControl Grid.Row="1" Margin="20,10,5,10" 
-                        ItemsSource="{Binding TabCollection}"
-                        SelectedIndex="{Binding SelectedTabIndex}" />
-                    
+                                ItemsSource="{Binding TabCollection}"
+                                SelectedIndex="{Binding SelectedTabIndex}" >
+                    </TabControl>
 
-            </Grid>
+                </Grid>
 
                 <Grid Grid.Column="1" Grid.Row="0">
                     <Grid.RowDefinitions>
