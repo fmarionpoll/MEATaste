@@ -3,9 +3,9 @@ using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 using ScottPlot;
 
-namespace MEATaste.Views.PlotHeatMap
+namespace MEATaste.Views.ElectrodesHeatmap
 {
-    class HeatMapPanelModel : INotifyPropertyChanged
+    public class ElectrodesHeatmapPanelModel : INotifyPropertyChanged
     {
 
         private WpfPlot plotControl;
@@ -21,7 +21,7 @@ namespace MEATaste.Views.PlotHeatMap
             }
         }
 
-        public HeatMapPanelModel()
+        public ElectrodesHeatmapPanelModel()
         {
             PlotControl = new WpfPlot();
         }

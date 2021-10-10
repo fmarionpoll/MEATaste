@@ -11,8 +11,7 @@ namespace MEATaste.Views.PlotScrollBar
     public partial class PlotScrollBarPanel
     {
         private readonly PlotScrollBarPanelController controller;
-
-
+        
         public PlotScrollBarPanel()
         {
             controller = App.ServiceProvider.GetService<PlotScrollBarPanelController>();
@@ -35,7 +34,23 @@ namespace MEATaste.Views.PlotScrollBar
                 }
             }
         }
-        
+
+        private void TextBox_KeyEnterUpdateZoom(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox tBox = (TextBox)sender;
+                DependencyProperty prop = TextBox.TextProperty;
+
+                BindingExpression binding = BindingOperations.GetBindingExpression(tBox, prop);
+                if (binding != null)
+                {
+                    binding.UpdateSource();
+                    controller.UpdateZoomFromModelValues();
+                }
+            }
+        }
+
         private void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
         {
             controller.ScrollBar_Scroll(sender, e);

@@ -10,7 +10,7 @@ namespace MEATaste.Views.PlotScrollBar
     {
         public PlotScrollBarPanelModel Model { get; }
         private readonly ApplicationState state;
-        private double fileDuration = 0;
+        private double fileDuration;
 
 
         public PlotScrollBarPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
@@ -57,6 +57,14 @@ namespace MEATaste.Views.PlotScrollBar
         {
             var xLast = Convert.ToDouble(Model.XLast);
             var xFirst = Convert.ToDouble(Model.XFirst);
+            var axesMaxMin = state.AxesMaxMin.Get();
+            state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
+        }
+
+        public void UpdateZoomFromModelValues()
+        {
+            var xFirst = Convert.ToDouble(Model.XFirst);
+            var xLast = xFirst + Convert.ToDouble(Model.ScrollViewPortSize);
             var axesMaxMin = state.AxesMaxMin.Get();
             state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
         }
