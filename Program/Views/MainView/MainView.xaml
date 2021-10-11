@@ -8,19 +8,10 @@
         xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
-        xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
-        xmlns:electrodesHeatmap="clr-namespace:MEATaste.Views.ElectrodesHeatmap"
+        xmlns:switchMaps="clr-namespace:MEATaste.Views.SwitchMaps"
+        xmlns:mainView="clr-namespace:MEATaste.Views.MainView"
         mc:Ignorable="d"
         Title="MainWindow" Width="1024" Height="500">
-
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type electrodesMap:ElectrodesMapPanelModel}">
-            <electrodesMap:ElectrodesMapPanel />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type electrodesHeatmap:ElectrodesHeatmapPanelModel}">
-            <electrodesHeatmap:HeatMapPanel />
-        </DataTemplate>
-    </Window.Resources>
 
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
@@ -33,36 +24,33 @@
         </Grid>
 
         <Grid  Grid.Row="1">
-            
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="350" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0" Grid.Row="0">
-                    
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="280"/>
-                    </Grid.RowDefinitions>
+            <Grid Grid.Column="0" Grid.Row="0">
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="280"/>
+                </Grid.RowDefinitions>
 
-                    <electrodesList:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+                <electrodesList:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
 
-                    <TabControl Grid.Row="1" Margin="20,10,5,10" 
-                                ItemsSource="{Binding TabCollection}"
-                                SelectedIndex="{Binding SelectedTabIndex}" >
-                    </TabControl>
+                <switchMaps:SwitchMapsPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                 
 
-                </Grid>
+            </Grid>
 
-                <Grid Grid.Column="1" Grid.Row="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="60"/>
-                    </Grid.RowDefinitions>
-                    <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                    <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                </Grid>
+            <Grid Grid.Column="1" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+                <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Grid>
             
         </Grid>
     </Grid>

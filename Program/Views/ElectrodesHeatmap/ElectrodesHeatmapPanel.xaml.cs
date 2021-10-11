@@ -1,10 +1,11 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ScottPlot;
 
 namespace MEATaste.Views.ElectrodesHeatmap
 {
-    public partial class HeatMapPanel
+    public partial class HeatMapPanel : UserControl
     {
         private readonly ElectrodeHeatmapPanelController controller;
 

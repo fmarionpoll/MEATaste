@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Windows.Controls;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace MEATaste.Views.FileOpen
 {
-    public partial class FileOpenPanel
+    public partial class FileOpenPanel : UserControl
     {
         private readonly FileOpenPanelController controller;
 

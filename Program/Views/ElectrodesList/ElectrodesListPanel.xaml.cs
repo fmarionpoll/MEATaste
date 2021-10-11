@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Views.ElectrodesList
 {
-    public partial class ElectrodesListPanel
+    public partial class ElectrodesListPanel : UserControl
     {
         private readonly ElectrodesListPanelController controller;
         
