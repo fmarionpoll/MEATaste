@@ -7,7 +7,6 @@ namespace MEATaste.DataMEA.Models
     public class ElectrodeData
     {
         public ElectrodeProperties Electrode { get; set; }
-        public ushort[] RawSignalUShort { get; set; }
         public List<SpikeDetected> SpikeTimes { get; set; }
         public bool Selected { get; set; }
 

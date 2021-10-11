@@ -11,7 +11,7 @@ namespace MEATaste.Views.ElectrodesHeatmap
 
         public ElectrodesHeatmapPanelModel Model { get; }
         private readonly ApplicationState state;
-        private List<int> selectedChannels;
+        public List<int> SelectedChannels { get; private set; }
 
         public ElectrodeHeatmapPanelController(
             ApplicationState state,
@@ -40,7 +40,7 @@ namespace MEATaste.Views.ElectrodesHeatmap
 
         private void ChangeSelectedElectrode()
         {
-            selectedChannels = state.ListSelectedChannels.Get();
+            SelectedChannels = state.DictionarySelectedChannels.Get();
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)

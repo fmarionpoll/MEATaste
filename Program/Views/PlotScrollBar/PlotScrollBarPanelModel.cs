@@ -15,6 +15,8 @@ namespace MEATaste.Views.PlotScrollBar
         private double scrollMaximum;
         private double scrollMinimum;
         private double scrollValue;
+        private int selectedFilterIndex;
+
 
         public string XFirst
         {
@@ -79,6 +81,17 @@ namespace MEATaste.Views.PlotScrollBar
                 if (scrollValue == value) return;
                 scrollValue = value;
                 OnPropertyChanged(nameof(ScrollValue));
+            }
+        }
+
+        public int SelectedFilterIndex
+        {
+            get => selectedFilterIndex;
+            set
+            {
+                if (selectedFilterIndex == value) return;
+                selectedFilterIndex = value;
+                OnPropertyChanged(nameof(SelectedFilterIndex));
             }
         }
 

@@ -43,7 +43,19 @@
             <TextBox HorizontalAlignment="Right" Margin="0,0,5,0" TextWrapping="Wrap" VerticalAlignment="Center"
                      Width="120" Height="20" KeyUp="TextBox_KeyEnterUpdateZoom" Text ="{Binding ScrollViewPortSize}"/>
             <Label Content="Zoom (s):" HorizontalAlignment="Right" Margin="0,0,125,0" VerticalAlignment="Center"/>
-
+            <ComboBox Name="FilterCombo" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Width="120"
+                      SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+                <ComboBoxItem Content="Raw signal" />
+                <ComboBoxItem Content="Derivative BDeriv2f3" />
+                <ComboBoxItem Content="Running median" />
+            </ComboBox>
+            <Label Content="channels around selection: " HorizontalAlignment="Left" Margin="125,0,0,0" VerticalAlignment="Center"/>
+            <ComboBox Name="BoxAroundCombo" HorizontalAlignment="Left" Margin="240,0,0,0" VerticalAlignment="Center" Width="20"
+                      SelectedIndex="0" SelectionChanged="BoxAroundCombo_SelectionChanged" >
+                <ComboBoxItem Content="0 row/col" />
+                <ComboBoxItem Content="+1 row/col" />
+                <ComboBoxItem Content="-1 row/col" />
+            </ComboBox>
         </Grid>
 
 

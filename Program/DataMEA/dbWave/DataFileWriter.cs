@@ -36,7 +36,8 @@ namespace MEATaste.DataMEA.dbWave
 
         public bool SaveCurrentElectrodeDataToAtlabFile(
             MeaExperiment meaExperiment,
-            ElectrodeData electrodeData)
+            ElectrodeData electrodeData, 
+            ushort[] RawSignalUShort)
         {
 
             var directoryName = CreateDirectoryFromExperimentFileName(meaExperiment);
@@ -52,8 +53,8 @@ namespace MEATaste.DataMEA.dbWave
             {
                 using (var binWriterToFile = new BinaryWriter(File.Open(fileName, FileMode.Create)))
                 {
-                    WriteHeaderAtlab(binWriterToFile, meaExperiment, electrodeData);
-                    WriteDataAtlab(binWriterToFile, electrodeData);
+                    WriteHeaderAtlab(binWriterToFile, meaExperiment, electrodeData, RawSignalUShort);
+                    WriteDataAtlab(binWriterToFile, RawSignalUShort);
                     binWriterToFile.Close();
                 }
 
@@ -82,7 +83,8 @@ namespace MEATaste.DataMEA.dbWave
         private static void WriteHeaderAtlab(
             BinaryWriter binaryWriter, 
             MeaExperiment meaExperiment,
-            ElectrodeData electrodeData)
+            ElectrodeData electrodeData, 
+            ushort[] rawSignalUShort)
         {
             binaryWriter.Seek(0, SeekOrigin.Begin);
             binaryWriter.Write(0xAAAA);
@@ -106,7 +108,7 @@ namespace MEATaste.DataMEA.dbWave
             var clockperiod = 4E6f / meaExperiment.DataAcquisitionSettings.SamplingRate;
             binaryWriter.Write((Int32)clockperiod);
 
-            var length = electrodeData.RawSignalUShort.LongLength;
+            var length = rawSignalUShort.LongLength;
             binaryWriter.Seek(Samcnt, SeekOrigin.Begin); 
             binaryWriter.Write((Int32)length);
 
@@ -124,14 +126,12 @@ namespace MEATaste.DataMEA.dbWave
             binaryWriter.Write((float)xgain);
         }
 
-        private static void WriteDataAtlab(BinaryWriter binaryWriter, [NotNull] ElectrodeData electrodeData)
+        private static void WriteDataAtlab(BinaryWriter binaryWriter, [NotNull] ushort[] rawSignalUShort)
         {
-            if (electrodeData == null) throw new ArgumentNullException(nameof(electrodeData));
-
             binaryWriter.Seek(Data, SeekOrigin.Begin);
             const short delta = 2048 - 512;
             
-            foreach (var value in electrodeData.RawSignalUShort)
+            foreach (var value in rawSignalUShort)
             {
                 var dtvalue = (short) (value + delta);
                 binaryWriter.Write(dtvalue);

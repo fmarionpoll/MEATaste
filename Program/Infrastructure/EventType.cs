@@ -5,5 +5,6 @@
         MeaExperimentChanged = 0,
         SelectedChannelsChanged = 1,
         AxesMaxMinChanged = 2,
+        FilterChanged = 3,
     }
 }

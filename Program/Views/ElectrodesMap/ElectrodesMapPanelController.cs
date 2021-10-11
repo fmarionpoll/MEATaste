@@ -40,7 +40,7 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void ChangeSelectedElectrode()
         {
-            var listSelectedChannels = state.ListSelectedChannels.Get();
+            var listSelectedChannels = state.DictionarySelectedChannels.Get();
             if (listSelectedChannels == null) return;
 
             var plotModel = Model.ScatterPlotModel;
@@ -54,7 +54,7 @@ namespace MEATaste.Views.ElectrodesMap
                 SetSelectedPoints(plotModel, listSelectedChannels);
                 CenterPlotOnElectrodes(plotModel, listSelectedChannels);
             }
-            selectedChannels = listSelectedChannels;
+            listSelectedChannels = listSelectedChannels;
 
             plotModel.InvalidatePlot(true);
         }

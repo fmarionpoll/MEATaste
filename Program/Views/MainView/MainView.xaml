@@ -39,7 +39,6 @@
                 <electrodesList:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
 
                 <switchMaps:SwitchMapsPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                 
 
             </Grid>
 

@@ -39,10 +39,10 @@ namespace MEATaste.Views.PlotScrollBar
         private void FileHasChanged()
         {
             var meaExp = state.MeaExperiment.Get();
-            var currentElectrode = state.ListSelectedChannels.Get();
-            if (currentElectrode == null || currentElectrode.Count == 0)
+            var listSelectedChannels = state.DictionarySelectedChannels.Get();
+            if (listSelectedChannels == null || listSelectedChannels.Count == 0)
                 return;
-            var channel = currentElectrode.First();
+            var channel = listSelectedChannels.First();
             var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
             if (electrodeData.RawSignalUShort == null) 
                 return;
@@ -77,6 +77,17 @@ namespace MEATaste.Views.PlotScrollBar
             var xFirst = Model.ScrollValue - Model.ScrollViewPortSize / 2;
             var xLast = Model.ScrollValue + Model.ScrollViewPortSize / 2;
             state.AxesMaxMin.Set(new AxesExtrema(xFirst, xLast, axesMaxMin.YMin, axesMaxMin.YMax));
+        }
+
+        public void ChangeFilter(int selectedFilterIndex)
+        {
+            Model.SelectedFilterIndex = selectedFilterIndex;
+            state.FilterProperty.Set(selectedFilterIndex);
+        }
+
+        public void ChangeSelectedChannels(int option)
+        {
+
         }
     }
 }

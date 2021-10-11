@@ -15,7 +15,6 @@
               AlternationCount="2"
               AlternatingRowBackground="LightBlue"
               
-              SelectedItem="{Binding SelectedElectrodeExtendedProperties, Mode=TwoWay}" 
               SelectionUnit="FullRow"
               HorizontalAlignment ="Stretch" 
               VerticalAlignment ="Stretch" 

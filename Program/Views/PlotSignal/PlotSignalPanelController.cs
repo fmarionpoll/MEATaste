@@ -17,7 +17,8 @@ namespace MEATaste.Views.PlotSignal
         public PlotSignalPanelModel Model { get; }
         private readonly ApplicationState state;
         private readonly H5FileReader h5FileReader;
-        private List<int> selectedElectrodes;
+        private Dictionary<int, ushort[]> dictionarySelectedChannels;
+        private int selectedFilter;
         
 
         public PlotSignalPanelController(
@@ -32,6 +33,7 @@ namespace MEATaste.Views.PlotSignal
             eventSubscriber.Subscribe(EventType.MeaExperimentChanged, LoadAcquisitionParameters);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
+            eventSubscriber.Subscribe(EventType.FilterChanged, ChangeFilter);
         }
 
         private void LoadAcquisitionParameters()
@@ -42,6 +44,13 @@ namespace MEATaste.Views.PlotSignal
                                            + " resolution=" + (meaExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
         }
 
+        private void ChangeFilter()
+        {
+            selectedFilter = state.FilterProperty.Get();
+            if (dictionarySelectedChannels == null || dictionarySelectedChannels.Count <= 0) return;
+            UpdateSelectedElectrodeData(dictionarySelectedChannels);
+        }
+
         public void AttachControlToModel(WpfPlot wpfControl)
         {
             Model.PlotControl = wpfControl;
@@ -49,56 +58,54 @@ namespace MEATaste.Views.PlotSignal
 
         private void ChangeSelectedElectrode()
         {
-            var listSelectedChannels = state.ListSelectedChannels.Get();
+            var listSelectedChannels = state.DictionarySelectedChannels.Get();
             if (listSelectedChannels == null)
                 return;
 
-            if (listSelectedChannels == selectedElectrodes)
+            if (listSelectedChannels == dictionarySelectedChannels)
                 return;
 
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
-        private void UpdateSelectedElectrodeData(List<int> listSelectedChannels)
+        private void UpdateSelectedElectrodeData(Dictionary< int, ushort[]> dictionary)
         {
-            selectedElectrodes = listSelectedChannels;
+            dictionarySelectedChannels = dictionary;
             var meaExp = state.MeaExperiment.Get();
             var samplingRate = meaExp.DataAcquisitionSettings.SamplingRate;
             PreparePlot();
 
-            foreach (var channel in selectedElectrodes)
+            foreach (var channel in dictionarySelectedChannels)
             {
-                var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel); 
-                if( electrodeData.RawSignalUShort == null)
+                var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel.Key); 
+                if( channel.Value == null)
                 {
                     Mouse.OverrideCursor = Cursors.Wait;
-                    electrodeData.RawSignalUShort = h5FileReader.ReadAllDataFromSingleChannel(channel);
+                    dictionarySelectedChannels [channel.Key] = h5FileReader.ReadAllDataFromSingleChannel(channel.Key);
                     Mouse.OverrideCursor = null;
                 }
                 var legend = "channel: " + electrodeData.Electrode.Channel
                                         + " electrode: " + electrodeData.Electrode.ElectrodeNumber
                                         + " (" + electrodeData.Electrode.XuM + ", " +
                                         electrodeData.Electrode.YuM + " µm)";
-                AddPlot(ComputeFilteredData(electrodeData), samplingRate, legend);
+                AddPlot(ComputeFilteredData(channel.Value), samplingRate, legend);
             }
             DisplayPlot();
         }
 
-        private double[] ComputeFilteredData(ElectrodeData electrodeData)
+        private double[] ComputeFilteredData(ushort[] array)
         {
             var meaExp = state.MeaExperiment.Get();
-            var result = Filter.ConvertDataToMV(electrodeData.RawSignalUShort,
+            var result = Filter.ConvertDataToMV(array,
                 meaExp.DataAcquisitionSettings.Lsb * 1000, 512);
             
-            switch (Model.SelectedFilterIndex)
+            switch (selectedFilter)
             {
                 case 1:
                     result = Filter.BDerivFast2f3(result, result.Length);
                     break;
                 case 2:
                     result = Filter.BMedian(result, result.Length, 20);
-                    break;
-                default:
                     break;
             }
 
@@ -164,12 +171,7 @@ namespace MEATaste.Views.PlotSignal
                 ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
 
-        public void ChangeFilter(int selectedFilterIndex)
-        {
-            Model.SelectedFilterIndex = selectedFilterIndex;
-            if (selectedElectrodes == null || selectedElectrodes.Count <= 0) return;
-            UpdateSelectedElectrodeData(selectedElectrodes);
-        }
+
 
 
     }

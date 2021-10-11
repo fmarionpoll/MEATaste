@@ -15,6 +15,7 @@ namespace MEATaste.Views.ElectrodesMap
             DataContext = controller!.Model;
             InitializeComponent();
         }
+
         
     }
 }

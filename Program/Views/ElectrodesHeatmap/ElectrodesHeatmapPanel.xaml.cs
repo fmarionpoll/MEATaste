@@ -21,5 +21,6 @@ namespace MEATaste.Views.ElectrodesHeatmap
             var wpfControl = sender as WpfPlot;
             controller.AttachControlToModel(wpfControl);
         }
+        
     }
 }

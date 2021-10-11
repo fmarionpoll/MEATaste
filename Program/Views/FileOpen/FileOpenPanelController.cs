@@ -42,7 +42,7 @@ namespace MEATaste.Views.FileOpen
         public void SaveCurrentElectrodeDataClick()
         {
             var meaExp = state.MeaExperiment.Get();
-            var listSelectedChannels = state.ListSelectedChannels.Get();
+            var listSelectedChannels = state.DictionarySelectedChannels.Get();
 
             foreach (var channel in listSelectedChannels)
             {

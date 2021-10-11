@@ -54,5 +54,17 @@ namespace MEATaste.Views.PlotScrollBar
         {
             controller.ScrollBar_Scroll(sender, e);
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (controller != null && sender is ComboBox combo)
+                controller.ChangeFilter(combo.SelectedIndex);
+        }
+
+        private void BoxAroundCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (controller != null && sender is ComboBox combo)
+                controller.ChangeSelectedChannels(combo.SelectedIndex);
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace MEATaste.Views.SwitchMaps
         {
             controller = App.ServiceProvider.GetService<SwitchMapsPanelController>();
             DataContext = controller!.Model;
-            //InitializeComponent();
+            InitializeComponent();
         }
     }
 }

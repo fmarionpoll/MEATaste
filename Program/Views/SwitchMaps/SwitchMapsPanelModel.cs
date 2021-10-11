@@ -2,6 +2,7 @@
 using MEATaste.Annotations;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using MEATaste.Views.ElectrodesHeatmap;
 using MEATaste.Views.ElectrodesMap;
 
@@ -9,8 +10,8 @@ namespace MEATaste.Views.SwitchMaps
 {
     public class SwitchMapsPanelModel : INotifyPropertyChanged
     {
-        readonly ObservableCollection<object> tabCollection;
-        public ObservableCollection<object> TabCollection => tabCollection;
+        readonly ObservableCollection<TabItem> tabCollection;
+        public ObservableCollection<TabItem> TabCollection => tabCollection;
 
         private int selectedTabIndex;
         public int SelectedTabIndex
@@ -26,10 +27,10 @@ namespace MEATaste.Views.SwitchMaps
 
         public SwitchMapsPanelModel()
         {
-            tabCollection = new ObservableCollection<object>
+            tabCollection = new ObservableCollection<TabItem>
             {
-                new ElectrodesMapPanelModel(),
-                new ElectrodesHeatmapPanelModel()
+                new() { Content = new ElectrodesMapPanelModel(), Header = "Map"},
+                new() { Content= new ElectrodesHeatmapPanelModel(), Header="Heat map"}
             };
             SelectedTabIndex = 0;
         }
