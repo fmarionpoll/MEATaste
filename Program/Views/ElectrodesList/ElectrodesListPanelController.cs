@@ -26,7 +26,7 @@ namespace MEATaste.Views.ElectrodesList
 
         private void SetSelectedChannels()
         {
-            var listSelectedChannels = state.DictionarySelectedChannels.Get();
+            List<int> listSelectedChannels = state.DictionarySelectedChannels.Get().Keys.ToList();
             if (dataGrid == null || listSelectedChannels == null) return;
 
             var listSelectedElectrodes = GetSelectedChannelsFromDataGrid();
@@ -59,11 +59,13 @@ namespace MEATaste.Views.ElectrodesList
             if (addedRows.Count == 0 && removedRows.Count == 0)
                 return;
             dataGrid = electrodesGrid;
-            var channelsFromDataGrid = GetSelectedChannelsFromDataGrid(); 
+            List<int> channelsFromDataGrid = GetSelectedChannelsFromDataGrid(); 
 
             if (!IsListEqualToStateSelectedItems(channelsFromDataGrid))
             {
-                state.DictionarySelectedChannels.Set(channelsFromDataGrid);
+                var dictionary = state.DictionarySelectedChannels.Get();
+                dictionary.TrimDictionaryToList(channelsFromDataGrid);
+                state.DictionarySelectedChannels.Set(dictionary);
             }
             
         }
@@ -78,13 +80,15 @@ namespace MEATaste.Views.ElectrodesList
 
         private bool IsListEqualToStateSelectedItems(List<int> newSelectedChannels)
         {
-            var stateSelectedChannels = state.DictionarySelectedChannels.Get();
+            List<int> stateSelectedChannels = state.DictionarySelectedChannels.Get().Keys.ToList();
             if (stateSelectedChannels == null) return false;
             
             var set = new HashSet<int>(stateSelectedChannels);
             var equals = set.SetEquals(newSelectedChannels);
             return equals;
         }
+
+
 
     }
 }

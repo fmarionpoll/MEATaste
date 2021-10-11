@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using MEATaste.Infrastructure;
 using ScottPlot;
@@ -40,7 +41,7 @@ namespace MEATaste.Views.ElectrodesHeatmap
 
         private void ChangeSelectedElectrode()
         {
-            SelectedChannels = state.DictionarySelectedChannels.Get();
+            SelectedChannels = state.DictionarySelectedChannels.Get().Keys.ToList();
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
