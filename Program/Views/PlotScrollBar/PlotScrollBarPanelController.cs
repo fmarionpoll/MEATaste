@@ -38,17 +38,17 @@ namespace MEATaste.Views.PlotScrollBar
 
         private void FileHasChanged()
         {
-            var meaExp = state.MeaExperiment.Get();
-            var listSelectedChannels = state.DictionarySelectedChannels.Get();
-            if (listSelectedChannels == null || listSelectedChannels.Count == 0)
+            var dictionary = state.DataSelected.Get().Channels;
+            var listSelectedChannels = dictionary.Keys.ToList();
+            if (listSelectedChannels.Count == 0)
                 return;
             var channel = listSelectedChannels.First();
-            var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
-            if (electrodeData.RawSignalUShort == null) 
+            var data = dictionary[channel];
+            if (data == null) 
                 return;
 
             var meaExperiment = state.MeaExperiment.Get();
-            fileDuration = electrodeData.RawSignalUShort.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;
+            fileDuration = data.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;
             Model.ScrollMinimum = 0;
             Model.ScrollMaximum = fileDuration;
         }

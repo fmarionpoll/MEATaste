@@ -26,11 +26,12 @@ namespace MEATaste.Views.ElectrodesList
 
         private void SetSelectedChannels()
         {
-            List<int> listSelectedChannels = state.DictionarySelectedChannels.Get().Keys.ToList();
-            if (dataGrid == null || listSelectedChannels == null) return;
+            var dictionary = state.DataSelected.Get(); 
+            var listSelectedChannels = dictionary.Channels.Keys.ToList();
+            if (dataGrid == null || listSelectedChannels.Count == 0) return;
 
             var listSelectedElectrodes = GetSelectedChannelsFromDataGrid();
-            if (IsListEqualToStateSelectedItems(listSelectedElectrodes)) return;
+            if (dictionary.IsListEqualToStateSelectedItems(listSelectedElectrodes)) return;
 
             dataGrid.Items
                 .Cast<ElectrodePropertiesExtended>()
@@ -59,15 +60,14 @@ namespace MEATaste.Views.ElectrodesList
             if (addedRows.Count == 0 && removedRows.Count == 0)
                 return;
             dataGrid = electrodesGrid;
-            List<int> channelsFromDataGrid = GetSelectedChannelsFromDataGrid(); 
+            var channelsFromDataGrid = GetSelectedChannelsFromDataGrid();
 
-            if (!IsListEqualToStateSelectedItems(channelsFromDataGrid))
-            {
-                var dictionary = state.DictionarySelectedChannels.Get();
-                dictionary.TrimDictionaryToList(channelsFromDataGrid);
-                state.DictionarySelectedChannels.Set(dictionary);
-            }
-            
+            var dictionary = state.DataSelected.Get();
+            if (dictionary.IsListEqualToStateSelectedItems(channelsFromDataGrid)) return;
+
+            dictionary.TrimDictionaryToList(channelsFromDataGrid);
+            state.DataSelected.Set(dictionary);
+
         }
 
         private List<int> GetSelectedChannelsFromDataGrid()
@@ -78,15 +78,7 @@ namespace MEATaste.Views.ElectrodesList
             return listSelectedElectrodes;
         }
 
-        private bool IsListEqualToStateSelectedItems(List<int> newSelectedChannels)
-        {
-            List<int> stateSelectedChannels = state.DictionarySelectedChannels.Get().Keys.ToList();
-            if (stateSelectedChannels == null) return false;
-            
-            var set = new HashSet<int>(stateSelectedChannels);
-            var equals = set.SetEquals(newSelectedChannels);
-            return equals;
-        }
+       
 
 
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Views.PlotScrollBar
 {
-    public partial class PlotScrollBarPanel : UserControl
+    public partial class PlotScrollBarPanel
     {
         private readonly PlotScrollBarPanelController controller;
         

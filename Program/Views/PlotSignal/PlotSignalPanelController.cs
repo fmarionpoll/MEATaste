@@ -17,7 +17,7 @@ namespace MEATaste.Views.PlotSignal
         public PlotSignalPanelModel Model { get; }
         private readonly ApplicationState state;
         private readonly H5FileReader h5FileReader;
-        private Dictionary<int, ushort[]> dictionarySelectedChannels;
+        private List<int> listSelectedChannels;
         private int selectedFilter;
         
 
@@ -47,8 +47,8 @@ namespace MEATaste.Views.PlotSignal
         private void ChangeFilter()
         {
             selectedFilter = state.FilterProperty.Get();
-            if (dictionarySelectedChannels == null || dictionarySelectedChannels.Count <= 0) return;
-            UpdateSelectedElectrodeData(dictionarySelectedChannels);
+            if (listSelectedChannels == null || listSelectedChannels.Count <= 0) return;
+            UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)
@@ -58,37 +58,33 @@ namespace MEATaste.Views.PlotSignal
 
         private void ChangeSelectedElectrode()
         {
-            var listSelectedChannels = state.DictionarySelectedChannels.Get();
-            if (listSelectedChannels == null)
-                return;
-
-            if (listSelectedChannels == dictionarySelectedChannels)
-                return;
-
+            listSelectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
-        private void UpdateSelectedElectrodeData(Dictionary< int, ushort[]> dictionary)
+        private void UpdateSelectedElectrodeData(List<int> selectedChannels)
         {
-            dictionarySelectedChannels = dictionary;
             var meaExp = state.MeaExperiment.Get();
             var samplingRate = meaExp.DataAcquisitionSettings.SamplingRate;
             PreparePlot();
 
-            foreach (var channel in dictionarySelectedChannels)
+            foreach (int i in selectedChannels)
             {
-                var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel.Key); 
-                if( channel.Value == null)
+                var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == i);
+                var legend = "channel: " + electrodeData.Electrode.Channel
+                                         + " electrode: " + electrodeData.Electrode.ElectrodeNumber
+                                         + " (" + electrodeData.Electrode.XuM + ", " +
+                                         electrodeData.Electrode.YuM + " µm)";
+
+                ushort[] channel = state.DataSelected.Get().Channels[i];
+                if (channel == null)
                 {
                     Mouse.OverrideCursor = Cursors.Wait;
-                    dictionarySelectedChannels [channel.Key] = h5FileReader.ReadAllDataFromSingleChannel(channel.Key);
+                    channel = h5FileReader.ReadAllDataFromSingleChannel(i);
                     Mouse.OverrideCursor = null;
                 }
-                var legend = "channel: " + electrodeData.Electrode.Channel
-                                        + " electrode: " + electrodeData.Electrode.ElectrodeNumber
-                                        + " (" + electrodeData.Electrode.XuM + ", " +
-                                        electrodeData.Electrode.YuM + " µm)";
-                AddPlot(ComputeFilteredData(channel.Value), samplingRate, legend);
+                
+                AddPlot(ComputeFilteredData(channel), samplingRate, legend);
             }
             DisplayPlot();
         }
@@ -170,8 +166,6 @@ namespace MEATaste.Views.PlotSignal
             if (axesMaxMin != null)
                 ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
         }
-
-
 
 
     }

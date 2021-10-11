@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MEATaste.DataMEA.Models
 {
@@ -20,7 +17,17 @@ namespace MEATaste.DataMEA.Models
             AddMissingChannelsToDictionary(selectedChannels);
             RemoveDictionaryKeysNotInList(selectedChannels);
         }
-        
+
+        public bool IsListEqualToStateSelectedItems(List<int> newSelectedChannels)
+        {
+            var stateSelectedChannels = Channels.Keys.ToList();
+            if (stateSelectedChannels.Count == 0) return false;
+
+            var set = new HashSet<int>(stateSelectedChannels);
+            var equals = set.SetEquals(newSelectedChannels);
+            return equals;
+        }
+
         private void AddMissingChannelsToDictionary(List<int> selectedChannels)
         {
             foreach (int channel in selectedChannels)

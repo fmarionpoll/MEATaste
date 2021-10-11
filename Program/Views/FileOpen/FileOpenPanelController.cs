@@ -42,12 +42,13 @@ namespace MEATaste.Views.FileOpen
         public void SaveCurrentElectrodeDataClick()
         {
             var meaExp = state.MeaExperiment.Get();
-            var listSelectedChannels = state.DictionarySelectedChannels.Get();
+            var listSelectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
 
             foreach (var channel in listSelectedChannels)
             {
                 var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
-                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData);
+                var data = state.DataSelected.Get().Channels[channel];
+                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData, data);
             }
         }
 
@@ -56,8 +57,8 @@ namespace MEATaste.Views.FileOpen
             var meaExp = state.MeaExperiment.Get();
             foreach (var electrodeData in meaExp.Electrodes)
             {
-                electrodeData.RawSignalUShort = h5FileReader.ReadAllDataFromSingleChannel(electrodeData.Electrode.Channel);
-                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData);
+                var data = h5FileReader.ReadAllDataFromSingleChannel(electrodeData.Electrode.Channel);
+                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData, data);
             }
         }
 

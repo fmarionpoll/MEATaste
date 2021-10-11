@@ -41,7 +41,7 @@ namespace MEATaste.Views.ElectrodesHeatmap
 
         private void ChangeSelectedElectrode()
         {
-            SelectedChannels = state.DictionarySelectedChannels.Get().Keys.ToList();
+            SelectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
         }
 
         public void AttachControlToModel(WpfPlot wpfControl)

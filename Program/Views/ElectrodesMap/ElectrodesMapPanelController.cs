@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using MEATaste.Infrastructure;
 using OxyPlot;
@@ -40,21 +39,18 @@ namespace MEATaste.Views.ElectrodesMap
 
         private void ChangeSelectedElectrode()
         {
-            var listSelectedChannels = state.DictionarySelectedChannels.Get();
-            if (listSelectedChannels == null) return;
-
+            selectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
             var plotModel = Model.ScatterPlotModel;
 
-            if (listSelectedChannels.Count == 0)
+            if (selectedChannels.Count == 0)
             {
                 SuppressSelectedPoints(plotModel);
             }
             else 
             {
-                SetSelectedPoints(plotModel, listSelectedChannels);
-                CenterPlotOnElectrodes(plotModel, listSelectedChannels);
+                SetSelectedPoints(plotModel, selectedChannels);
+                CenterPlotOnElectrodes(plotModel, selectedChannels);
             }
-            listSelectedChannels = listSelectedChannels;
 
             plotModel.InvalidatePlot(true);
         }
