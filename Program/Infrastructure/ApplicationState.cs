@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MEATaste.DataMEA.Models;
+﻿using MEATaste.DataMEA.Models;
 
 namespace MEATaste.Infrastructure
 {
@@ -13,9 +12,9 @@ namespace MEATaste.Infrastructure
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {
             MeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.MeaExperimentChanged);
-            DataSelected = statePropertyFactory.Create<ChannelsDictionary>(null, EventType.SelectedChannelsChanged);
+            DataSelected = statePropertyFactory.Create(new ChannelsDictionary(), EventType.SelectedChannelsChanged);
             AxesMaxMin = statePropertyFactory.Create<AxesExtrema>(null, EventType.AxesMaxMinChanged);
-            FilterProperty = statePropertyFactory.Create<int>(0, EventType.FilterChanged);
+            FilterProperty = statePropertyFactory.Create(0, EventType.FilterChanged);
         }
     }
 }

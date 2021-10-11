@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Xps;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 
@@ -43,9 +44,10 @@ namespace MEATaste.Views.PlotScrollBar
             if (listSelectedChannels.Count == 0)
                 return;
             var channel = listSelectedChannels.First();
+
+            // TODO: read length of data acquisition directly from file...
             var data = dictionary[channel];
-            if (data == null) 
-                return;
+            if (data == null) return;
 
             var meaExperiment = state.MeaExperiment.Get();
             fileDuration = data.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;

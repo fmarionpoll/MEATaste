@@ -50,8 +50,8 @@
                 <ComboBoxItem Content="Running median" />
             </ComboBox>
             <Label Content="channels around selection: " HorizontalAlignment="Left" Margin="125,0,0,0" VerticalAlignment="Center"/>
-            <ComboBox Name="BoxAroundCombo" HorizontalAlignment="Left" Margin="240,0,0,0" VerticalAlignment="Center" Width="20"
-                      SelectedIndex="0" SelectionChanged="BoxAroundCombo_SelectionChanged" >
+            <ComboBox Name="BoxAroundCombo" HorizontalAlignment="Left" Margin="280,0,0,0" VerticalAlignment="Center"
+                      SelectedIndex="0" SelectionChanged="BoxAroundCombo_SelectionChanged"  >
                 <ComboBoxItem Content="0 row/col" />
                 <ComboBoxItem Content="+1 row/col" />
                 <ComboBoxItem Content="-1 row/col" />
