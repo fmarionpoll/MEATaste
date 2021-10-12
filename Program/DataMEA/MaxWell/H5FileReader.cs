@@ -255,6 +255,7 @@ namespace MEATaste.DataMEA.MaxWell
         public void ReadDataPartAllChannels(H5Dataset dataset, ulong startsAt, ulong endsAt, ChannelsDictionary dataSelected)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
+            var cols = 1028;
 
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
@@ -282,9 +283,9 @@ namespace MEATaste.DataMEA.MaxWell
 
             foreach (var (key, value) in dataSelected.Channels)
             {
-                Array.Copy(result[key], value, endsAt, (int)startsAt, (int)(endsAt - startsAt + 1));
+                value = result.AsSpan().Slice(cols * key, cols); ;
             }
-            
+
         }
 
     }
