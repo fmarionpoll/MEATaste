@@ -255,35 +255,37 @@ namespace MEATaste.DataMEA.MaxWell
         public void ReadDataPartAllChannels(H5Dataset dataset, ulong startsAt, ulong endsAt, ChannelsDictionary dataSelected)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
-            var cols = 1028;
+            ulong cols = 1024;
 
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
-                starts: new ulong[] { 1, startsAt },            // start at row ElectrodeNumber, column 0
+                starts: new ulong[] { 0, startsAt },            // start at row ElectrodeNumber, column 0
                 strides: new ulong[] { 1, 1 },                   // don't skip anything
-                counts: new ulong[] { 1, nbPointsRequested },    // read 1 row, ndatapoints columns
+                counts: new ulong[] { cols, nbPointsRequested },    // read 1 row, ndatapoints columns
                 blocks: new ulong[] { 1, 1 }                     // blocks are single elements
             );
 
             var memorySelection = new HyperslabSelection(
                 rank: 2,
-                starts: new ulong[] { 1, 1 },
+                starts: new ulong[] { 0, 0 },
                 strides: new ulong[] { 1, 1 },
-                counts: new ulong[] { 1, nbPointsRequested },
-                blocks: new ulong[] { 1 }
+                counts: new ulong[] { cols, nbPointsRequested },
+                blocks: new ulong[] { 1, 1 }
             );
 
-            var memoryDims = new ulong[] { 1028, nbPointsRequested };
-            var result = dataset
+            var memoryDims = new ulong[] { cols, nbPointsRequested };
+
+            ushort[] result = dataset
                 .Read<ushort>(
                     datasetSelection,
                     memorySelection,
                     memoryDims
                 );
 
-            foreach (var (key, value) in dataSelected.Channels)
+            int icols = (int)cols;
+            foreach (var(key, value) in dataSelected.Channels)
             {
-                value = result.AsSpan().Slice(cols * key, cols); ;
+                dataSelected.Channels[key] = result.AsSpan().Slice(icols * key, icols).ToArray();
             }
 
         }
