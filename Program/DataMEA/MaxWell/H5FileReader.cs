@@ -190,22 +190,23 @@ namespace MEATaste.DataMEA.MaxWell
             var nbPointsRequested = endsAt - startsAt + 1;
 
             var datasetSelection = new HyperslabSelection(
-                2,
-                new[] {(ulong) channel, startsAt}, // start at row ElectrodeNumber, column 0
-                new ulong[] {1, 1},                 // don't skip anything
-                new ulong[] {1, nbPointsRequested}, // read 1 row, ndatapoints columns
-                new ulong[] {1, 1}                  // blocks are single elements
+                rank: 2,
+                starts: new[] {(ulong) channel, startsAt}, // start at row ElectrodeNumber, column 0
+                strides: new ulong[] {1, 1},                 // don't skip anything
+                counts: new ulong[] {1, nbPointsRequested}, // read 1 row, ndatapoints columns
+                blocks: new ulong[] {1, 1}                  // blocks are single elements
             );
 
             var memorySelection = new HyperslabSelection(
-                1,
-                new ulong[] {0},
-                new ulong[] {1},
-                new[] {nbPointsRequested},
-                new ulong[] {1}
+                rank: 1,
+                starts: new ulong[] {0},
+                strides: new ulong[] {1},
+                counts: new[] {nbPointsRequested},
+                blocks: new ulong[] {1}
             );
 
             var memoryDims = new[] {nbPointsRequested};
+
             var result = dataset
                 .Read<ushort>(
                     datasetSelection,
@@ -255,7 +256,7 @@ namespace MEATaste.DataMEA.MaxWell
         public void ReadDataPartAllChannels(H5Dataset dataset, ulong startsAt, ulong endsAt, ChannelsDictionary dataSelected)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
-            ulong cols = 1024;
+            ulong cols = 1028;
 
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
