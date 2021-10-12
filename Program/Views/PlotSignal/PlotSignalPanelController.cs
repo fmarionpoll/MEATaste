@@ -119,9 +119,9 @@ namespace MEATaste.Views.PlotSignal
         private void AddPlot(double[] result, double samplingRate, string legend)
         {
             var plot = Model.PlotControl.Plot;
-            var sig = plot.AddSignal(result, samplingRate, null, legend);
+            var signalPlot = plot.AddSignal(result, samplingRate, null, legend);
             var acqSettings = state.MeaExperiment.Get().DataAcquisitionSettings;
-            sig.MaxRenderIndex = (int)(acqSettings.nDataAcquisitionPoints - 1);
+            signalPlot.MaxRenderIndex = (int)(acqSettings.nDataAcquisitionPoints - 1);
         }
 
         private void DisplayPlot()

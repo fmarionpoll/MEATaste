@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
+using ScottPlot.Drawing.Colormaps;
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -14,6 +16,7 @@ namespace MEATaste.Views.ElectrodesList
         private ObservableCollection<ElectrodePropertiesExtended> electrodesExtendedPropertiesCollection;
         private DataGrid dataGrid;
         private readonly ApplicationState state;
+        private List<int> initialSelection;
 
         public ElectrodesListPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
@@ -67,18 +70,65 @@ namespace MEATaste.Views.ElectrodesList
 
             dictionary.TrimDictionaryToList(channelsFromDataGrid);
             state.DataSelected.Set(dictionary);
-
         }
 
         private List<int> GetSelectedChannelsFromDataGrid()
         {
+            if (dataGrid == null)
+                return null;
             var electrodePropertiesExtended = dataGrid.SelectedItems.Cast<ElectrodePropertiesExtended>().ToList();
             var listSelectedElectrodes = new List<int>();
             listSelectedElectrodes.AddRange(electrodePropertiesExtended.Select(item => item.Channel));
             return listSelectedElectrodes;
         }
 
-       
+        public void ExpandSelection()
+        {
+            StoreSelectionIfEmpty();
+            var dictionary = state.DataSelected.Get().Channels;
+            var listChannels = dictionary.Keys.ToList();
+            var meaExp = state.MeaExperiment.Get();
+            const double delta = 20;
+            foreach (var channel in listChannels)
+            {
+                var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
+                var xMax = electrode.XuM + delta;
+                var xMin = electrode.XuM - delta;
+                var yMax = electrode.YuM + delta;
+                var yMin = electrode.YuM - delta;
+                foreach (var electrodeData in meaExp.Electrodes)
+                {
+                    if (electrodeData.Electrode.Channel == channel) continue;
+                    if (electrodeData.Electrode.XuM > xMax) continue;
+                    if (electrodeData.Electrode.XuM < xMin) continue;
+                    if (electrodeData.Electrode.YuM > yMax) continue;
+                    if (electrodeData.Electrode.YuM < yMin) continue;
+                    dictionary.TryAdd(electrodeData.Electrode.Channel, null);
+                }
+            }
+            Trace.WriteLine("number of selected channels: " + dictionary.Count);
+            var sw = Stopwatch.StartNew();
+            state.DataSelected.Set(new ChannelsDictionary(dictionary));
+            Trace.WriteLine(sw.Elapsed);
+        }
+
+        public void RestoreSelection()
+        {
+            var dictionary = state.DataSelected.Get();
+            if (!dictionary.IsListEqualToStateSelectedItems(initialSelection))
+            {
+                dictionary.TrimDictionaryToList(initialSelection);
+                state.DataSelected.Set(dictionary);
+            }
+            initialSelection.Clear();
+        }
+
+        private void StoreSelectionIfEmpty()
+        {
+            if (initialSelection != null && initialSelection.Count > 0)
+                return;
+            initialSelection = GetSelectedChannelsFromDataGrid();
+        }
 
 
 

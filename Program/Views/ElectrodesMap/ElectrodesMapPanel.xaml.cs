@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Controls;
 
 
 namespace MEATaste.Views.ElectrodesMap
 {
 
-    public partial class ElectrodesMapPanel : UserControl
+    public partial class ElectrodesMapPanel
     {
         private readonly ElectrodesMapPanelController controller;
 

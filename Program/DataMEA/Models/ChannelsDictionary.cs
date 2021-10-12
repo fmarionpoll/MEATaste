@@ -12,7 +12,12 @@ namespace MEATaste.DataMEA.Models
         {
             Channels = new Dictionary<int, ushort[]>(); 
         }
-        
+
+        public ChannelsDictionary(Dictionary<int, ushort[]> dictionary)
+        {
+            Channels = dictionary;
+        }
+
         public void TrimDictionaryToList(List<int> selectedChannels)
         {
             AddMissingChannelsToDictionary(selectedChannels);

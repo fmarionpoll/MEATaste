@@ -21,5 +21,14 @@ namespace MEATaste.Views.ElectrodesList
            controller.ElectrodesGrid_SelectionChanged(sender, e);
         }
 
+        private void expand_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            controller.ExpandSelection();
+        }
+
+        private void restore_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            controller.RestoreSelection();
+        }
     }
 }

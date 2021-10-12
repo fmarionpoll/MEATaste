@@ -7,8 +7,8 @@
              d:DataContext="{d:DesignInstance Type=local:PlotScrollBarPanelModel}"
              mc:Ignorable="d" 
              d:DesignHeight="26" d:DesignWidth="800">
+    
     <Grid Margin="0,0,0,0">
-
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -49,13 +49,7 @@
                 <ComboBoxItem Content="Derivative BDeriv2f3" />
                 <ComboBoxItem Content="Running median" />
             </ComboBox>
-            <Label Content="channels around selection: " HorizontalAlignment="Left" Margin="125,0,0,0" VerticalAlignment="Center"/>
-            <ComboBox Name="BoxAroundCombo" HorizontalAlignment="Left" Margin="280,0,0,0" VerticalAlignment="Center"
-                      SelectedIndex="0" SelectionChanged="BoxAroundCombo_SelectionChanged"  >
-                <ComboBoxItem Content="0 row/col" />
-                <ComboBoxItem Content="+1 row/col" />
-                <ComboBoxItem Content="-1 row/col" />
-            </ComboBox>
+
         </Grid>
 
 

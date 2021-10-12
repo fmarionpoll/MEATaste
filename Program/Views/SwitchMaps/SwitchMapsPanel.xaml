@@ -11,7 +11,7 @@
     <Grid  >
         <TabControl ItemsSource="{Binding TabCollection}"
                     SelectedIndex="{Binding SelectedTabIndex}"
-                    Margin="20,10,5,5">
+                    Margin="20,5,5,5">
 
             <TabControl.Resources>
                 <DataTemplate DataType="{x:Type electrodesMap:ElectrodesMapPanelModel}">

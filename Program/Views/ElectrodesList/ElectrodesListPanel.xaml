@@ -4,42 +4,63 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=electrodesList:ElectrodesListPanelModel}">
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=electrodesList:ElectrodesListPanelModel}" d:DesignWidth="280" d:DesignHeight="280">
 
-    <DataGrid x:Name="ElectrodesGrid"
-              AutoGenerateColumns="False" 
-              ItemsSource="{Binding ElectrodeListView}" 
-              Margin="30, 0, 10, 0"
-              SelectionMode="Extended"
-              CanUserDeleteRows="False" 
-              AlternationCount="2"
-              AlternatingRowBackground="LightBlue"
-              
-              SelectionUnit="FullRow"
-              HorizontalAlignment ="Stretch" 
-              VerticalAlignment ="Stretch" 
-              HorizontalContentAlignment ="Center" 
-              VerticalContentAlignment = "Center" 
-              EnableColumnVirtualization="True" 
-              IsReadOnly="True" 
-              CanUserAddRows="False"  
-              ClipToBounds="True" 
-              CanUserResizeRows="False" 
-              RowDetailsVisibilityMode="Visible" 
-              SelectionChanged="ElectrodesGrid_SelectionChanged">
+    <Grid Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+
+        <Grid  Grid.Row="0">
+            <DataGrid x:Name="ElectrodesGrid" 
+                      AutoGenerateColumns="False" 
+                      ItemsSource="{Binding ElectrodeListView}" 
+                      Margin="10, 0, 10, 0"
+                      SelectionMode="Extended"
+                      CanUserDeleteRows="False" 
+                      AlternationCount="2"
+                      AlternatingRowBackground="LightBlue"
                   
-            <DataGrid.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FF0000" />
-            </DataGrid.Resources>
+                      SelectionUnit="FullRow"
+                      HorizontalAlignment ="Center" 
+                      VerticalAlignment ="Stretch" 
+                      HorizontalContentAlignment ="Center" 
+                      VerticalContentAlignment = "Center" 
+                      EnableColumnVirtualization="True" 
+                      IsReadOnly="True" 
+                      CanUserAddRows="False"  
+                      ClipToBounds="True" 
+                      CanUserResizeRows="False" 
+                      RowDetailsVisibilityMode="Visible" 
+                      SelectionChanged="ElectrodesGrid_SelectionChanged" RenderTransformOrigin="0.343,0.483">
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="chan" Binding = "{Binding Channel}"/>
-                <DataGridTextColumn Header="electrode" Binding = "{Binding ElectrodeNumber}"/>
-                <DataGridTextColumn Header="X µm"  Binding = "{Binding XuM}"/>
-                <DataGridTextColumn Header="Y µm"  Binding = "{Binding YuM}"/>
-                <DataGridTextColumn Header="N spikes"  Binding = "{Binding Nspikes}"/>
-            </DataGrid.Columns>
+                <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FF0000" />
+                </DataGrid.Resources>
 
-    </DataGrid>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="chan" Binding = "{Binding Channel}"/>
+                    <DataGridTextColumn Header="electrode" Binding = "{Binding ElectrodeNumber}"/>
+                    <DataGridTextColumn Header="X µm"  Binding = "{Binding XuM}"/>
+                    <DataGridTextColumn Header="Y µm"  Binding = "{Binding YuM}"/>
+                    <DataGridTextColumn Header="N spikes"  Binding = "{Binding Nspikes}"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+            
+        </Grid>
+        <Grid  Grid.Row="1" HorizontalAlignment="Left" Margin="15, 0, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Content="Selection:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="0"/>
+            <Button Name = "Expand" Content=" expand " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="1" Click="expand_Click"/>
+            <Button Name = "Restore" Content=" restore " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0,0,0" Grid.Column="2" Click="restore_Click"/>
+        </Grid>
+    </Grid>
 </UserControl>

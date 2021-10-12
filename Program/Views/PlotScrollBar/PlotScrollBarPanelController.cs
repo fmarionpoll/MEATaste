@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Windows.Xps;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 
@@ -39,18 +37,8 @@ namespace MEATaste.Views.PlotScrollBar
 
         private void FileHasChanged()
         {
-            var dictionary = state.DataSelected.Get().Channels;
-            var listSelectedChannels = dictionary.Keys.ToList();
-            if (listSelectedChannels.Count == 0)
-                return;
-            var channel = listSelectedChannels.First();
-
-            // TODO: read length of data acquisition directly from file...
-            var data = dictionary[channel];
-            if (data == null) return;
-
             var meaExperiment = state.MeaExperiment.Get();
-            fileDuration = data.Length / meaExperiment.DataAcquisitionSettings.SamplingRate;
+            fileDuration = meaExperiment.DataAcquisitionSettings.nDataAcquisitionPoints / meaExperiment.DataAcquisitionSettings.SamplingRate;
             Model.ScrollMinimum = 0;
             Model.ScrollMaximum = fileDuration;
         }
@@ -87,9 +75,6 @@ namespace MEATaste.Views.PlotScrollBar
             state.FilterProperty.Set(selectedFilterIndex);
         }
 
-        public void ChangeSelectedChannels(int option)
-        {
 
-        }
     }
 }

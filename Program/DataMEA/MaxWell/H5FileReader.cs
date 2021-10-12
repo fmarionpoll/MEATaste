@@ -74,7 +74,9 @@ namespace MEATaste.DataMEA.MaxWell
             meaExp.DataAcquisitionSettings.TimeStop = GetTimeFromString(strings[1], "stop: ");
 
             h5Dataset = h5Group.Dataset("sig");
+            meaExp.DataAcquisitionSettings.nDataAcquisitionChannels = h5Dataset.Space.Dimensions[0];
             meaExp.DataAcquisitionSettings.nDataAcquisitionPoints = h5Dataset.Space.Dimensions[1];
+            meaExp.DataAcquisitionSettings.chunkSize = 200;
         }
 
         private DateTime GetTimeFromString(string inputString, string pattern)
@@ -134,13 +136,12 @@ namespace MEATaste.DataMEA.MaxWell
                     compoundData[i].channel,
                     compoundData[i].amplitude);
 
-                for (var index = 0; index < meaExp.Electrodes.Length; index++)
+                foreach (var t in meaExp.Electrodes)
                 {
-                    var t = meaExp.Electrodes[index];
                     if (t.Electrode.Channel != ec.Channel)
                         continue;
 
-                    List<SpikeDetected> spikeTimes = t.SpikeTimes;
+                    var spikeTimes = t.SpikeTimes;
                     if (spikeTimes == null)
                     {
                         spikeTimes = new List<SpikeDetected>();
