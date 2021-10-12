@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
-using ScottPlot.Drawing.Colormaps;
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -85,8 +83,9 @@ namespace MEATaste.Views.ElectrodesList
         public void ExpandSelection()
         {
             StoreSelectionIfEmpty();
-            var dictionary = state.DataSelected.Get().Channels;
-            var listChannels = dictionary.Keys.ToList();
+            var listChannels = state.DataSelected.Get().Channels.Keys.ToList();
+            List<int> expandedList = new List<int>();
+
             var meaExp = state.MeaExperiment.Get();
             const double delta = 20;
             foreach (var channel in listChannels)
@@ -96,6 +95,7 @@ namespace MEATaste.Views.ElectrodesList
                 var xMin = electrode.XuM - delta;
                 var yMax = electrode.YuM + delta;
                 var yMin = electrode.YuM - delta;
+                expandedList.Add(channel);
                 foreach (var electrodeData in meaExp.Electrodes)
                 {
                     if (electrodeData.Electrode.Channel == channel) continue;
@@ -103,13 +103,13 @@ namespace MEATaste.Views.ElectrodesList
                     if (electrodeData.Electrode.XuM < xMin) continue;
                     if (electrodeData.Electrode.YuM > yMax) continue;
                     if (electrodeData.Electrode.YuM < yMin) continue;
-                    dictionary.TryAdd(electrodeData.Electrode.Channel, null);
+                    expandedList.Add(electrodeData.Electrode.Channel);
                 }
             }
-            Trace.WriteLine("number of selected channels: " + dictionary.Count);
-            var sw = Stopwatch.StartNew();
-            state.DataSelected.Set(new ChannelsDictionary(dictionary));
-            Trace.WriteLine(sw.Elapsed);
+
+            var dictionary = state.DataSelected.Get();
+            dictionary.TrimDictionaryToList(expandedList);
+            state.DataSelected.Set(dictionary);
         }
 
         public void RestoreSelection()

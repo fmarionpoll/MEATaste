@@ -12,7 +12,7 @@ namespace MEATaste.DataMEA.MaxWell
         private static string H5FileName { get; set; }
         private static string H5FileVersion { get; set; } = "unknown";
         private static H5File H5FileRoot { get; set; }
-        
+
         public bool OpenReadMaxWellFile(string fileName)
         {
             H5FileRoot = H5File.OpenRead(fileName);
@@ -21,13 +21,13 @@ namespace MEATaste.DataMEA.MaxWell
             return H5FileRoot != null;
         }
 
-        public bool IsReadableAsMaxWellFile()
+        private static bool IsReadableAsMaxWellFile()
         {
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("version");
             var data = h5Dataset.ReadString();
             H5FileVersion = data[0];
-            
+
             switch (H5FileVersion)
             {
                 case "20160704":
@@ -40,10 +40,11 @@ namespace MEATaste.DataMEA.MaxWell
                     Trace.WriteLine("unknown file structure");
                     break;
             }
+
             return false;
         }
 
-        public MeaExperiment GetExperimentInfos()
+        private static MeaExperiment GetExperimentInfos()
         {
             var meaExp = new MeaExperiment(H5FileName, H5FileVersion, new DataAcquisitionSettings());
             ReadSettings(meaExp);
@@ -60,10 +61,11 @@ namespace MEATaste.DataMEA.MaxWell
             {
                 return GetExperimentInfos();
             }
+
             return null;
         }
 
-        private void ReadAcquisitionTimeIntervals(MeaExperiment meaExp)
+        private static void ReadAcquisitionTimeIntervals(MeaExperiment meaExp)
         {
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("time");
@@ -79,7 +81,7 @@ namespace MEATaste.DataMEA.MaxWell
             meaExp.DataAcquisitionSettings.chunkSize = 200;
         }
 
-        private DateTime GetTimeFromString(string inputString, string pattern)
+        private static DateTime GetTimeFromString(string inputString, string pattern)
         {
             var pos1 = pattern.Length;
             var pos2 = inputString.IndexOf(';');
@@ -90,21 +92,21 @@ namespace MEATaste.DataMEA.MaxWell
             return parsedDate;
         }
 
-        private void ReadSettings(MeaExperiment meaExp)
+        private static void ReadSettings(MeaExperiment meaExp)
         {
             var h5Group = H5FileRoot.Group("/settings");
 
             var gainarray = h5Group.Dataset("gain").Read<double>();
             meaExp.DataAcquisitionSettings.Gain = gainarray[0];
 
-            var hpfarray = h5Group.Dataset("hpf").Read<double>(); 
+            var hpfarray = h5Group.Dataset("hpf").Read<double>();
             meaExp.DataAcquisitionSettings.Hpf = hpfarray[0];
 
-            var lsbarray = h5Group.Dataset("lsb").Read<double>(); 
+            var lsbarray = h5Group.Dataset("lsb").Read<double>();
             meaExp.DataAcquisitionSettings.Lsb = lsbarray[0];
         }
 
-        private void ReadMapping(MeaExperiment meaExp)
+        private static void ReadMapping(MeaExperiment meaExp)
         {
             var h5Group = H5FileRoot.Group("/");
             var h5Dataset = h5Group.Dataset("mapping");
@@ -123,7 +125,7 @@ namespace MEATaste.DataMEA.MaxWell
             }
         }
 
-        private void ReadSpikeTimes(MeaExperiment meaExp)
+        private static void ReadSpikeTimes(MeaExperiment meaExp)
         {
             var h5Group = H5FileRoot.Group("/proc0");
             var h5Dataset = h5Group.Dataset("spikeTimes");
@@ -153,18 +155,86 @@ namespace MEATaste.DataMEA.MaxWell
                 }
             }
         }
-        
+
         public ushort[] ReadAllDataFromSingleChannel(int channel)
         {
             var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
             const ulong chunkSizePerChannel = 200 * 100;
             var result = new ushort[nbdatapoints];
-            var nchunks = (long)(1 +nbdatapoints / chunkSizePerChannel);
+            var nchunks = (long) (1 + nbdatapoints / chunkSizePerChannel);
 
             int ndimensions = h5Dataset.Space.Rank;
             if (ndimensions != 2)
                 return null;
+
+            Parallel.For(0, nchunks, i =>
+            { 
+                var h5File = H5File.OpenRead(H5FileName); 
+                var dataset = h5File.Group("/").Dataset("sig");
+
+                var istart = (ulong) i * chunkSizePerChannel;
+                var iend = istart + chunkSizePerChannel - 1;
+                if (iend > nbdatapoints)
+                    iend = nbdatapoints - 1;
+                var chunkresult = ReadDataPartFromSingleChannel(dataset, channel, istart, iend);
+                Array.Copy(chunkresult, 0, result, (int) istart, (int) (iend - istart + 1));
+                h5File.Dispose();
+            });
+            
+            return result;
+        }
+
+        private static ushort[] ReadDataPartFromSingleChannel(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
+        {
+            var nbPointsRequested = endsAt - startsAt + 1;
+
+            var datasetSelection = new HyperslabSelection(
+                2,
+                new[] {(ulong) channel, startsAt}, // start at row ElectrodeNumber, column 0
+                new ulong[] {1, 1},                 // don't skip anything
+                new ulong[] {1, nbPointsRequested}, // read 1 row, ndatapoints columns
+                new ulong[] {1, 1}                  // blocks are single elements
+            );
+
+            var memorySelection = new HyperslabSelection(
+                1,
+                new ulong[] {0},
+                new ulong[] {1},
+                new[] {nbPointsRequested},
+                new ulong[] {1}
+            );
+
+            var memoryDims = new[] {nbPointsRequested};
+            var result = dataset
+                .Read<ushort>(
+                    datasetSelection,
+                    memorySelection,
+                    memoryDims
+                );
+
+            return result;
+        }
+
+        private static void RegisterIntelFilter()
+        {
+            H5Filter.Register(
+                identifier: H5FilterID.Deflate,
+                name: "deflate",
+                filterFunc: DeflateHelperIntelISA.FilterFunc);
+        }
+
+        public void ReadAllDataFromChannels(ChannelsDictionary dataSelected)
+        {
+            var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
+            var nbdatapoints = h5Dataset.Space.Dimensions[1];
+            const ulong chunkSizePerChannel = 200;
+
+            var nchunks = (long)(1 + nbdatapoints / chunkSizePerChannel);
+
+            int ndimensions = h5Dataset.Space.Rank;
+            if (ndimensions != 2)
+                return;
 
             Parallel.For(0, nchunks, i =>
             {
@@ -175,53 +245,47 @@ namespace MEATaste.DataMEA.MaxWell
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = ReadDataSingleChannel(dataset, channel, istart, iend);
-                Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
+                ReadDataPartAllChannels(dataset, istart, iend, dataSelected);
+
                 h5File.Dispose();
             });
 
-            return result;
         }
 
-        public ushort[] ReadDataSingleChannel(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
+        public void ReadDataPartAllChannels(H5Dataset dataset, ulong startsAt, ulong endsAt, ChannelsDictionary dataSelected)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
 
             var datasetSelection = new HyperslabSelection(
                 rank: 2,
-                starts: new[] { (ulong)channel, startsAt },         // start at row ElectrodeNumber, column 0
-                strides: new ulong[] { 1, 1 },                      // don't skip anything
-                counts: new ulong[] { 1, nbPointsRequested },       // read 1 row, ndatapoints columns
-                blocks: new ulong[] { 1, 1 }                        // blocks are single elements
+                starts: new ulong[] { 1, startsAt },            // start at row ElectrodeNumber, column 0
+                strides: new ulong[] { 1, 1 },                   // don't skip anything
+                counts: new ulong[] { 1, nbPointsRequested },    // read 1 row, ndatapoints columns
+                blocks: new ulong[] { 1, 1 }                     // blocks are single elements
             );
 
             var memorySelection = new HyperslabSelection(
-                rank: 1,
-                starts: new ulong[] { 0 },
-                strides: new ulong[] { 1 },
-                counts: new[] { nbPointsRequested },
+                rank: 2,
+                starts: new ulong[] { 1, 1 },
+                strides: new ulong[] { 1, 1 },
+                counts: new ulong[] { 1, nbPointsRequested },
                 blocks: new ulong[] { 1 }
             );
 
-            var memoryDims = new[] { nbPointsRequested };
+            var memoryDims = new ulong[] { 1028, nbPointsRequested };
             var result = dataset
                 .Read<ushort>(
-                    fileSelection: datasetSelection,
-                    memorySelection: memorySelection,
-                    memoryDims: memoryDims
+                    datasetSelection,
+                    memorySelection,
+                    memoryDims
                 );
 
-            return result;
+            foreach (var (key, value) in dataSelected.Channels)
+            {
+                Array.Copy(result[key], value, endsAt, (int)startsAt, (int)(endsAt - startsAt + 1));
+            }
+            
         }
 
-        public void RegisterIntelFilter()
-        {
-            H5Filter.Register(
-                identifier: H5FilterID.Deflate,
-                name: "deflate",
-                filterFunc: DeflateHelperIntelISA.FilterFunc);
-        }
     }
-
 }
-

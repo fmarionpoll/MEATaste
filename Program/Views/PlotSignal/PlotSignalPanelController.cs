@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -64,11 +65,36 @@ namespace MEATaste.Views.PlotSignal
 
         private void UpdateSelectedElectrodeData(List<int> selectedChannels)
         {
+           
+            PreparePlot();
+            Mouse.OverrideCursor = Cursors.Wait;
+            LoadDataFromFile(selectedChannels);
+            Mouse.OverrideCursor = null;
+            LoadDataToPlot(selectedChannels);
+            DisplayPlot();
+        }
+
+        private void LoadDataFromFile(List<int> selectedChannels)
+        {
+            var sw = Stopwatch.StartNew();
+            foreach (var i in selectedChannels)
+            {
+                var ushortArray = state.DataSelected.Get().Channels[i];
+                if (ushortArray != null) continue;
+                ushortArray = h5FileReader.ReadAllDataFromSingleChannel(i);
+            }
+            Trace.WriteLine("Load 1 channel at a time: "+ sw.Elapsed);
+
+            sw = Stopwatch.StartNew();
+            h5FileReader.ReadAllDataFromChannels(state.DataSelected.Get());
+            Trace.WriteLine("Load all channels together : " + sw.Elapsed);
+        }
+
+        private void LoadDataToPlot(List<int> selectedChannels)
+        {
             var meaExp = state.MeaExperiment.Get();
             var samplingRate = meaExp.DataAcquisitionSettings.SamplingRate;
-            PreparePlot();
-
-            foreach (int i in selectedChannels)
+            foreach (var i in selectedChannels)
             {
                 var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == i);
                 var legend = "channel: " + electrodeData.Electrode.Channel
@@ -76,17 +102,9 @@ namespace MEATaste.Views.PlotSignal
                                          + " (" + electrodeData.Electrode.XuM + ", " +
                                          electrodeData.Electrode.YuM + " µm)";
 
-                ushort[] channel = state.DataSelected.Get().Channels[i];
-                if (channel == null)
-                {
-                    Mouse.OverrideCursor = Cursors.Wait;
-                    channel = h5FileReader.ReadAllDataFromSingleChannel(i);
-                    Mouse.OverrideCursor = null;
-                }
-                
+                var channel = state.DataSelected.Get().Channels[i];
                 AddPlot(ComputeFilteredData(channel), samplingRate, legend);
             }
-            DisplayPlot();
         }
 
         private double[] ComputeFilteredData(ushort[] array)
