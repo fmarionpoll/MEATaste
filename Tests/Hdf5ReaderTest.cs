@@ -13,7 +13,6 @@ namespace Tests
 
         private static H5File Root { get; set; }
         private string fileName;
-        private readonly H5FileReader h5FileReader = new();
 
         private string GetFileNameHdd(bool optionHdd)
         {
@@ -38,8 +37,8 @@ namespace Tests
         public void ShouldOpenFileAndGetContent()
         {
             var name = GetFileNameHdd(false);
-            h5FileReader.OpenReadMaxWellFile(name);
-            h5FileReader.IsReadableAsMaxWellFile();
+            OpenReadMaxWellFile(name);
+            H5FileReader.IsReadableAsMaxWellFile();
         }
         
         [Fact]
@@ -53,7 +52,7 @@ namespace Tests
         public void OpenAndReadH5MaxwellFileAndIntelFilterTest()
         {
             OpenTestFile();
-            h5FileReader.RegisterIntelFilter();
+            H5FileReader.RegisterIntelFilter();
             var unused = ReadAll_OneElectrodeAsInt(863);
         }
 
@@ -65,7 +64,7 @@ namespace Tests
             if (ndimensions != 2)
                 return null;
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
-            return h5FileReader.ReadDataPartFromSingleChannel(h5Dataset, channel, 0, nbdatapoints - 1);
+            return H5FileReader.ReadDataPartFromSingleChannel(h5Dataset, channel, 0, nbdatapoints - 1);
         }
 
         [Fact]
@@ -104,14 +103,14 @@ namespace Tests
             if (ndimensions != 2)
                 return null;
             var nbdatapoints = h5Dataset.Space.Dimensions[1];
-            return h5FileReader.ReadDataPartFromSingleChannel(h5Dataset, channel, 0, nbdatapoints - 1);
+            return H5FileReader.ReadDataPartFromSingleChannel(h5Dataset, channel, 0, nbdatapoints - 1);
         }
 
         [Fact]
         public void OpenAndReadH5MaxwellFileWithThreadsTest()
         {
             OpenTestFile();
-            h5FileReader.RegisterIntelFilter();
+            H5FileReader.RegisterIntelFilter();
             var unused = ReadOneChannelWithThreads(863);
         }
 
@@ -138,7 +137,7 @@ namespace Tests
                 var iend = istart + chunkSizePerChannel - 1;
                 if (iend > nbdatapoints)
                     iend = nbdatapoints - 1;
-                var chunkresult = h5FileReader.ReadDataPartFromSingleChannel(dataset, channel, istart, iend);
+                var chunkresult = H5FileReader.ReadDataPartFromSingleChannel(dataset, channel, istart, iend);
                 Array.Copy(chunkresult, 0, result, (int)istart, (int)(iend - istart + 1));
                 h5File.Dispose();
             });

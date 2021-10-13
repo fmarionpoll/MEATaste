@@ -33,7 +33,7 @@ namespace MEATaste.Views.FileOpen
             if (openFileDialog.ShowDialog() != true) return;
 
             var fileName = openFileDialog.FileName;
-            state.MeaExperiment.Set(h5FileReader.OpenFileAndReadExperiment(fileName));
+            state.MeaExperiment.Set(H5FileReader.OpenFileAndReadExperiment(fileName));
 
             var currentExperiment = state.MeaExperiment.Get();
             Model.FileNameLabel = currentExperiment.FileName + " version="+ currentExperiment.FileVersion;
@@ -57,7 +57,7 @@ namespace MEATaste.Views.FileOpen
             var meaExp = state.MeaExperiment.Get();
             foreach (var electrodeData in meaExp.Electrodes)
             {
-                var data = h5FileReader.ReadAllDataFromSingleChannel(electrodeData.Electrode.Channel);
+                var data = H5FileReader.ReadAllDataFromSingleChannel(electrodeData.Electrode.Channel);
                 dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData, data);
             }
         }

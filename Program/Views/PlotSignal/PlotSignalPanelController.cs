@@ -81,12 +81,12 @@ namespace MEATaste.Views.PlotSignal
             {
                 var ushortArray = state.DataSelected.Get().Channels[i];
                 if (ushortArray != null) continue;
-                ushortArray = h5FileReader.ReadAllDataFromSingleChannel(i);
+                ushortArray = H5FileReader.ReadAllDataFromSingleChannel(i);
             }
             Trace.WriteLine("Load 1 channel at a time: "+ sw.Elapsed);
 
             sw = Stopwatch.StartNew();
-            h5FileReader.ReadAllDataFromChannels(state.DataSelected.Get());
+            H5FileReader.A13ReadAllDataFromChannels(state.DataSelected.Get());
             Trace.WriteLine("Load all channels together : " + sw.Elapsed);
         }
 
