@@ -104,7 +104,7 @@ namespace MEATaste.Views.PlotSignal
         {
             var sw = Stopwatch.StartNew();
             var dataSelected = state.DataSelected.Get();
-            H5FileReader.A13ReadAllDataFromChannelsParallel(dataSelected);
+            H5FileReader.A13ReadAllDataFromChannelsPseudoParallel(dataSelected);
             Trace.WriteLine("Load all channels together : " + sw.Elapsed + " -- selectedCount=" + dataSelected.Channels.Count);
         }
 

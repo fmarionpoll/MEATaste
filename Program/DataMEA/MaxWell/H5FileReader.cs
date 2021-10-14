@@ -286,9 +286,11 @@ namespace MEATaste.DataMEA.MaxWell
 
             var index = 0;
             var icols = (int)nbDataPoints;
+            var indexStart = 0;
+            var indexEnd = nbDataPoints - 1;
             foreach (var (key, _) in dataSelected.Channels)
             {
-                dataSelected.Channels[key] = result2.AsSpan().Slice(start: icols * index, length: icols).ToArray();
+                dataSelected.Channels[key] = result2.AsSpan().Slice(start: (int) nbDataPoints * index, length: (int) indexEnd-indexStart +1).ToArray();
                 index++;
             }
         }
@@ -331,6 +333,48 @@ namespace MEATaste.DataMEA.MaxWell
 
                 h5File.Dispose();
             });
+        }
+
+        public static void A13ReadAllDataFromChannelsPseudoParallel(ChannelsDictionary dataSelected)
+        {
+            var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
+            var nbDataPoints = h5Dataset.Space.Dimensions[1];
+
+            //const ulong chunkSizePerChannel = 200 * 10;
+            var chunkSizePerChannel = nbDataPoints/ 300 * 200;
+            var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
+            Trace.WriteLine("n chunks= " + nchunks + " ...... chunkSizePerChannel=" + chunkSizePerChannel);
+            int ndimensions = h5Dataset.Space.Rank;
+            if (ndimensions != 2)
+                return;
+
+            for (var iChunk = 0; iChunk < nchunks; iChunk++)
+            {
+                var h5File = H5File.OpenRead(H5FileName);
+                var dataset = h5File.Group("/").Dataset("sig");
+
+                var indexStart = (ulong)iChunk * chunkSizePerChannel;
+                if (indexStart >= nbDataPoints) break;
+                var indexEnd = indexStart + chunkSizePerChannel - 1;
+                if (indexEnd > nbDataPoints)
+                    indexEnd = nbDataPoints - 1;
+
+                var chunkresult = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
+
+                long index = 0;
+                foreach (var (key, _) in dataSelected.Channels)
+                {
+                    Array.Copy(
+                        sourceArray: chunkresult,
+                        sourceIndex: index * (long) chunkSizePerChannel,
+                        destinationArray: dataSelected.Channels[key],
+                        destinationIndex: (long)indexStart,
+                        length: (long)(indexEnd - indexStart + 1));
+                    index++;
+                }
+
+                h5File.Dispose();
+            }
         }
 
         public static ushort [] A13ReadDataPartAllChannels(H5Dataset h5Dataset, ulong indexStart, ulong indexEnd, ChannelsDictionary dataSelected)
