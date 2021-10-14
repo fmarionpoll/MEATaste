@@ -5,6 +5,7 @@ using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
+using MEATaste.Views.Controls;
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -14,7 +15,7 @@ namespace MEATaste.Views.ElectrodesList
         private ObservableCollection<ElectrodePropertiesExtended> electrodesExtendedPropertiesCollection;
         private DataGrid dataGrid;
         private readonly ApplicationState state;
-        private List<int> initialSelection;
+        private List<int> initialSelectedChannelsList;
 
         public ElectrodesListPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
@@ -84,7 +85,7 @@ namespace MEATaste.Views.ElectrodesList
         {
             StoreSelectionIfEmpty();
             var listChannels = state.DataSelected.Get().Channels.Keys.ToList();
-            List<int> expandedList = new List<int>();
+            List<int> expandedSelectedChannelsList = new List<int>();
 
             var meaExp = state.MeaExperiment.Get();
             const double delta = 20;
@@ -95,7 +96,7 @@ namespace MEATaste.Views.ElectrodesList
                 var xMin = electrode.XuM - delta;
                 var yMax = electrode.YuM + delta;
                 var yMin = electrode.YuM - delta;
-                expandedList.Add(channel);
+                expandedSelectedChannelsList.Add(channel);
                 foreach (var electrodeData in meaExp.Electrodes)
                 {
                     if (electrodeData.Electrode.Channel == channel) continue;
@@ -103,31 +104,38 @@ namespace MEATaste.Views.ElectrodesList
                     if (electrodeData.Electrode.XuM < xMin) continue;
                     if (electrodeData.Electrode.YuM > yMax) continue;
                     if (electrodeData.Electrode.YuM < yMin) continue;
-                    expandedList.Add(electrodeData.Electrode.Channel);
+                    expandedSelectedChannelsList.Add(electrodeData.Electrode.Channel);
                 }
             }
 
-            var dictionary = state.DataSelected.Get();
-            dictionary.TrimDictionaryToList(expandedList);
-            state.DataSelected.Set(dictionary);
+            List<ElectrodePropertiesExtended> selectedIElectrodePropertiesExtendeds = new();
+            dataGrid.Items
+                .Cast<ElectrodePropertiesExtended>()
+                .Where(item => expandedSelectedChannelsList.Any(channel => channel == item.Channel))
+                .Iter(item => selectedIElectrodePropertiesExtendeds.Add(item));
+
+            dataGrid.UnselectAll();
+            dataGrid.SelectManyItems(selectedIElectrodePropertiesExtendeds);
         }
 
         public void RestoreSelection()
         {
-            var dictionary = state.DataSelected.Get();
-            if (!dictionary.IsListEqualToStateSelectedItems(initialSelection))
-            {
-                dictionary.TrimDictionaryToList(initialSelection);
-                state.DataSelected.Set(dictionary);
-            }
-            initialSelection.Clear();
+            List<ElectrodePropertiesExtended> selectedIElectrodePropertiesExtendeds = new();
+            dataGrid.Items
+                .Cast<ElectrodePropertiesExtended>()
+                .Where(item => initialSelectedChannelsList.Any(channel => channel == item.Channel))
+                .Iter(item => selectedIElectrodePropertiesExtendeds.Add(item));
+            dataGrid.UnselectAll();
+            dataGrid.SelectManyItems(selectedIElectrodePropertiesExtendeds);
+
+            initialSelectedChannelsList.Clear();
         }
 
         private void StoreSelectionIfEmpty()
         {
-            if (initialSelection != null && initialSelection.Count > 0)
+            if (initialSelectedChannelsList != null && initialSelectedChannelsList.Count > 0)
                 return;
-            initialSelection = GetSelectedChannelsFromDataGrid();
+            initialSelectedChannelsList = GetSelectedChannelsFromDataGrid();
         }
 
 

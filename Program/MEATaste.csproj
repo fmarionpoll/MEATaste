@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>FMP</Authors>
     <Company>EGCE</Company>
   </PropertyGroup>

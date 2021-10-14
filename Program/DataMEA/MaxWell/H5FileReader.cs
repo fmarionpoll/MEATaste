@@ -185,8 +185,7 @@ namespace MEATaste.DataMEA.MaxWell
             return result;
         }
 
-        public static ushort[] ReadDataPartFromSingleChannel(H5Dataset dataset, int channel, ulong startsAt,
-            ulong endsAt)
+        public static ushort[] ReadDataPartFromSingleChannel(H5Dataset dataset, int channel, ulong startsAt, ulong endsAt)
         {
             var nbPointsRequested = endsAt - startsAt + 1;
 
@@ -231,7 +230,7 @@ namespace MEATaste.DataMEA.MaxWell
             var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
             var nbDataPoints = h5Dataset.Space.Dimensions[1];
             const ulong chunkSizePerChannel = 200;
-            var nbChannels = (ulong) dataSelected.Channels.Count;
+            var nbChannels = (ulong)dataSelected.Channels.Count;
             var totalElementCount = nbDataPoints * nbChannels;
             var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
 
@@ -248,9 +247,9 @@ namespace MEATaste.DataMEA.MaxWell
                 {
                     foreach (var (key, _) in dataSelected.Channels)
                     {
-                        coordinates[0] = (ulong) key;
+                        coordinates[0] = (ulong)key;
                         coordinates[1] = i;
-                        yield return new Step() {Coordinates = coordinates, ElementCount = chunkSizePerChannel};
+                        yield return new Step() { Coordinates = coordinates, ElementCount = chunkSizePerChannel };
                     }
                 }
             }
@@ -267,16 +266,16 @@ namespace MEATaste.DataMEA.MaxWell
                     coordinates[1] = i;
                     for (int j = 0; j < dataSelected.Channels.Count; j++)
                     {
-                        coordinates[0] = (ulong) j;
+                        coordinates[0] = (ulong)j;
                         coordinates[1] = i;
-                        yield return new Step() {Coordinates = coordinates, ElementCount = chunkSizePerChannel};
+                        yield return new Step() { Coordinates = coordinates, ElementCount = chunkSizePerChannel };
                     }
                 }
             }
 
             var memorySelection = new DelegateSelection(totalElementCount, TargetWalker);
 
-            var memoryDims = new[] {nbChannels, nbDataPoints};
+            var memoryDims = new[] { nbChannels, nbDataPoints };
 
             var result2 = h5Dataset
                 .Read<ushort>(
@@ -286,7 +285,7 @@ namespace MEATaste.DataMEA.MaxWell
                 );
 
             var index = 0;
-            var icols = (int) nbDataPoints;
+            var icols = (int)nbDataPoints;
             foreach (var (key, _) in dataSelected.Channels)
             {
                 dataSelected.Channels[key] = result2.AsSpan().Slice(start: icols * index, length: icols).ToArray();
@@ -294,37 +293,106 @@ namespace MEATaste.DataMEA.MaxWell
             }
         }
 
-        public static void A13ReadDataPartAllChannels(H5Dataset dataset, ulong startsAt, ulong endsAt,
-            ChannelsDictionary dataSelected)
+        public static void A13ReadAllDataFromChannelsParallel(ChannelsDictionary dataSelected)
         {
-            var nbPointsRequested = endsAt - startsAt + 1;
+            var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
+            var nbDataPoints = h5Dataset.Space.Dimensions[1];
+            
+            const ulong chunkSizePerChannel = 200;
+            //var channelsSelectedCount = (ulong) dataSelected.Channels.Count;
+            //var totalElementCount = nbDataPoints * channelsSelectedCount;
+            var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
 
-            var datasetSelection = new HyperslabSelection(
-                rank: 2,
-                starts: new[] { (ulong)channel, startsAt },
-                strides: new ulong[] { 1, 1 },
-                counts: new ulong[] { 1, nbPointsRequested },
-                blocks: new ulong[] { 1, 1 }
-            );
+            int ndimensions = h5Dataset.Space.Rank;
+            if (ndimensions != 2)
+                return;
 
-            var memorySelection = new HyperslabSelection(
-                rank: 1,
-                starts: new ulong[] { 0 },
-                strides: new ulong[] { 1 },
-                counts: new[] { nbPointsRequested },
-                blocks: new ulong[] { 1 }
-            );
+            Parallel.For(0, nchunks, i =>
+            {
+                var h5File = H5File.OpenRead(H5FileName);
+                var dataset = h5File.Group("/").Dataset("sig");
 
-            var memoryDims = new[] { nbPointsRequested };
+                var startsAt = (ulong)i * chunkSizePerChannel;
+                var endsAt = startsAt + chunkSizePerChannel - 1;
+                if (endsAt > nbDataPoints)
+                    endsAt = nbDataPoints - 1;
 
-            var result = dataset
-                .Read<ushort>(
-                    datasetSelection,
-                    memorySelection,
-                    memoryDims
-                );
+                var chunkresult = A13ReadDataPartAllChannels(dataset, startsAt, endsAt, dataSelected);
+
+                var index = 0;
+                var icols = (int)nbDataPoints;
+                foreach (var (key, value) in dataSelected.Channels)
+                {
+                    Array.Copy(
+                        sourceArray:chunkresult, 
+                        sourceIndex: 0,
+                        destinationArray: value, 
+                        destinationIndex: (int)startsAt,
+                        length: (int)(endsAt - startsAt + 1));
+                    index++;
+                }
+
+                h5File.Dispose();
+            });
+
 
             
+        }
+
+        public static ushort [] A13ReadDataPartAllChannels(H5Dataset h5Dataset, ulong startsAt, ulong endsAt, ChannelsDictionary dataSelected)
+        {
+            var nbPointsRequested = endsAt - startsAt + 1;
+            var nbChannels = (ulong)dataSelected.Channels.Count;
+            var totalElementCount = nbPointsRequested * nbChannels;
+            const ulong chunkSizePerChannel = 200; // todo: read from h5Dataset
+
+            // dataset (source)
+            IEnumerable<Step> SourceWalker(ulong[] limits)
+            {
+                var coordinates = new ulong[2];
+
+                for (var i = 0UL; i < nbPointsRequested; i += chunkSizePerChannel)
+                {
+                    foreach (var (key, _) in dataSelected.Channels)
+                    {
+                        coordinates[0] = (ulong)key;
+                        coordinates[1] = i;
+                        yield return new Step() { Coordinates = coordinates, ElementCount = chunkSizePerChannel };
+                    }
+                }
+            }
+
+            var datasetSelection = new DelegateSelection(totalElementCount, SourceWalker);
+
+            // memory (target)
+            IEnumerable<Step> TargetWalker(ulong[] limits)
+            {
+                var coordinates = new ulong[2];
+
+                for (var i = 0UL; i < nbPointsRequested; i += chunkSizePerChannel)
+                {
+                    coordinates[1] = i;
+                    for (int j = 0; j < dataSelected.Channels.Count; j++)
+                    {
+                        coordinates[0] = (ulong)j;
+                        coordinates[1] = i;
+                        yield return new Step() { Coordinates = coordinates, ElementCount = chunkSizePerChannel };
+                    }
+                }
+            }
+
+            var memorySelection = new DelegateSelection(totalElementCount, TargetWalker);
+
+            var memoryDims = new[] { nbChannels, nbPointsRequested };
+
+            var result = h5Dataset
+                .Read<ushort>(
+                    fileSelection: datasetSelection,
+                    memorySelection: memorySelection,
+                    memoryDims: memoryDims
+                );
+
+            return result;
         }
     }
 }

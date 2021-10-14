@@ -18,6 +18,12 @@ namespace MEATaste.DataMEA.Models
             Channels = dictionary;
         }
 
+        public ChannelsDictionary(List<int> keyList)
+        {
+            Channels = new Dictionary<int, ushort[]>();
+            AddMissingChannelsToDictionary(keyList);
+        }
+
         public void TrimDictionaryToList(List<int> selectedChannels)
         {
             AddMissingChannelsToDictionary(selectedChannels);
@@ -36,10 +42,9 @@ namespace MEATaste.DataMEA.Models
 
         private void AddMissingChannelsToDictionary(List<int> selectedChannels)
         {
-            foreach (int channel in selectedChannels)
+            foreach (var channel in selectedChannels.Where(channel => !Channels.ContainsKey(channel)))
             {
-                if (!Channels.ContainsKey(channel))
-                    Channels.Add(channel, null);
+                Channels.Add(channel, null);
             }
         }
 

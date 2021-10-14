@@ -67,40 +67,47 @@ namespace MEATaste.Views.PlotSignal
         {
            
             PreparePlot();
-            Mouse.OverrideCursor = Cursors.Wait;
-            LoadDataFromFile(selectedChannels);
+            //Mouse.OverrideCursor = Cursors.Wait;
+            //LoadDataFromFilev1(selectedChannels);
+            //Mouse.OverrideCursor = null;
+            //LoadDataToPlot(selectedChannels, "v1");
+
+            LoadDataFromFilev2();
             Mouse.OverrideCursor = null;
-            LoadDataToPlot(selectedChannels);
+            LoadDataToPlot(selectedChannels, "v2");
             DisplayPlot();
         }
 
-        private void LoadDataFromFile(List<int> selectedChannels)
+        private void LoadDataFromFilev1(List<int> selectedChannels)
         {
             var sw = Stopwatch.StartNew();
             foreach (var i in selectedChannels)
             {
-                var ushortArray = state.DataSelected.Get().Channels[i];
-                if (ushortArray != null) continue;
-                ushortArray = H5FileReader.ReadAllDataFromSingleChannel(i);
+                var dataSelected = state.DataSelected.Get();
+                dataSelected.Channels[i] = H5FileReader.ReadAllDataFromSingleChannel(i);
             }
-            Trace.WriteLine("Load 1 channel at a time: "+ sw.Elapsed);
-
-            sw = Stopwatch.StartNew();
-            H5FileReader.A13ReadAllDataFromChannels(state.DataSelected.Get());
-            Trace.WriteLine("Load all channels together : " + sw.Elapsed);
+            Trace.WriteLine("Load 1 channel at a time: "+ sw.Elapsed + " -- selectedCount=" + selectedChannels.Count);
         }
 
-        private void LoadDataToPlot(List<int> selectedChannels)
+        private void LoadDataFromFilev2()
+        {
+            var sw = Stopwatch.StartNew();
+            var dataSelected = state.DataSelected.Get();
+            H5FileReader.A13ReadAllDataFromChannels(dataSelected);
+            Trace.WriteLine("Load all channels together : " + sw.Elapsed + " -- selectedCount=" + dataSelected.Channels.Count);
+        }
+
+        private void LoadDataToPlot(List<int> selectedChannels, string comment)
         {
             var meaExp = state.MeaExperiment.Get();
             var samplingRate = meaExp.DataAcquisitionSettings.SamplingRate;
             foreach (var i in selectedChannels)
             {
                 var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == i);
-                var legend = "channel: " + electrodeData.Electrode.Channel
+                var legend = "channel: " + electrodeData.Electrode.Channel 
                                          + " electrode: " + electrodeData.Electrode.ElectrodeNumber
-                                         + " (" + electrodeData.Electrode.XuM + ", " +
-                                         electrodeData.Electrode.YuM + " µm)";
+                                         + " (" + electrodeData.Electrode.XuM + ", " + electrodeData.Electrode.YuM + " µm)"
+                                         + " ** " + comment;
 
                 var channel = state.DataSelected.Get().Channels[i];
                 AddPlot(ComputeFilteredData(channel), samplingRate, legend);
