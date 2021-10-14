@@ -263,7 +263,6 @@ namespace MEATaste.DataMEA.MaxWell
 
                 for (var i = 0UL; i < nbDataPoints; i += chunkSizePerChannel)
                 {
-                    coordinates[1] = i;
                     for (var j = 0; j < dataSelected.Channels.Count; j++)
                     {
                         coordinates[0] = (ulong)j;
@@ -361,15 +360,16 @@ namespace MEATaste.DataMEA.MaxWell
 
                 var chunkresult = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
 
-                long index = 0;
+                int index = 0;
                 foreach (var (key, _) in dataSelected.Channels)
                 {
                     Array.Copy(
                         sourceArray: chunkresult,
-                        sourceIndex: index * (long) chunkSizePerChannel,
+                        sourceIndex: index * (long)chunkSizePerChannel,
                         destinationArray: dataSelected.Channels[key],
                         destinationIndex: (long)indexStart,
                         length: (long)(indexEnd - indexStart + 1));
+
                     index++;
                 }
 
@@ -409,7 +409,6 @@ namespace MEATaste.DataMEA.MaxWell
 
                 for (var i = 0UL; i < nbPointsRequested; i += chunkSizePerChannel)
                 {
-                    coordinates[1] = i;
                     for (var j = 0; j < dataSelected.Channels.Count; j++)
                     {
                         coordinates[0] = (ulong)j;
