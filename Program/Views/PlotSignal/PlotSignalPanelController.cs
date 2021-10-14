@@ -67,10 +67,12 @@ namespace MEATaste.Views.PlotSignal
         {
            
             PreparePlot();
-            //Mouse.OverrideCursor = Cursors.Wait;
-            //LoadDataFromFilev1(selectedChannels);
-            //Mouse.OverrideCursor = null;
-            //LoadDataToPlot(selectedChannels, "v1");
+            Mouse.OverrideCursor = Cursors.Wait;
+            //LoadDataFromFilev0(selectedChannels);
+            LoadDataFromFilev1();
+            Mouse.OverrideCursor = null;
+            LoadDataToPlot(selectedChannels, "v1");
+            DisplayPlot();
 
             LoadDataFromFilev2();
             Mouse.OverrideCursor = null;
@@ -78,22 +80,31 @@ namespace MEATaste.Views.PlotSignal
             DisplayPlot();
         }
 
-        private void LoadDataFromFilev1(List<int> selectedChannels)
+        private void LoadDataFromFilev0(List<int> selectedChannels)
         {
             var sw = Stopwatch.StartNew();
             foreach (var i in selectedChannels)
             {
                 var dataSelected = state.DataSelected.Get();
                 dataSelected.Channels[i] = H5FileReader.ReadAllDataFromSingleChannel(i);
+                
             }
             Trace.WriteLine("Load 1 channel at a time: "+ sw.Elapsed + " -- selectedCount=" + selectedChannels.Count);
+        }
+
+        private void LoadDataFromFilev1()
+        {
+            var sw = Stopwatch.StartNew();
+            var dataSelected = state.DataSelected.Get();
+            H5FileReader.A13ReadAllDataFromChannels(dataSelected);
+            Trace.WriteLine("Load all channels together : " + sw.Elapsed + " -- selectedCount=" + dataSelected.Channels.Count);
         }
 
         private void LoadDataFromFilev2()
         {
             var sw = Stopwatch.StartNew();
             var dataSelected = state.DataSelected.Get();
-            H5FileReader.A13ReadAllDataFromChannels(dataSelected);
+            H5FileReader.A13ReadAllDataFromChannelsParallel(dataSelected);
             Trace.WriteLine("Load all channels together : " + sw.Elapsed + " -- selectedCount=" + dataSelected.Channels.Count);
         }
 

@@ -232,13 +232,13 @@ namespace MEATaste.DataMEA.MaxWell
             const ulong chunkSizePerChannel = 200;
             var nbChannels = (ulong)dataSelected.Channels.Count;
             var totalElementCount = nbDataPoints * nbChannels;
-            var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
 
             int ndimensions = h5Dataset.Space.Rank;
             if (ndimensions != 2)
                 return;
 
             // dataset (source)
+            // what is limits?
             IEnumerable<Step> SourceWalker(ulong[] limits)
             {
                 var coordinates = new ulong[2];
@@ -264,7 +264,7 @@ namespace MEATaste.DataMEA.MaxWell
                 for (var i = 0UL; i < nbDataPoints; i += chunkSizePerChannel)
                 {
                     coordinates[1] = i;
-                    for (int j = 0; j < dataSelected.Channels.Count; j++)
+                    for (var j = 0; j < dataSelected.Channels.Count; j++)
                     {
                         coordinates[0] = (ulong)j;
                         coordinates[1] = i;
@@ -299,53 +299,47 @@ namespace MEATaste.DataMEA.MaxWell
             var nbDataPoints = h5Dataset.Space.Dimensions[1];
             
             const ulong chunkSizePerChannel = 200;
-            //var channelsSelectedCount = (ulong) dataSelected.Channels.Count;
-            //var totalElementCount = nbDataPoints * channelsSelectedCount;
             var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
 
             int ndimensions = h5Dataset.Space.Rank;
             if (ndimensions != 2)
                 return;
 
-            Parallel.For(0, nchunks, i =>
+            Parallel.For(0, nchunks, iStart =>
             {
                 var h5File = H5File.OpenRead(H5FileName);
                 var dataset = h5File.Group("/").Dataset("sig");
 
-                var startsAt = (ulong)i * chunkSizePerChannel;
-                var endsAt = startsAt + chunkSizePerChannel - 1;
-                if (endsAt > nbDataPoints)
-                    endsAt = nbDataPoints - 1;
+                var indexStart = (ulong)iStart * chunkSizePerChannel;
+                var indexEnd = indexStart + chunkSizePerChannel - 1;
+                if (indexEnd > nbDataPoints)
+                    indexEnd = nbDataPoints - 1;
 
-                var chunkresult = A13ReadDataPartAllChannels(dataset, startsAt, endsAt, dataSelected);
+                var chunkresult = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
 
                 var index = 0;
-                var icols = (int)nbDataPoints;
                 foreach (var (key, value) in dataSelected.Channels)
                 {
                     Array.Copy(
                         sourceArray:chunkresult, 
-                        sourceIndex: 0,
+                        sourceIndex: index * (int) chunkSizePerChannel,
                         destinationArray: value, 
-                        destinationIndex: (int)startsAt,
-                        length: (int)(endsAt - startsAt + 1));
+                        destinationIndex: (int) indexStart,
+                        length: (int)(indexEnd - indexStart + 1));
                     index++;
                 }
 
                 h5File.Dispose();
             });
-
-
-            
         }
 
-        public static ushort [] A13ReadDataPartAllChannels(H5Dataset h5Dataset, ulong startsAt, ulong endsAt, ChannelsDictionary dataSelected)
+        public static ushort [] A13ReadDataPartAllChannels(H5Dataset h5Dataset, ulong indexStart, ulong indexEnd, ChannelsDictionary dataSelected)
         {
-            var nbPointsRequested = endsAt - startsAt + 1;
+            var nbPointsRequested = indexEnd - indexStart + 1;
+            const ulong chunkSizePerChannel = 200;
             var nbChannels = (ulong)dataSelected.Channels.Count;
             var totalElementCount = nbPointsRequested * nbChannels;
-            const ulong chunkSizePerChannel = 200; // todo: read from h5Dataset
-
+            
             // dataset (source)
             IEnumerable<Step> SourceWalker(ulong[] limits)
             {
@@ -372,7 +366,7 @@ namespace MEATaste.DataMEA.MaxWell
                 for (var i = 0UL; i < nbPointsRequested; i += chunkSizePerChannel)
                 {
                     coordinates[1] = i;
-                    for (int j = 0; j < dataSelected.Channels.Count; j++)
+                    for (var j = 0; j < dataSelected.Channels.Count; j++)
                     {
                         coordinates[0] = (ulong)j;
                         coordinates[1] = i;

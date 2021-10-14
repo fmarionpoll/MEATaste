@@ -85,28 +85,7 @@ namespace MEATaste.Views.ElectrodesList
         {
             StoreSelectionIfEmpty();
             var listChannels = state.DataSelected.Get().Channels.Keys.ToList();
-            List<int> expandedSelectedChannelsList = new List<int>();
-
-            var meaExp = state.MeaExperiment.Get();
-            const double delta = 20;
-            foreach (var channel in listChannels)
-            {
-                var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
-                var xMax = electrode.XuM + delta;
-                var xMin = electrode.XuM - delta;
-                var yMax = electrode.YuM + delta;
-                var yMin = electrode.YuM - delta;
-                expandedSelectedChannelsList.Add(channel);
-                foreach (var electrodeData in meaExp.Electrodes)
-                {
-                    if (electrodeData.Electrode.Channel == channel) continue;
-                    if (electrodeData.Electrode.XuM > xMax) continue;
-                    if (electrodeData.Electrode.XuM < xMin) continue;
-                    if (electrodeData.Electrode.YuM > yMax) continue;
-                    if (electrodeData.Electrode.YuM < yMin) continue;
-                    expandedSelectedChannelsList.Add(electrodeData.Electrode.Channel);
-                }
-            }
+            var expandedSelectedChannelsList = GetAllElectrodesAroundCurrentSelection(listChannels, 20);
 
             List<ElectrodePropertiesExtended> selectedIElectrodePropertiesExtendeds = new();
             dataGrid.Items
@@ -116,6 +95,30 @@ namespace MEATaste.Views.ElectrodesList
 
             dataGrid.UnselectAll();
             dataGrid.SelectManyItems(selectedIElectrodePropertiesExtendeds);
+        }
+
+        private List<int> GetAllElectrodesAroundCurrentSelection(List<int> currentChannelsList, double delta)
+        {
+            List<int> expandedSelectedChannelsList = new();
+            var meaExp = state.MeaExperiment.Get();
+            foreach (var channel in currentChannelsList)
+            {
+                var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
+                var xMax = electrode.XuM + delta;
+                var xMin = electrode.XuM - delta;
+                var yMax = electrode.YuM + delta;
+                var yMin = electrode.YuM - delta;
+                expandedSelectedChannelsList.Add(channel);
+                expandedSelectedChannelsList.AddRange(from electrodeData in meaExp.Electrodes
+                    where electrodeData.Electrode.Channel != channel
+                    where !(electrodeData.Electrode.XuM > xMax)
+                    where !(electrodeData.Electrode.XuM < xMin)
+                    where !(electrodeData.Electrode.YuM > yMax)
+                    where !(electrodeData.Electrode.YuM < yMin)
+                    select electrodeData.Electrode.Channel);
+            }
+
+            return expandedSelectedChannelsList;
         }
 
         public void RestoreSelection()
