@@ -303,7 +303,7 @@ namespace MEATaste.DataMEA.MaxWell
                 dataSelected.Channels[key] ??= new ushort[nbDataPoints];
             }
 
-            const ulong chunkSizePerChannel = 200 * 10; // if 100, the program crashes on the last read
+            const ulong chunkSizePerChannel = 200 * 20; // if 100, the program crashes on the last read
             var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
 
             int ndimensions = h5Dataset.Space.Rank;

@@ -6,6 +6,7 @@ using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
 using MEATaste.Views.Controls;
+using System.Diagnostics;
 
 namespace MEATaste.Views.ElectrodesList
 {
@@ -32,6 +33,7 @@ namespace MEATaste.Views.ElectrodesList
             var listSelectedChannels = dictionary.Channels.Keys.ToList();
             if (electrodeExtendedPropertiesGrid == null || listSelectedChannels.Count == 0) return;
 
+            Trace.WriteLine("list:SetSelectedChannels(start) - nselected= " + listSelectedChannels.Count);
             var listSelectedElectrodes = GetSelectedChannelsFromDataGrid();
             if (dictionary.IsListEqualToStateSelectedItems(listSelectedElectrodes)) return;
 
@@ -39,6 +41,8 @@ namespace MEATaste.Views.ElectrodesList
                 .Cast<ElectrodePropertiesExtended>()
                 .Where(item => listSelectedChannels.Any(channel => channel == item.Channel))
                 .Iter(item => electrodeExtendedPropertiesGrid.SelectedItems.Add(item));
+
+            Trace.WriteLine("list:SetSelectedChannels(end) - nselected= " + listSelectedChannels.Count);
         }
 
         private void LoadElectrodeListItems()

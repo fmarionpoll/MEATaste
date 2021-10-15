@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace MEATaste.DataMEA.Models
@@ -27,8 +28,10 @@ namespace MEATaste.DataMEA.Models
 
         public void TrimDictionaryToList(List<int> selectedChannels)
         {
-            RemoveDictionaryKeysNotInList(selectedChannels); 
+            Trace.WriteLine("ChannelsDictionary (start): channels selected= " + Channels.Count);
+            RemoveDictionaryKeysNotInList(selectedChannels);
             AddMissingChannelsToDictionary(selectedChannels);
+            Trace.WriteLine("ChannelsDictionary (end): channels selected= " + Channels.Count);
         }
 
         public bool IsListEqualToStateSelectedItems(List<int> newSelectedChannels)
