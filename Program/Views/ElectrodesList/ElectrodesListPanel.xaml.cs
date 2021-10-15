@@ -30,5 +30,10 @@ namespace MEATaste.Views.ElectrodesList
         {
             controller.RestoreSelection();
         }
+
+        private void ElectrodesGrid_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            controller.ElectrodesGridLoaded(sender, e);
+        }
     }
 }

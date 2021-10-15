@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MEATaste.Infrastructure;
 using OxyPlot;
@@ -30,11 +31,12 @@ namespace MEATaste.Views.ElectrodesMap
                 SelectionColor = OxyColors.Red
             };
             var plotModel = Model.ScatterPlotModel;
-            PlotAddAxes(plotModel);
-            PlotAddSeries(plotModel);
+#pragma warning disable 0618
+            plotModel.MouseDown += PlotModel_MouseDown;
+#pragma warning restore 0618
+            AddAxes();
+            AddElectrodesMap();
             plotModel.InvalidatePlot(true);
-
-            //plotModel.MouseDown += PlotModel_MouseDown;
         }
 
         private void ChangeSelectedElectrode()
@@ -42,21 +44,21 @@ namespace MEATaste.Views.ElectrodesMap
             selectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
             var plotModel = Model.ScatterPlotModel;
 
-            if (selectedChannels.Count == 0)
+            var series = GetSelectionSeries(plotModel);
+            if (series == null) return;
+            ClearSelectedPoints(series);
+            if (selectedChannels.Count > 0)
             {
-                SuppressSelectedPoints(plotModel);
-            }
-            else 
-            {
-                SetSelectedPoints(plotModel, selectedChannels);
+                SetSelectedPoints(series, selectedChannels);
                 CenterPlotOnElectrodes(plotModel, selectedChannels);
             }
 
             plotModel.InvalidatePlot(true);
         }
 
-        private void PlotAddAxes(PlotModel plotModel)
+        private void AddAxes()
         {
+            var plotModel = Model.ScatterPlotModel;
             var xAxis = new LinearAxis { Title = "x (µm)", Position = AxisPosition.Bottom };
             plotModel.Axes.Add(xAxis);
 
@@ -64,8 +66,9 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.Axes.Add(yAxis);
         }
 
-        private void PlotAddSeries(PlotModel plotModel)
+        private void AddElectrodesMap()
         {
+            var plotModel = Model.ScatterPlotModel;
             var series = new ScatterSeries
             {
                 SelectionMode = SelectionMode.Single,
@@ -113,9 +116,8 @@ namespace MEATaste.Views.ElectrodesMap
             maxMin[2] = electr.YuM;
             maxMin[3] = electr.YuM;
 
-            foreach (var channel in listSelectedChannels)
+            foreach (var electrode in listSelectedChannels.Select(channel => meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode))
             {
-                var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
                 if (maxMin[0] > electrode.XuM) maxMin[0] = electrode.XuM;
                 if (maxMin[1] < electrode.XuM) maxMin[1] = electrode.XuM;
                 if (maxMin[2] > electrode.YuM) maxMin[2] = electrode.YuM;
@@ -131,26 +133,28 @@ namespace MEATaste.Views.ElectrodesMap
             return maxMin;
         }
 
-        private void SuppressSelectedPoints(PlotModel plotModel)
+        private void ClearSelectedPoints(ScatterSeries series)
         {
-            if ( plotModel.Series.Count > 1) 
-                plotModel.Series.RemoveAt(1);
+            if (series.Points.Count > 0)
+                series.Points.Clear();
         }
 
-        private void SetSelectedPoints(PlotModel plotModel, List<int> listSelectedChannels)
+        private ScatterSeries GetSelectionSeries(PlotModel plotModel)
         {
             if (plotModel.Series.Count < 2)
                 AddSelectedSeries(plotModel);
             if (plotModel.Series.Count < 2)
-                return;
-            var series = (ScatterSeries) plotModel.Series[1];
-            if (series.Points.Count > 0)
-                series.Points.Clear();
+                return null;
+            return (ScatterSeries)plotModel.Series[1];
+        }
+
+        private void SetSelectedPoints(ScatterSeries series, List<int> listSelectedChannels)
+        {
             var meaExp = state.MeaExperiment.Get();
-            foreach (var channel in listSelectedChannels)
+            foreach (var point in listSelectedChannels
+                .Select(channel => meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode)
+                .Select(electrode => new ScatterPoint(electrode.XuM, electrode.YuM)))
             {
-                var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
-                var point = new ScatterPoint(electrode.XuM, electrode.YuM);
                 series.Points.Add(point);
             }
         }
@@ -169,22 +173,31 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.Series.Add(series);
         }
 
-        //private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
-        //{
-        //    if (e.HitTestResult == null)
-        //        return;
-        //    var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
-        //    var currentExperiment = state.MeaExperiment.Get();
-        //    var selectedElectrode = currentExperiment.Electrodes[indexOfNearestPoint];
-        //    SelectElectrode(selectedElectrode.Electrode);
-        //}
+        private void PlotModel_MouseDown(object sender, OxyMouseDownEventArgs e)
+        {
+            if (e.HitTestResult == null)
+                return;
+            var indexOfNearestPoint = (int)Math.Round(e.HitTestResult.Index);
+            var currentExperiment = state.MeaExperiment.Get();
+            var selectedElectrode = currentExperiment.Electrodes[indexOfNearestPoint];
 
-        //public void SelectElectrode(ElectrodeProperties electrodeProperties)
-        //{
-        //    if (state.ListSelectedChannels.Get() != null &&
-        //        electrodeProperties.ElectrodeNumber == state.ListSelectedChannels.Get().ElectrodeNumber) return;
-        //    state.ListSelectedChannels.Set(electrodeProperties);
-        //}
+            List<int> channelsList = new() {selectedElectrode.Electrode.Channel};
+            if (e.IsControlDown || e.IsShiftDown)
+            {
+                channelsList.AddRange(selectedChannels);
+            }
+            selectedChannels = channelsList;
+            UpdateSelectedState();
+        }
+
+        private void UpdateSelectedState()
+        {
+            var dictionary = state.DataSelected.Get();
+            if (dictionary.IsListEqualToStateSelectedItems(selectedChannels)) return;
+
+            dictionary.TrimDictionaryToList(selectedChannels);
+            state.DataSelected.Set(dictionary);
+        }
 
     }
 }

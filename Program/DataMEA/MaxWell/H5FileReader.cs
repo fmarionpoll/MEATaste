@@ -321,7 +321,7 @@ namespace MEATaste.DataMEA.MaxWell
                     var indexEnd = indexStart + chunkSizePerChannel - 1;
                     if (indexEnd > nbDataPoints)
                         indexEnd = nbDataPoints - 1;
-                    var sourceArray = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
+                    var result = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
 
                     var length = (long) (indexEnd - indexStart + 1);
                     var destinationIndex = (long) indexStart;
@@ -329,8 +329,8 @@ namespace MEATaste.DataMEA.MaxWell
                     foreach (var (key, _) in dataSelected.Channels)
                     {
                         Array.Copy(
-                            sourceArray: sourceArray,
-                            sourceIndex: index * (long) chunkSizePerChannel,
+                            sourceArray: result,
+                            sourceIndex: index * (long)chunkSizePerChannel,
                             destinationArray: dataSelected.Channels[key],
                             destinationIndex: destinationIndex,
                             length: length);
