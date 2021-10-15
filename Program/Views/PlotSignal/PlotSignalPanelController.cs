@@ -69,15 +69,14 @@ namespace MEATaste.Views.PlotSignal
             PreparePlot();
             Mouse.OverrideCursor = Cursors.Wait;
             //LoadDataFromFilev0(selectedChannels);
-            LoadDataFromFilev1();
-            Mouse.OverrideCursor = null;
-            LoadDataToPlot(selectedChannels, "v1");
-            DisplayPlot();
+            //LoadDataFromFilev1();
+            //LoadDataToPlot(selectedChannels, "v1");
+            //DisplayPlot();
 
             LoadDataFromFilev2();
-            Mouse.OverrideCursor = null;
-            LoadDataToPlot(selectedChannels, "v2");
+            LoadDataToPlot(selectedChannels, null);
             DisplayPlot();
+            Mouse.OverrideCursor = null;
         }
 
         private void LoadDataFromFilev0(List<int> selectedChannels)
@@ -104,7 +103,8 @@ namespace MEATaste.Views.PlotSignal
         {
             var sw = Stopwatch.StartNew();
             var dataSelected = state.DataSelected.Get();
-            H5FileReader.A13ReadAllDataFromChannelsPseudoParallel(dataSelected);
+            //H5FileReader.A13ReadAllDataFromChannelsPseudoParallel(dataSelected);
+            H5FileReader.A13ReadAllDataFromChannelsParallel(dataSelected);
             Trace.WriteLine("Load all channels together : " + sw.Elapsed + " -- selectedCount=" + dataSelected.Channels.Count);
         }
 
