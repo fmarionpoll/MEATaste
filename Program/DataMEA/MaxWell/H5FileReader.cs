@@ -298,8 +298,12 @@ namespace MEATaste.DataMEA.MaxWell
         {
             var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
             var nbDataPoints = h5Dataset.Space.Dimensions[1];
-            
-            const ulong chunkSizePerChannel = 200 * 100;
+            foreach (var (key, _) in dataSelected.Channels)
+            {
+                dataSelected.Channels[key] ??= new ushort[nbDataPoints];
+            }
+
+            const ulong chunkSizePerChannel = 200 * 10; // if 100, the program crashes on the last read
             var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
 
             int ndimensions = h5Dataset.Space.Rank;
@@ -312,24 +316,27 @@ namespace MEATaste.DataMEA.MaxWell
                 var dataset = h5File.Group("/").Dataset("sig");
 
                 var indexStart = (ulong)iStart * chunkSizePerChannel;
-                var indexEnd = indexStart + chunkSizePerChannel - 1;
-                if (indexEnd > nbDataPoints)
-                    indexEnd = nbDataPoints - 1;
-
-                var chunkresult = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
-
-                var index = 0;
-                foreach (var (key, _) in dataSelected.Channels)
+                if (indexStart < nbDataPoints)
                 {
-                    dataSelected.Channels[key] ??= new ushort[nbDataPoints];
-                    Array.Copy(
-                        sourceArray: chunkresult,
-                        sourceIndex: index * (long)chunkSizePerChannel,
-                        destinationArray: dataSelected.Channels[key],
-                        destinationIndex: (long)indexStart,
-                        length: (long)(indexEnd - indexStart + 1));
+                    var indexEnd = indexStart + chunkSizePerChannel - 1;
+                    if (indexEnd > nbDataPoints)
+                        indexEnd = nbDataPoints - 1;
+                    var sourceArray = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
 
-                    index++;
+                    var length = (long) (indexEnd - indexStart + 1);
+                    var destinationIndex = (long) indexStart;
+                    var index = 0;
+                    foreach (var (key, _) in dataSelected.Channels)
+                    {
+                        Array.Copy(
+                            sourceArray: sourceArray,
+                            sourceIndex: index * (long) chunkSizePerChannel,
+                            destinationArray: dataSelected.Channels[key],
+                            destinationIndex: destinationIndex,
+                            length: length);
+
+                        index++;
+                    }
                 }
 
                 h5File.Dispose();
@@ -340,8 +347,12 @@ namespace MEATaste.DataMEA.MaxWell
         {
             var h5Dataset = H5FileRoot.Group("/").Dataset("sig");
             var nbDataPoints = h5Dataset.Space.Dimensions[1];
+            foreach (var (key, _) in dataSelected.Channels)
+            {
+                dataSelected.Channels[key] ??= new ushort[nbDataPoints];
+            }
 
-            const ulong chunkSizePerChannel = 200 ;
+            const ulong chunkSizePerChannel = 200 * 100 ;
             //var chunkSizePerChannel = nbDataPoints/ 300 * 200;
             var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
             Trace.WriteLine("n chunks= " + nchunks + " ...... chunkSizePerChannel=" + chunkSizePerChannel);
@@ -365,7 +376,6 @@ namespace MEATaste.DataMEA.MaxWell
                 var index = 0;
                 foreach (var (key, _) in dataSelected.Channels)
                 {
-                    dataSelected.Channels[key] ??= new ushort[nbDataPoints];
                     Array.Copy(
                         sourceArray: chunkresult,
                         sourceIndex: index * (long)chunkSizePerChannel,
