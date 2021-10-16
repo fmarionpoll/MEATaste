@@ -352,10 +352,10 @@ namespace MEATaste.DataMEA.MaxWell
                 dataSelected.Channels[key] ??= new ushort[nbDataPoints];
             }
 
-            const ulong chunkSizePerChannel = 200 * 100 ;
+            const ulong chunkSizePerChannel = 200 * 10 ;
             //var chunkSizePerChannel = nbDataPoints/ 300 * 200;
             var nchunks = (long)(1 + nbDataPoints / chunkSizePerChannel);
-            Trace.WriteLine("n chunks= " + nchunks + " ...... chunkSizePerChannel=" + chunkSizePerChannel);
+
             int ndimensions = h5Dataset.Space.Rank;
             if (ndimensions != 2)
                 return;

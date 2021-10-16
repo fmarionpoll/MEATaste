@@ -62,41 +62,34 @@ namespace MEATaste.Views.PlotSignal
 
         private void UpdateSelectedElectrodeData(List<int> selectedChannels)
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+            var sw = Stopwatch.StartNew();
             PreparePlot();
-            LoadDataFromFilev2();
+            if (state.DataSelected.Get().IsLoadingDataFromFileNeeded()) 
+                LoadDataFromFilev2();
             LoadDataToPlot(selectedChannels);
             DisplayPlot();
+            Trace.WriteLine("UpdateSelectedElectrodeData(): " + sw.Elapsed + " -- selectedCount=" + state.DataSelected.Get().Channels.Count);
+            Mouse.OverrideCursor = null;
         }
 
         private void LoadDataFromFilev0(List<int> selectedChannels)
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            var sw = Stopwatch.StartNew();
             foreach (var i in selectedChannels)
             {
                 var dataSelected = state.DataSelected.Get();
                 dataSelected.Channels[i] = H5FileReader.ReadAllDataFromSingleChannel(i);
             }
-            Trace.WriteLine("Load 1 channel at a time (v0): "+ sw.Elapsed + " -- selectedCount=" + selectedChannels.Count);
-            Mouse.OverrideCursor = null;
         }
 
         private void LoadDataFromFilev1()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            var sw = Stopwatch.StartNew();
             H5FileReader.A13ReadAllDataFromChannels(state.DataSelected.Get());
-            Trace.WriteLine("Load all channels together (v1): " + sw.Elapsed + " -- selectedCount=" + state.DataSelected.Get().Channels.Count);
-            Mouse.OverrideCursor = null;
         }
 
         private void LoadDataFromFilev2()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            var sw = Stopwatch.StartNew();
             H5FileReader.A13ReadAllDataFromChannelsParallel(state.DataSelected.Get());
-            Trace.WriteLine("Load all channels together (v2): " + sw.Elapsed + " -- selectedCount=" + state.DataSelected.Get().Channels.Count);
-            Mouse.OverrideCursor = null;
         }
 
         private void LoadDataToPlot(List<int> selectedChannels)

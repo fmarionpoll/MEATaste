@@ -24,25 +24,27 @@ namespace MEATaste.Views.ElectrodesList
             Model = new ElectrodesListPanelModel();
 
             eventSubscriber.Subscribe(EventType.MeaExperimentChanged, LoadElectrodeListItems);
-            eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, SetSelectedChannels);
+            eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, StateSelectedChannelsChanged);
         }
 
-        private void SetSelectedChannels()
+        private void StateSelectedChannelsChanged()
         {
             var dictionary = state.DataSelected.Get(); 
-            var listSelectedChannels = dictionary.Channels.Keys.ToList();
-            if (electrodeExtendedPropertiesGrid == null || listSelectedChannels.Count == 0) return;
+            var stateSelectedChannels = dictionary.Channels.Keys.ToList();
+            if (electrodeExtendedPropertiesGrid == null || stateSelectedChannels.Count == 0) return;
 
-            Trace.WriteLine("list:SetSelectedChannels(start) - nselected= " + listSelectedChannels.Count);
-            var listSelectedElectrodes = GetSelectedChannelsFromDataGrid();
-            if (dictionary.IsListEqualToStateSelectedItems(listSelectedElectrodes)) return;
+            var gridSelectedChannels = GetSelectedChannelsFromDataGrid();
+            if (dictionary.IsListEqualToStateSelectedItems(gridSelectedChannels)) return;
 
-            electrodeExtendedPropertiesGrid.Items
-                .Cast<ElectrodePropertiesExtended>()
-                .Where(item => listSelectedChannels.Any(channel => channel == item.Channel))
-                .Iter(item => electrodeExtendedPropertiesGrid.SelectedItems.Add(item));
-
-            Trace.WriteLine("list:SetSelectedChannels(end) - nselected= " + listSelectedChannels.Count);
+            if (gridSelectedChannels is {Count: > 0})
+            {
+                var unselectList = gridSelectedChannels.Except(stateSelectedChannels).ToList();
+                if (unselectList.Any())
+                    SilentlyUnSelectRows(unselectList);
+            }
+            
+            SilentlySelectRows(stateSelectedChannels);
+            CollectionViewSource.GetDefaultView(electrodeExtendedPropertiesGrid.ItemsSource).Refresh();
         }
 
         private void LoadElectrodeListItems()
@@ -89,15 +91,11 @@ namespace MEATaste.Views.ElectrodesList
             StoreSelectionIfEmpty();
             var listChannels = state.DataSelected.Get().Channels.Keys.ToList();
             var expandedSelectedChannelsList = GetAllElectrodesAroundCurrentSelection(listChannels, 20);
+            SilentlySelectRows(expandedSelectedChannelsList);
 
-            List<ElectrodePropertiesExtended> selectedIElectrodePropertiesExtendeds = new();
-            electrodeExtendedPropertiesGrid.Items
-                .Cast<ElectrodePropertiesExtended>()
-                .Where(item => expandedSelectedChannelsList.Any(channel => channel == item.Channel))
-                .Iter(item => selectedIElectrodePropertiesExtendeds.Add(item));
+            state.DataSelected.Get().TrimDictionaryToList(expandedSelectedChannelsList);
+            state.DataSelected.SetChanged();
 
-            electrodeExtendedPropertiesGrid.UnselectAll();
-            electrodeExtendedPropertiesGrid.SelectManyItems(selectedIElectrodePropertiesExtendeds);
         }
 
         private List<int> GetAllElectrodesAroundCurrentSelection(List<int> currentChannelsList, double delta)
@@ -126,14 +124,8 @@ namespace MEATaste.Views.ElectrodesList
 
         public void RestoreSelection()
         {
-            List<ElectrodePropertiesExtended> selectedIElectrodePropertiesExtendeds = new();
-            electrodeExtendedPropertiesGrid.Items
-                .Cast<ElectrodePropertiesExtended>()
-                .Where(item => initialSelectedChannelsList.Any(channel => channel == item.Channel))
-                .Iter(item => selectedIElectrodePropertiesExtendeds.Add(item));
-            electrodeExtendedPropertiesGrid.UnselectAll();
-            electrodeExtendedPropertiesGrid.SelectManyItems(selectedIElectrodePropertiesExtendeds);
-
+            state.DataSelected.Get().TrimDictionaryToList(initialSelectedChannelsList);
+            state.DataSelected.SetChanged();
             initialSelectedChannelsList.Clear();
         }
 
@@ -148,6 +140,30 @@ namespace MEATaste.Views.ElectrodesList
         {
             if (sender is not DataGrid electrodesGrid) return;
             electrodeExtendedPropertiesGrid = electrodesGrid;
+        }
+
+        private void SilentlySelectRows(List<int> channelsToAdd)
+        {
+            if (channelsToAdd == null) return;
+            List<ElectrodePropertiesExtended> selectedRows = new();
+            electrodeExtendedPropertiesGrid.Items
+                .Cast<ElectrodePropertiesExtended>()
+                .Where(item => channelsToAdd.Any(channel => channel == item.Channel))
+                .Iter(item => selectedRows.Add(item));
+
+            electrodeExtendedPropertiesGrid.SelectManyItems(selectedRows);
+        }
+
+        private void SilentlyUnSelectRows(List<int> channelsToRemove)
+        {
+            if (channelsToRemove == null) return;
+            List<ElectrodePropertiesExtended> unSelectedRows = new();
+            electrodeExtendedPropertiesGrid.Items
+                .Cast<ElectrodePropertiesExtended>()
+                .Where(item => channelsToRemove.Any(channel => channel == item.Channel))
+                .Iter(item => unSelectedRows.Add(item));
+
+            electrodeExtendedPropertiesGrid.UnSelectManyItems(unSelectedRows);
         }
 
     }

@@ -41,6 +41,28 @@ namespace MEATaste.Views.Controls
             );
         }
 
-        
+        public static void UnSelectManyItems(this MultiSelector control, IEnumerable itemsToBeUnSelected)
+        {
+            control.Dispatcher.Invoke(
+                (Action)(() =>
+                {
+                    if (!(bool)_piIsUpdatingSelectedItems.GetValue(control, null))
+                    {
+                        _miBeginUpdateSelectedItems.Invoke(control, null);
+                        try
+                        {
+                            foreach (object item in itemsToBeUnSelected)
+                                control.SelectedItems.Remove(item);
+                        }
+                        finally
+                        {
+                            _miEndUpdateSelectedItems.Invoke(control, null);
+                        }
+                    }
+                })
+            );
+        }
+
+
     }
 }

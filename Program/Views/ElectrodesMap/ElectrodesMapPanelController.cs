@@ -22,7 +22,7 @@ namespace MEATaste.Views.ElectrodesMap
             Model = new ElectrodesMapPanelModel();
 
             eventSubscriber.Subscribe(EventType.MeaExperimentChanged, PlotElectrodesMap);
-            eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
+            eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, StateSelectedChannelsChanged);
         }
 
         private void PlotElectrodesMap()
@@ -40,10 +40,9 @@ namespace MEATaste.Views.ElectrodesMap
             plotModel.InvalidatePlot(true);
         }
 
-        private void ChangeSelectedElectrode()
+        private void StateSelectedChannelsChanged()
         {
             selectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
-            Trace.WriteLine("map:ChangeSelectedElectrode(start) - nselected= " + selectedChannels.Count);
             var plotModel = Model.ScatterPlotModel;
 
             var series = GetSelectionSeries(plotModel);
@@ -56,7 +55,6 @@ namespace MEATaste.Views.ElectrodesMap
             }
 
             plotModel.InvalidatePlot(true);
-            Trace.WriteLine("map:ChangeSelectedElectrode(end) - nselected= " + selectedChannels.Count);
         }
 
         private void AddAxes()
@@ -200,7 +198,6 @@ namespace MEATaste.Views.ElectrodesMap
 
             dictionary.TrimDictionaryToList(selectedChannels);
             state.DataSelected.Set(dictionary);
-            Trace.WriteLine("map:UpdateSelectedState(): selected= " + state.DataSelected.Get().Channels.Count);
         }
 
     }

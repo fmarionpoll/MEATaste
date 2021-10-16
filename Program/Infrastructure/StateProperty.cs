@@ -23,5 +23,13 @@
                 eventRaiser.Raise(eventType.Value);
             }
         }
+
+        public void SetChanged()
+        {
+            if (eventType != null)
+            {
+                eventRaiser.Raise(eventType.Value);
+            }
+        }
     }
 }
