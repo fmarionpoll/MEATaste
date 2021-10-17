@@ -3,12 +3,10 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.Controls.Converters
 {
-    /// <summary>
-    /// Convert from color to brush. Parameter could point to
-    /// exact type of brush.
-    /// </summary>
     [ValueConversion(typeof(double[]), typeof(double))]
     public class ColorToBrushConverter : IValueConverter
     {

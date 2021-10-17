@@ -4,9 +4,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Infrastructure
 {
-    public static class TypeExtensions
+    public static class xTypeExtensions
     {
         /// <summary>
 		/// Set value to the property from DefaultValue attribute

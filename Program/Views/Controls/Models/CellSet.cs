@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.Controls.Models
 {
     public class CellSet

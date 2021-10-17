@@ -4,11 +4,10 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.Controls.Converters
 {
-    /// <summary>
-    /// Returns aggregate value of input values.
-    /// </summary>
     public abstract class ValueGenericConverter<T> : BaseGenericConverter<T>, IValueConverter where T : new()
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

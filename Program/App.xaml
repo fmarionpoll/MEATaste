@@ -11,7 +11,7 @@
         <DataTemplate DataType="{x:Type electrodesList:ElectrodesListPanelModel}">
             <electrodesList:ElectrodesListPanel />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type electrodesMap:ElectrodesMapPanelModel}">
+        <DataTemplate DataType="{x:Type electrodesMap:MapElectrodesModel}">
             <electrodesMap:MapElectrodes />
         </DataTemplate>
         <DataTemplate DataType="{x:Type fileOpen:FileOpenPanelController}">

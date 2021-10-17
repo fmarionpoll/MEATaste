@@ -3,6 +3,8 @@ using System.Windows.Media;
 using MEATaste.Views.Controls;
 using MEATaste.Views.Controls.Models;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.DynamicGrid
 {
     internal class DesignDynamicGridViewModel : IDynamicGridViewModel

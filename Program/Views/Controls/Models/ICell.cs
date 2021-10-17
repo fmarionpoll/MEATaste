@@ -1,4 +1,7 @@
-﻿namespace MEATaste.Views.Controls
+﻿
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
+namespace MEATaste.Views.Controls
 {
     public interface ICell
     {

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Reflection;
 using System.Windows.Controls.Primitives;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.Controls
 {
     public static class MultiSelectorHelper

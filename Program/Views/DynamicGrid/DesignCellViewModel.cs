@@ -1,6 +1,8 @@
 ﻿using System.Windows.Input;
 using MEATaste.Views.Controls;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.DynamicGrid
 {
     internal class DesignCellViewModel : ICellViewModel

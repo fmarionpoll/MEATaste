@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.CellView
 {
     public partial class CellView : UserControl

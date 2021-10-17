@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Views.ElectrodesList
 {
-    public partial class ElectrodesListPanel : UserControl
+    public partial class ElectrodesListPanel
     {
         private readonly ElectrodesListPanelController controller;
         
@@ -23,12 +23,12 @@ namespace MEATaste.Views.ElectrodesList
 
         private void expand_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            controller.ExpandSelection();
+            controller.ExpandSelectionOneLevel();
         }
 
         private void restore_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            controller.RestoreSelection();
+            controller.ReduceSelectionOneLevel();
         }
 
         private void ElectrodesGrid_Loaded(object sender, System.Windows.RoutedEventArgs e)

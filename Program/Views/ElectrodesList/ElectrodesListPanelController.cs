@@ -29,21 +29,26 @@ namespace MEATaste.Views.ElectrodesList
 
         private void StateSelectedChannelsChanged()
         {
-            var dictionary = state.DataSelected.Get(); 
-            var stateSelectedChannels = dictionary.Channels.Keys.ToList();
-            if (electrodeExtendedPropertiesGrid == null || stateSelectedChannels.Count == 0) return;
+            SilentSelectRows(state.DataSelected.Get().Channels.Keys.ToList());
+        }
+
+        private void SilentSelectRows(List<int> selectList)
+        {
+            if (electrodeExtendedPropertiesGrid == null || selectList.Count == 0) return;
 
             var gridSelectedChannels = GetSelectedChannelsFromDataGrid();
-            if (dictionary.IsListEqualToStateSelectedItems(gridSelectedChannels)) return;
-
-            if (gridSelectedChannels is {Count: > 0})
+            var set = new HashSet<int>(selectList);
+            if(set.SetEquals(gridSelectedChannels))
+                return;
+            
+            if (gridSelectedChannels is { Count: > 0 })
             {
-                var unselectList = gridSelectedChannels.Except(stateSelectedChannels).ToList();
+                var unselectList = gridSelectedChannels.Except(selectList).ToList();
                 if (unselectList.Any())
                     SilentlyUnSelectRows(unselectList);
             }
-            
-            SilentlySelectRows(stateSelectedChannels);
+
+            SilentlySelectRows(selectList);
             CollectionViewSource.GetDefaultView(electrodeExtendedPropertiesGrid.ItemsSource).Refresh();
         }
 
@@ -86,21 +91,39 @@ namespace MEATaste.Views.ElectrodesList
             return listSelectedElectrodes;
         }
 
-        public void ExpandSelection()
+        public void ExpandSelectionOneLevel()
         {
-            StoreSelectionIfEmpty();
-            var listChannels = state.DataSelected.Get().Channels.Keys.ToList();
-            var expandedSelectedChannelsList = GetAllElectrodesAroundCurrentSelection(listChannels, 20);
-            SilentlySelectRows(expandedSelectedChannelsList);
+            expandLevel++;
+            if (expandLevel == 1)
+                initialSelectedChannelsList = new List<int>(state.DataSelected.Get().Channels.Keys.ToList());
 
+            ChangeSelectionLevel();
+        }
+
+        private void ChangeSelectionLevel()
+        {
+            var expandedSelectedChannelsList = GetAllElectrodesAroundCurrentSelection(initialSelectedChannelsList, 20);
             state.DataSelected.Get().TrimDictionaryToList(expandedSelectedChannelsList);
             state.DataSelected.SetChanged();
-
         }
 
         private List<int> GetAllElectrodesAroundCurrentSelection(List<int> currentChannelsList, double delta)
         {
+            var expandedSelectedChannelsList = new List<int> (currentChannelsList);
+            var niterations = expandLevel;
+            while (niterations > 0)
+            {
+                expandedSelectedChannelsList = ExpandCurrentSelectionOneLevel(expandedSelectedChannelsList, delta);
+                niterations--;
+            }
+
+            return expandedSelectedChannelsList;
+        }
+
+        private List<int> ExpandCurrentSelectionOneLevel(List<int> currentChannelsList, double delta)
+        {
             List<int> expandedSelectedChannelsList = new();
+            
             var meaExp = state.MeaExperiment.Get();
             foreach (var channel in currentChannelsList)
             {
@@ -122,20 +145,14 @@ namespace MEATaste.Views.ElectrodesList
             return expandedSelectedChannelsList;
         }
 
-        public void RestoreSelection()
+        public void ReduceSelectionOneLevel()
         {
-            state.DataSelected.Get().TrimDictionaryToList(initialSelectedChannelsList);
-            state.DataSelected.SetChanged();
-            initialSelectedChannelsList.Clear();
+            expandLevel--;
+            if (expandLevel < 0) 
+                expandLevel = 0;
+            ChangeSelectionLevel();
         }
-
-        private void StoreSelectionIfEmpty()
-        {
-            if (initialSelectedChannelsList != null && initialSelectedChannelsList.Count > 0)
-                return;
-            initialSelectedChannelsList = GetSelectedChannelsFromDataGrid();
-        }
-
+        
         public void ElectrodesGridLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (sender is not DataGrid electrodesGrid) return;

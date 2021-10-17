@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
 
 namespace MEATaste.Views.Controls.Converters
 {
-	public abstract class BaseGenericConverter<T>
-	{
-		protected IList<T> Convert(object[] values, CultureInfo culture)
-		{
-			var tValues = new List<T>(values.Length);
-			foreach (var value in values)
-			{
+    public abstract class BaseGenericConverter<T>
+    {
+        protected IList<T> Convert(object[] values, CultureInfo culture)
+        {
+            var tValues = new List<T>(values.Length);
+            foreach (var value in values)
+            {
 				if (value == null || value.Equals(DependencyProperty.UnsetValue))
 					continue;
 				try
@@ -25,7 +24,8 @@ namespace MEATaste.Views.Controls.Converters
 				catch (InvalidCastException)
 				{
 					// ignore it, some wrong input value
-					Debug.Assert(false, $"value \"{value?.ToString() ?? "null"}\", type {value?.GetType().FullName ?? "null"} should be convertible to type {typeof(T).FullName}");
+					Debug.Assert(false,
+                        $"value \"{value?.ToString() ?? "null"}\", type {value?.GetType().FullName ?? "null"} should be convertible to type {typeof(T).FullName}");
 					continue;
 				}
 			}
@@ -72,11 +72,11 @@ namespace MEATaste.Views.Controls.Converters
 				return false;
 			}
 			return true;
-		}
+        }
 
-		protected abstract Func<object, CultureInfo, T> ConvertMethod { get; }
+        protected abstract Func<object, CultureInfo, T> ConvertMethod { get; }
 
-		protected virtual Func<T, T, T> ApplyParameterMethod => null;
+        protected virtual Func<T, T, T> ApplyParameterMethod => null;
 
-	}
+    }
 }

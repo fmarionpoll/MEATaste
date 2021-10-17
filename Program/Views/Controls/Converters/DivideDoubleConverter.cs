@@ -2,12 +2,11 @@
 using System.Globalization;
 using System.Windows.Data;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.Controls.Converters
 {
-	/// <summary>
-    /// Substract two double elements.
-    /// </summary>
-    [ValueConversion(typeof(double[]), typeof(double))]
+	[ValueConversion(typeof(double[]), typeof(double))]
     public class DivideDoubleConverter : OperationGenericConverter<double>
     {
         protected override Func<object, CultureInfo, double> ConvertMethod =>

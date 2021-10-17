@@ -2,6 +2,8 @@
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 
+// adapted from Illya Reznykov https://github.com/IReznykov/Blog
+
 namespace MEATaste.Views.DynamicGrid
 {
     public class DynamicGridPanelModel : INotifyPropertyChanged
