@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="MEATaste.Views.MapsSwitch.MapsSwitchPanel"
+﻿<UserControl x:Class="MEATaste.Views.SwitchMaps.SwitchMapsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:electrodesMap="clr-namespace:MEATaste.Views.MapElectrodes"
+             xmlns:electrodesMap="clr-namespace:MEATaste.Views.MapElectrodes"
              xmlns:electrodesHeatmap="clr-namespace:MEATaste.Views.MapHeatscale"
              mc:Ignorable="d" d:DesignHeight="280" d:DesignWidth="280">
 

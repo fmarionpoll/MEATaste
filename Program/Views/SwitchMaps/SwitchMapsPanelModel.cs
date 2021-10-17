@@ -1,10 +1,10 @@
-﻿using MEATaste.Annotations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using MEATaste.Annotations;
 
-namespace MEATaste.Views.MapsSwitch
+namespace MEATaste.Views.SwitchMaps
 {
-    public class MapsSwitchPanelModel : INotifyPropertyChanged
+    public class SwitchMapsPanelModel : INotifyPropertyChanged
     {
         private int selectedTabIndex;
         public int SelectedTabIndex

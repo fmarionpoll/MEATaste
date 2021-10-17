@@ -7,7 +7,7 @@ using MEATaste.Views.FileOpen;
 using MEATaste.Views.MainView;
 using MEATaste.Views.PlotSignal;
 using MEATaste.Views.PlotScrollBar;
-using MEATaste.Views.MapsSwitch;
+using MEATaste.Views.SwitchMaps;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Infrastructure
@@ -40,7 +40,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<MapHeatscalelController>();
                 services.AddSingleton<PlotSignalPanelController>();
                 services.AddSingleton<PlotScrollBarPanelController>();
-                services.AddSingleton<MapsSwitchPanelController>();
+                services.AddSingleton<SwitchMapsPanelController>();
                 services.AddSingleton<MainViewModel>();
             }
         }

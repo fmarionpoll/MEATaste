@@ -1,5 +1,4 @@
 ﻿
-// adapted from Illya Reznykov https://github.com/IReznykov/Blog
 
 namespace MEATaste.DataMEA.Models
 {
