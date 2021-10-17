@@ -10,9 +10,6 @@ namespace MEATaste.Views.SwitchMaps
 {
     public class SwitchMapsPanelModel : INotifyPropertyChanged
     {
-        readonly ObservableCollection<TabItem> tabCollection;
-        public ObservableCollection<TabItem> TabCollection => tabCollection;
-
         private int selectedTabIndex;
         public int SelectedTabIndex
         {
@@ -23,16 +20,6 @@ namespace MEATaste.Views.SwitchMaps
                 selectedTabIndex = value;
                 OnPropertyChanged(nameof(SelectedTabIndex));
             }
-        }
-
-        public SwitchMapsPanelModel()
-        {
-            tabCollection = new ObservableCollection<TabItem>
-            {
-                new() { Content = new ElectrodesMapPanelModel(), Header = "Map"},
-                new() { Content= new ElectrodesHeatmapPanelModel(), Header="Heat map"}
-            };
-            SelectedTabIndex = 0;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

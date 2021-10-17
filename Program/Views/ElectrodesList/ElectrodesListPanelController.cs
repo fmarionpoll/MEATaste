@@ -6,7 +6,6 @@ using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using System.Windows.Controls;
 using MEATaste.Views.Controls;
-using System.Diagnostics;
 
 namespace MEATaste.Views.ElectrodesList
 {

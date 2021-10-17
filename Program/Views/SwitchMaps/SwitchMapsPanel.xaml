@@ -12,23 +12,12 @@
         <TabControl ItemsSource="{Binding TabCollection}"
                     SelectedIndex="{Binding SelectedTabIndex}"
                     Margin="20,5,5,5">
-
-            <TabControl.Resources>
-                <DataTemplate DataType="{x:Type electrodesMap:ElectrodesMapPanelModel}">
-                    <electrodesMap:ElectrodesMapPanel />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type electrodesHeatmap:ElectrodesHeatmapPanelModel}">
-                    <electrodesHeatmap:HeatMapPanel />
-                </DataTemplate>
-            </TabControl.Resources>
-
-            <TabControl.ItemContainerStyle>
-                <Style TargetType="TabItem">
-                    <Setter Property="Header" Value="{Binding TabCollection.Header}" />
-                    <Setter Property="Content" Value="{Binding TabCollection.Content}" />
-                </Style>
-            </TabControl.ItemContainerStyle>
+            <TabItem Header="Map">
+                <electrodesMap:ElectrodesMapPanel />
+            </TabItem>
+            <TabItem Header="HeatMap">
+                <electrodesHeatmap:ElectrodesHeatMapPanel />
+            </TabItem>
         </TabControl>
-
     </Grid>
 </UserControl>

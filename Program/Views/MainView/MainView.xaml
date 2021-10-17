@@ -9,7 +9,6 @@
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
         xmlns:switchMaps="clr-namespace:MEATaste.Views.SwitchMaps"
-        xmlns:mainView="clr-namespace:MEATaste.Views.MainView"
         mc:Ignorable="d"
         Title="MainWindow" Width="1024" Height="500">
 
@@ -48,7 +47,7 @@
                     <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
                 <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             </Grid>
             
         </Grid>
