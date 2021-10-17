@@ -4,9 +4,9 @@
 
 namespace MEATaste.Views.DynamicGrid
 {
-    public partial class DymanicGridPanel : UserControl
+    public partial class DynamicGridPanel : UserControl
     {
-        public DymanicGridPanel()
+        public DynamicGridPanel()
         {
             InitializeComponent();
         }

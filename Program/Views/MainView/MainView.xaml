@@ -8,6 +8,7 @@
         xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
+        xmlns:dynamicGrid="clr-namespace:MEATaste.Views.DynamicGrid"
         xmlns:switchMaps="clr-namespace:MEATaste.Views.MapsSwitch"
         mc:Ignorable="d"
         Title="MainWindow" Width="1024" Height="500">
@@ -46,7 +47,8 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
-                <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <!--<plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />-->
+                <dynamicGrid:DynamicGridPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                 <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             </Grid>
             
