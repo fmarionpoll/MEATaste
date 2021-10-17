@@ -1,14 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using MEATaste.Annotations;
+﻿using MEATaste.Annotations;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
-using MEATaste.Views.ElectrodesHeatmap;
-using MEATaste.Views.ElectrodesMap;
 
-namespace MEATaste.Views.SwitchMaps
+namespace MEATaste.Views.MapsSwitch
 {
-    public class SwitchMapsPanelModel : INotifyPropertyChanged
+    public class MapsSwitchPanelModel : INotifyPropertyChanged
     {
         private int selectedTabIndex;
         public int SelectedTabIndex

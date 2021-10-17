@@ -8,7 +8,7 @@
         xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
-        xmlns:switchMaps="clr-namespace:MEATaste.Views.SwitchMaps"
+        xmlns:switchMaps="clr-namespace:MEATaste.Views.MapsSwitch"
         mc:Ignorable="d"
         Title="MainWindow" Width="1024" Height="500">
 
@@ -37,7 +37,7 @@
 
                 <electrodesList:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
 
-                <switchMaps:SwitchMapsPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <switchMaps:MapsSwitchPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
             </Grid>
 

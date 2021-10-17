@@ -16,6 +16,7 @@ namespace MEATaste.Views.ElectrodesList
         private DataGrid electrodeExtendedPropertiesGrid;
         private readonly ApplicationState state;
         private List<int> initialSelectedChannelsList;
+        private int expandLevel;
 
         public ElectrodesListPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {

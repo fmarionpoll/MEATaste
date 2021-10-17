@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using MEATaste.Infrastructure;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
-namespace MEATaste.Views.ElectrodesMap
+namespace MEATaste.Views.MapElectrodes
 {
-    public class ElectrodesMapPanelController
+    public class MapElectrodesController
     {
-        public ElectrodesMapPanelModel Model { get; }
+        public MapElectrodesModel Model { get; }
         private readonly ApplicationState state;
         private List<int> selectedChannels;
 
-        public ElectrodesMapPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
+        public MapElectrodesController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
             this.state = state;
 
-            Model = new ElectrodesMapPanelModel();
+            Model = new MapElectrodesModel();
 
             eventSubscriber.Subscribe(EventType.MeaExperimentChanged, PlotElectrodesMap);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, StateSelectedChannelsChanged);

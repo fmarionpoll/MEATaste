@@ -4,7 +4,7 @@
              xmlns:oneElectrode="clr-namespace:MEATaste.Views.PlotSignal"
              xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
              xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
-             xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
+             xmlns:electrodesMap="clr-namespace:MEATaste.Views.MapElectrodes"
              Startup="OnStartup">
                
     <Application.Resources>
@@ -12,7 +12,7 @@
             <electrodesList:ElectrodesListPanel />
         </DataTemplate>
         <DataTemplate DataType="{x:Type electrodesMap:ElectrodesMapPanelModel}">
-            <electrodesMap:ElectrodesMapPanel />
+            <electrodesMap:MapElectrodes />
         </DataTemplate>
         <DataTemplate DataType="{x:Type fileOpen:FileOpenPanelController}">
             <fileOpen:FileOpenPanel />

@@ -59,9 +59,9 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label Content="Selection:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="0"/>
-            <Button Name = "Expand" Content=" expand " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="1" Click="expand_Click"/>
-            <Button Name = "Restore" Content=" restore " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0,0,0" Grid.Column="2" Click="restore_Click"/>
+            <Label Content="Expand selection:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="0"/>
+            <Button Name = "Expand" Content=" + " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Grid.Column="2" Click="expand_Click"/>
+            <Button Name = "Reduce" Content=" - " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0,0,0" Grid.Column="1" Click="restore_Click"/>
         </Grid>
     </Grid>
 </UserControl>

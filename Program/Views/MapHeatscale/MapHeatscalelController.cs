@@ -5,22 +5,22 @@ using MEATaste.Infrastructure;
 using ScottPlot;
 using ScottPlot.Drawing;
 
-namespace MEATaste.Views.ElectrodesHeatmap
+namespace MEATaste.Views.MapHeatscale
 {
-    class ElectrodeHeatmapPanelController
+    class MapHeatscalelController
     {
 
-        public ElectrodesHeatmapPanelModel Model { get; }
+        public MapHeatscalelModel Model { get; }
         private readonly ApplicationState state;
         public List<int> SelectedChannels { get; private set; }
 
-        public ElectrodeHeatmapPanelController(
+        public MapHeatscalelController(
             ApplicationState state,
             IEventSubscriber eventSubscriber)
         {
             this.state = state;
             
-            Model = new ElectrodesHeatmapPanelModel();
+            Model = new MapHeatscalelModel();
             eventSubscriber.Subscribe(EventType.MeaExperimentChanged, PlotElectrodesMap);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
         }
