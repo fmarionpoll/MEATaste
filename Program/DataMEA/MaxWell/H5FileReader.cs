@@ -310,37 +310,37 @@ namespace MEATaste.DataMEA.MaxWell
             if (ndimensions != 2)
                 return;
 
-            Parallel.For(0, nchunks, iStart =>
-            {
-                var h5File = H5File.OpenRead(H5FileName);
-                var dataset = h5File.Group("/").Dataset("sig");
+            _ = Parallel.For(0, nchunks, iStart =>
+              {
+                  var h5File = H5File.OpenRead(H5FileName);
+                  var dataset = h5File.Group("/").Dataset("sig");
 
-                var indexStart = (ulong)iStart * chunkSizePerChannel;
-                if (indexStart < nbDataPoints)
-                {
-                    var indexEnd = indexStart + chunkSizePerChannel - 1;
-                    if (indexEnd > nbDataPoints)
-                        indexEnd = nbDataPoints - 1;
-                    var result = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
+                  var indexStart = (ulong)iStart * chunkSizePerChannel;
+                  if (indexStart < nbDataPoints)
+                  {
+                      var indexEnd = indexStart + chunkSizePerChannel - 1;
+                      if (indexEnd > nbDataPoints)
+                          indexEnd = nbDataPoints - 1;
+                      var result = A13ReadDataPartAllChannels(dataset, indexStart, indexEnd, dataSelected);
 
-                    var length = (long) (indexEnd - indexStart + 1);
-                    var destinationIndex = (long) indexStart;
-                    var index = 0;
-                    foreach (var (key, _) in dataSelected.Channels)
-                    {
-                        Array.Copy(
-                            sourceArray: result,
-                            sourceIndex: index * (long)chunkSizePerChannel,
-                            destinationArray: dataSelected.Channels[key],
-                            destinationIndex: destinationIndex,
-                            length: length);
+                      var length = (long)(indexEnd - indexStart + 1);
+                      var destinationIndex = (long)indexStart;
+                      var index = 0;
+                      foreach (var (key, _) in dataSelected.Channels)
+                      {
+                          Array.Copy(
+                              sourceArray: result,
+                              sourceIndex: index * length,
+                              destinationArray: dataSelected.Channels[key],
+                              destinationIndex: destinationIndex,
+                              length: length);
 
-                        index++;
-                    }
-                }
+                          index++;
+                      }
+                  }
 
-                h5File.Dispose();
-            });
+                  h5File.Dispose();
+              });
         }
 
         public static void A13ReadAllDataFromChannelsPseudoParallel(ChannelsDictionary dataSelected)
