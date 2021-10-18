@@ -63,12 +63,12 @@ namespace MEATaste.Views.PlotScrollBar
 
         private void Expand_Click(object sender, RoutedEventArgs e)
         {
-
+            controller.ExpandSelectionOneLevel();
         }
 
         private void Reduce_Click(object sender, RoutedEventArgs e)
         {
-
+            controller.ReduceSelectionOneLevel();
         }
     }
 }

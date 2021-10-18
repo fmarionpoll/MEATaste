@@ -40,13 +40,25 @@
 
         <Grid  Grid.Row="1">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
                 <ColumnDefinition Width="140" />
-                <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition Width="175"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Expand selection:" Grid.Column="0"/>
+                <Button Name = "Reduce" Content=" - " Grid.Column="1" Height="20" Click="Reduce_Click" />
+                <Button Name = "Expand" Content=" + " Grid.Column="2" Height="20" Click="Expand_Click" />
+                
+            </Grid>
+
+            <Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="90"/>
@@ -59,18 +71,7 @@
                 </ComboBox>
             </Grid>
 
-            <Grid Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="20"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Expand selection:" Grid.Column="0"/>
-                <Button Name = "Expand" Content=" + " Grid.Column="1" Height="20" Click="Expand_Click" />
-                <Button Name = "Reduce" Content=" - " Grid.Column="2" Height="20" Click="Reduce_Click" />
-            </Grid>
-
-            <Grid Grid.Column="3">
+           <Grid Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="110"/>

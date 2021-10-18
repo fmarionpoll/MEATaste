@@ -15,8 +15,7 @@ namespace MEATaste.Views.ListElectrodes
         private ObservableCollection<ElectrodePropertiesExtended> electrodesExtendedPropertiesCollection;
         private DataGrid electrodeExtendedPropertiesGrid;
         private readonly ApplicationState state;
-        private List<int> initialSelectedChannelsList;
-        private int expandLevel;
+
 
         public ListElectrodesPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
@@ -89,68 +88,6 @@ namespace MEATaste.Views.ListElectrodes
             var listSelectedElectrodes = new List<int>();
             listSelectedElectrodes.AddRange(electrodePropertiesExtended.Select(item => item.Channel));
             return listSelectedElectrodes;
-        }
-
-        public void ExpandSelectionOneLevel()
-        {
-            expandLevel++;
-            if (expandLevel == 1)
-                initialSelectedChannelsList = new List<int>(state.DataSelected.Get().Channels.Keys.ToList());
-
-            ChangeSelectionLevel();
-        }
-
-        private void ChangeSelectionLevel()
-        {
-            var expandedSelectedChannelsList = GetAllElectrodesAroundCurrentSelection(initialSelectedChannelsList, 20);
-            state.DataSelected.Get().TrimDictionaryToList(expandedSelectedChannelsList);
-            state.DataSelected.SetChanged();
-        }
-
-        private List<int> GetAllElectrodesAroundCurrentSelection(List<int> currentChannelsList, double delta)
-        {
-            var expandedSelectedChannelsList = new List<int> (currentChannelsList);
-            var niterations = expandLevel;
-            while (niterations > 0)
-            {
-                expandedSelectedChannelsList = ExpandCurrentSelectionOneLevel(expandedSelectedChannelsList, delta);
-                niterations--;
-            }
-
-            return expandedSelectedChannelsList;
-        }
-
-        private List<int> ExpandCurrentSelectionOneLevel(List<int> currentChannelsList, double delta)
-        {
-            List<int> expandedSelectedChannelsList = new();
-            
-            var meaExp = state.MeaExperiment.Get();
-            foreach (var channel in currentChannelsList)
-            {
-                var electrode = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel).Electrode;
-                var xMax = electrode.XuM + delta;
-                var xMin = electrode.XuM - delta;
-                var yMax = electrode.YuM + delta;
-                var yMin = electrode.YuM - delta;
-                expandedSelectedChannelsList.Add(channel);
-                expandedSelectedChannelsList.AddRange(from electrodeData in meaExp.Electrodes
-                    where electrodeData.Electrode.Channel != channel
-                    where !(electrodeData.Electrode.XuM > xMax)
-                    where !(electrodeData.Electrode.XuM < xMin)
-                    where !(electrodeData.Electrode.YuM > yMax)
-                    where !(electrodeData.Electrode.YuM < yMin)
-                    select electrodeData.Electrode.Channel);
-            }
-
-            return expandedSelectedChannelsList;
-        }
-
-        public void ReduceSelectionOneLevel()
-        {
-            expandLevel--;
-            if (expandLevel < 0) 
-                expandLevel = 0;
-            ChangeSelectionLevel();
         }
         
         public void ElectrodesGridLoaded(object sender, System.Windows.RoutedEventArgs e)
