@@ -11,8 +11,9 @@
     <Grid  >
         <TabControl ItemsSource="{Binding TabCollection}"
                     SelectedIndex="{Binding SelectedTabIndex}"
-                    Margin="20,5,5,5">
-            <TabItem Header="Map">
+                    Margin="20,5,5,5" BorderBrush="{x:Null}"
+                    TabStripPlacement="Bottom" >
+            <TabItem Header="Map" >
                 <electrodesMap:MapElectrodes />
             </TabItem>
             <TabItem Header="HeatMap">
