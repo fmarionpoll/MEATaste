@@ -61,6 +61,14 @@ namespace MEATaste.Views.PlotScrollBar
                 controller.ChangeFilter(combo.SelectedIndex);
         }
 
+        private void Expand_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void Reduce_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

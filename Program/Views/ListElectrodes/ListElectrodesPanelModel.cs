@@ -2,9 +2,9 @@
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 
-namespace MEATaste.Views.ElectrodesList
+namespace MEATaste.Views.ListElectrodes
 {
-    public class ElectrodesListPanelModel : INotifyPropertyChanged
+    public class ListElectrodesPanelModel : INotifyPropertyChanged
     {
         private ICollectionView electrodeListView;
 

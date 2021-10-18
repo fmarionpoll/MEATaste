@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Data;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
-using System.Windows.Controls;
 using MEATaste.Views.Controls;
 
-namespace MEATaste.Views.ElectrodesList
+namespace MEATaste.Views.ListElectrodes
 {
-    public class ElectrodesListPanelController
+    public class ListElectrodesPanelController
     {
-        public ElectrodesListPanelModel Model { get; }
+        public ListElectrodesPanelModel Model { get; }
         private ObservableCollection<ElectrodePropertiesExtended> electrodesExtendedPropertiesCollection;
         private DataGrid electrodeExtendedPropertiesGrid;
         private readonly ApplicationState state;
         private List<int> initialSelectedChannelsList;
         private int expandLevel;
 
-        public ElectrodesListPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
+        public ListElectrodesPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
             this.state = state;
-            Model = new ElectrodesListPanelModel();
+            Model = new ListElectrodesPanelModel();
 
             eventSubscriber.Subscribe(EventType.MeaExperimentChanged, LoadElectrodeListItems);
             eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, StateSelectedChannelsChanged);

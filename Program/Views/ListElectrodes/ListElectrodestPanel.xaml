@@ -1,10 +1,12 @@
-﻿<UserControl x:Class="MEATaste.Views.ElectrodesList.ElectrodesListPanel"
+﻿<UserControl x:Class="MEATaste.Views.ListElectrodes.ElectrodesListPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=electrodesList:ElectrodesListPanelModel}" d:DesignWidth="280" d:DesignHeight="280">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:electrodeslist="clr-namespace:MEATaste.Views.ListElectrodes"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=electrodeslist:ListElectrodesPanelModel}" 
+             d:DesignWidth="280" d:DesignHeight="280">
 
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>

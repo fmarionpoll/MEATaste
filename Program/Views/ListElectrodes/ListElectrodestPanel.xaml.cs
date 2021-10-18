@@ -1,17 +1,15 @@
 ﻿using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
-
-
-namespace MEATaste.Views.ElectrodesList
+namespace MEATaste.Views.ListElectrodes
 {
     public partial class ElectrodesListPanel
     {
-        private readonly ElectrodesListPanelController controller;
+        private readonly ListElectrodesPanelController controller;
         
         public ElectrodesListPanel()
         {
-            controller = App.ServiceProvider.GetService<ElectrodesListPanelController>();
+            controller = App.ServiceProvider.GetService<ListElectrodesPanelController>();
             DataContext = controller!.Model;
             InitializeComponent();
         }

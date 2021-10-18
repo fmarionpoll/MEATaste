@@ -73,20 +73,6 @@ namespace MEATaste.Views.PlotSignal
             Mouse.OverrideCursor = null;
         }
 
-        private void LoadDataFromFilev0(List<int> selectedChannels)
-        {
-            foreach (var i in selectedChannels)
-            {
-                var dataSelected = state.DataSelected.Get();
-                dataSelected.Channels[i] = H5FileReader.ReadAllDataFromSingleChannel(i);
-            }
-        }
-
-        private void LoadDataFromFilev1()
-        {
-            H5FileReader.A13ReadAllDataFromChannels(state.DataSelected.Get());
-        }
-
         private void LoadDataFromFilev2()
         {
             H5FileReader.A13ReadAllDataFromChannelsParallel(state.DataSelected.Get());
@@ -99,10 +85,9 @@ namespace MEATaste.Views.PlotSignal
             foreach (var i in selectedChannels)
             {
                 var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == i);
-                var legend = "channel: " + electrodeData.Electrode.Channel 
-                                         + " electrode: " + electrodeData.Electrode.ElectrodeNumber
-                                         + " (" + electrodeData.Electrode.XuM + ", " + electrodeData.Electrode.YuM + " µm)";
-
+                var legend = "channel: " + electrodeData.Electrode.Channel;
+                /*+ " electrode: " + electrodeData.Electrode.ElectrodeNumber
+                + " (" + electrodeData.Electrode.XuM + ", " + electrodeData.Electrode.YuM + " µm)";*/
                 var channel = state.DataSelected.Get().Channels[i];
                 AddPlot(ComputeFilteredData(channel), samplingRate, legend);
             }
@@ -118,9 +103,6 @@ namespace MEATaste.Views.PlotSignal
             {
                 case 1:
                     result = Filter.BDerivFast2f3(result, result.Length);
-                    break;
-                case 2:
-                    result = Filter.BMedian(result, result.Length, 20);
                     break;
             }
 

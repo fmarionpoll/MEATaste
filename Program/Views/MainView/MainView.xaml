@@ -4,11 +4,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
         xmlns:switchGrids="clr-namespace:MEATaste.Views.SwitchGrids"
         xmlns:switchMaps="clr-namespace:MEATaste.Views.SwitchMaps"
+        xmlns:listElectrodes="clr-namespace:MEATaste.Views.ListElectrodes"
         mc:Ignorable="d"
         Title="MainWindow" Width="1024" Height="500">
 
@@ -35,7 +35,7 @@
                     <RowDefinition Height="280"/>
                 </Grid.RowDefinitions>
 
-                <electrodesList:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+                <listElectrodes:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
 
                 <switchMaps:SwitchMapsPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
