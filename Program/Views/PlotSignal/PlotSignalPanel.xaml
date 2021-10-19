@@ -7,8 +7,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="0,0,0,0"  Background="#FFFFFF">
 
-        <WpfPlot x:Name = "PlotControl"  
-                 Loaded = "PlotControl_Loaded" 
+        <WpfPlot x:Name = "PlotControl" 
                  AxesChanged = "PlotControl_AxesChanged" />
         
     </Grid>

@@ -47,12 +47,21 @@ namespace MEATaste.Views.PlotSignal
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
-        public void AttachControlToModel(int Id, WpfPlot wpfControl)
+        //public void AttachControlToModel(int Id, WpfPlot wpfControl)
+        //{
+        //    if (Id == this.Id)
+        //    {
+        //        Model.PlotControl = wpfControl;
+        //        Trace.WriteLine("Attach ScottPlot iD =" + Id);
+        //    }
+        //}
+
+        private void GetHandleToPlot()
         {
-            if (Id == this.Id)
+            foreach (var control in WrapPanelTest.Children)
             {
-                Model.PlotControl = wpfControl;
-                Trace.WriteLine("Attach ScottPlot iD =" + Id);
+                if (control.GetType() == typeof(WpfPlot))
+                    c++;
             }
         }
 
@@ -105,6 +114,10 @@ namespace MEATaste.Views.PlotSignal
 
         private void PreparePlot()
         {
+            if (Model.PlotControl == null)
+            {
+                GetHandleToPlot();
+            }
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             plot.XLabel("Time (s)");

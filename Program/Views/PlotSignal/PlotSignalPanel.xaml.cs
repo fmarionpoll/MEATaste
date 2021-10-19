@@ -27,11 +27,11 @@ namespace MEATaste.Views.PlotSignal
             InitializeComponent();
         }
 
-        private void PlotControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var wpfControl = sender as WpfPlot;
-            controller.AttachControlToModel(Id, wpfControl);
-        }
+        //private void PlotControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        //{
+        //    var wpfControl = sender as WpfPlot;
+        //    controller.AttachControlToModel(Id, wpfControl);
+        //}
 
         private void PlotControl_AxesChanged(object sender, System.EventArgs e)
         {
