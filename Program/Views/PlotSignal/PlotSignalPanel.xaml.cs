@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Controls;
 using ScottPlot;
 
 

@@ -15,22 +15,24 @@ namespace MEATaste.Views.SwitchGrids
             Model = new SwitchGridsPanelModel();
         }
 
+        // https://stackoverflow.com/questions/34009584/wpf-how-to-dynamically-create-a-grid-with-x-rows-and-y-columns-with-consecutive
+
         public void DoIt(Grid rootGrid)
         {
-            Grid mainGrid = new Grid();
+            Grid mainGrid = new ();
             rootGrid.Children.Clear();
             rootGrid.Children.Add(mainGrid);
 
-            for (int icol = 0; icol < Model.NColumns; icol++)
+            for (var icol = 0; icol < Model.NColumns; icol++)
             {
-                Grid gridCol = new Grid();
+                Grid gridCol = new ();
                 mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 mainGrid.Children.Add(gridCol);
                 Grid.SetColumn(gridCol, icol);
-                for (int irow = 0; irow < Model.NRows; irow++)
+                for (var irow = 0; irow < Model.NRows; irow++)
                 {
-                    Grid gridRow = new Grid();
-                    PlotSignalPanel plotPanel = new PlotSignalPanel();
+                    Grid gridRow = new ();
+                    PlotSignalPanel plotPanel = new ();
                     gridRow.Children.Add(plotPanel);
 
                     gridCol.RowDefinitions.Add(new RowDefinition());
