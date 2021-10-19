@@ -4,7 +4,7 @@ using MEATaste.Annotations;
 
 namespace MEATaste.Views.SwitchGrids
 {
-    class SwitchGridsPanelModel : INotifyPropertyChanged
+    public class SwitchGridsPanelModel : INotifyPropertyChanged
     {
         private int nColumns;
 

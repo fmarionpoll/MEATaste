@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
-using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.DataMEA.Utilities;
 using MEATaste.Infrastructure;
@@ -19,6 +17,7 @@ namespace MEATaste.Views.PlotSignal
         private readonly ApplicationState state;
         private List<int> listSelectedChannels;
         private int selectedFilter;
+        public int Id;
         
 
         public PlotSignalPanelController(
@@ -29,7 +28,6 @@ namespace MEATaste.Views.PlotSignal
 
             Model = new PlotSignalPanelModel();
             eventSubscriber.Subscribe(EventType.MeaExperimentChanged, LoadAcquisitionParameters);
-            eventSubscriber.Subscribe(EventType.SelectedChannelsChanged, ChangeSelectedElectrode);
             eventSubscriber.Subscribe(EventType.AxesMaxMinChanged, AxesChanged);
             eventSubscriber.Subscribe(EventType.FilterChanged, ChangeFilter);
         }
@@ -45,42 +43,38 @@ namespace MEATaste.Views.PlotSignal
         private void ChangeFilter()
         {
             selectedFilter = state.FilterProperty.Get();
-            if (listSelectedChannels == null || listSelectedChannels.Count <= 0) return;
+            if (listSelectedChannels is not {Count: > 0}) return;
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
-        public void AttachControlToModel(WpfPlot wpfControl)
+        public void AttachControlToModel(int Id, WpfPlot wpfControl)
         {
-            Model.PlotControl = wpfControl;
+            if (Id == this.Id)
+            {
+                Model.PlotControl = wpfControl;
+                Trace.WriteLine("Attach ScottPlot iD =" + Id);
+            }
         }
 
-        private void ChangeSelectedElectrode()
+        public void UpdateChannelList(int Id, List<int> channelList)
         {
-            listSelectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
+            this.Id = Id;
+            listSelectedChannels = new List<int>( channelList);
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
-
+        
         private void UpdateSelectedElectrodeData(List<int> selectedChannels)
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            var sw = Stopwatch.StartNew();
             PreparePlot();
-            if (state.DataSelected.Get().IsLoadingDataFromFileNeeded()) 
-                LoadDataFromFilev2();
+            if (selectedChannels.Count <= 0) return;
             LoadDataToPlot(selectedChannels);
             DisplayPlot();
-            Trace.WriteLine("UpdateSelectedElectrodeData(): " + sw.Elapsed + " -- selectedCount=" + state.DataSelected.Get().Channels.Count);
-            Mouse.OverrideCursor = null;
-        }
-
-        private void LoadDataFromFilev2()
-        {
-            H5FileReader.A13ReadAllDataFromChannelsParallel(state.DataSelected.Get());
         }
 
         private void LoadDataToPlot(List<int> selectedChannels)
         {
             var meaExp = state.MeaExperiment.Get();
+            if (meaExp == null) return;
             var samplingRate = meaExp.DataAcquisitionSettings.SamplingRate;
             foreach (var i in selectedChannels)
             {
@@ -88,6 +82,7 @@ namespace MEATaste.Views.PlotSignal
                 var legend = "channel: " + electrodeData.Electrode.Channel;
                 /*+ " electrode: " + electrodeData.Electrode.ElectrodeNumber
                 + " (" + electrodeData.Electrode.XuM + ", " + electrodeData.Electrode.YuM + " µm)";*/
+                Trace.WriteLine("LoadDataToPlot(): " + i + " channel=" + electrodeData.Electrode.Channel + " plotID=" + Id);
                 var channel = state.DataSelected.Get().Channels[i];
                 AddPlot(ComputeFilteredData(channel), samplingRate, legend);
             }
@@ -95,9 +90,8 @@ namespace MEATaste.Views.PlotSignal
 
         private double[] ComputeFilteredData(ushort[] array)
         {
-            var meaExp = state.MeaExperiment.Get();
-            var result = Filter.ConvertDataToMV(array,
-                meaExp.DataAcquisitionSettings.Lsb * 1000, 512);
+            var mVFactor = state.MeaExperiment.Get().DataAcquisitionSettings.Lsb * 1000;
+            var result = Filter.ConvertDataToMV(array, mVFactor, 512);
             
             switch (selectedFilter)
             {
