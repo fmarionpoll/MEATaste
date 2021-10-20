@@ -58,7 +58,7 @@ namespace MEATaste.Views.PlotSignal
 
         private void GetHandleToPlot()
         {
-            foreach (var control in WrapPanelTest.Children)
+            foreach (var control in Grrid.Children)
             {
                 if (control.GetType() == typeof(WpfPlot))
                     c++;

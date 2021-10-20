@@ -7,7 +7,7 @@ namespace MEATaste.Views.PlotSignal
 {
     public class PlotSignalPanelModel : INotifyPropertyChanged
     {
-       private string acquisitionSettingsLabel = string.Empty;
+        private string acquisitionSettingsLabel = string.Empty;
         private WpfPlot plotControl;
 
         public WpfPlot PlotControl
