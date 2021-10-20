@@ -20,9 +20,7 @@ namespace MEATaste.Views.PlotSignal
         private int id;
         
 
-        public PlotSignalPanelController(
-            ApplicationState state,
-            IEventSubscriber eventSubscriber)
+        public PlotSignalPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
             this.state = state;
 
@@ -50,6 +48,7 @@ namespace MEATaste.Views.PlotSignal
         public void SetId(int Id)
         {
             this.id = Id;
+            Model.PlotControl.Name = "Plot" + Id;
         }
 
         public void UpdateChannelList(List<int> channelList)

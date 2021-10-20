@@ -15,7 +15,7 @@ namespace MEATaste.Views.SwitchGrids
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-           controller.DoIt(Root);
+            controller.DoIt(Root);
         }
     }
 }

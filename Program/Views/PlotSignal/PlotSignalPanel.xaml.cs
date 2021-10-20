@@ -17,7 +17,7 @@ namespace MEATaste.Views.PlotSignal
             InitializeComponent();
         }
 
-       public void SetId(int Id)
+        public void SetId(int Id)
         {
             controller.SetId(Id);
         }
