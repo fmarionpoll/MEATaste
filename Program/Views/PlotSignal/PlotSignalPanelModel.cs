@@ -9,6 +9,8 @@ namespace MEATaste.Views.PlotSignal
     {
         private string acquisitionSettingsLabel = string.Empty;
         private WpfPlot plotControl;
+        private int id;
+
 
         public WpfPlot PlotControl
         {
@@ -18,6 +20,17 @@ namespace MEATaste.Views.PlotSignal
                 if (plotControl == value) return;
                 plotControl = value;
                 OnPropertyChanged(nameof(PlotControl));
+            }
+        }
+
+        public int Id
+        {
+            get => id;
+            set
+            {
+                if (id == value) return;
+                id = value;
+                OnPropertyChanged(nameof(Id));
             }
         }
 

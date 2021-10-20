@@ -45,10 +45,10 @@ namespace MEATaste.Views.PlotSignal
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
-        public void SetId(int Id)
+        public void SetId(int id)
         {
-            this.id = Id;
-            Model.PlotControl.Name = "Plot" + Id;
+            this.id = id;
+            Model.Id = this.id;
         }
 
         public void UpdateChannelList(List<int> channelList)
@@ -76,7 +76,9 @@ namespace MEATaste.Views.PlotSignal
                 var legend = "channel: " + electrodeData.Electrode.Channel;
                 /*+ " electrode: " + electrodeData.Electrode.ElectrodeNumber
                 + " (" + electrodeData.Electrode.XuM + ", " + electrodeData.Electrode.YuM + " µm)";*/
-                Trace.WriteLine("LoadDataToPlot(): " + i + " channel=" + electrodeData.Electrode.Channel + " plotID=" + id);
+                Trace.WriteLine("LoadDataToPlot(): " + i 
+                                + " channel=" + electrodeData.Electrode.Channel 
+                                + " plotID=" + id);
                 var channel = state.DataSelected.Get().Channels[i];
                 AddPlot(ComputeFilteredData(channel), samplingRate, legend);
             }
@@ -99,11 +101,6 @@ namespace MEATaste.Views.PlotSignal
 
         private void PreparePlot()
         {
-            if (Model.PlotControl == null)
-            {
-                Trace.WriteLine("wpf control null");
-                return;
-            }
             var plot = Model.PlotControl.Plot;
             plot.Clear();
             plot.XLabel("Time (s)");

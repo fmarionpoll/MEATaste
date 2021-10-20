@@ -72,8 +72,10 @@ namespace MEATaste.Views.SwitchGrids
 
                     for (var irow = 0; irow < Model.NRows; irow++)
                     {
-                        Grid gridRow = new();
-                        gridRow.Name = "grid" + index;
+                        Grid gridRow = new()
+                        {
+                            Name = "grid" + icol + "_" + irow
+                        };
                         PlotSignalPanel plotPanel = new();
                         plotPanel.SetId(index);
                         plotPanel.Name = "plot" + index;
@@ -88,7 +90,7 @@ namespace MEATaste.Views.SwitchGrids
                     }
                 }
             }
-            ChangeSelectedElectrode();
+            //ChangeSelectedElectrode();
         }
     }
 }
