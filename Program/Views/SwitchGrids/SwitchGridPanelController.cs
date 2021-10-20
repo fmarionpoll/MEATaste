@@ -34,22 +34,15 @@ namespace MEATaste.Views.SwitchGrids
                 LoadDataFromFilev2();
 
             var index = 0;
+            var range = listSelectedChannels.Count / plotSignalList.Count;
+            if (range == 0) range = 1;
             foreach (var plotSignalPanel in plotSignalList)
             {
-                if (listSelectedChannels.Count > plotSignalList.Count)
-                {
-                    plotSignalPanel.UpdateChannelList(listSelectedChannels);
-                }
-                else
-                {
-                    var dummyList = listSelectedChannels.GetRange(index, 1);
-                    plotSignalPanel.UpdateChannelList(dummyList);
-                }
-                
+                var dummyList = listSelectedChannels.GetRange(index, range);
+                plotSignalPanel.UpdateChannelList(dummyList);
                 index++;
                 if (index >= listSelectedChannels.Count)
                     break;
-                
             }
         }
 
@@ -80,8 +73,10 @@ namespace MEATaste.Views.SwitchGrids
                     for (var irow = 0; irow < Model.NRows; irow++)
                     {
                         Grid gridRow = new();
+                        gridRow.Name = "grid" + index;
                         PlotSignalPanel plotPanel = new();
                         plotPanel.SetId(index);
+                        plotPanel.Name = "plot" + index;
                         plotSignalList.Add(plotPanel);
                         gridRow.Children.Add(plotPanel);
                         index++;
