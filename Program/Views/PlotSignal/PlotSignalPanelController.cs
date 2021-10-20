@@ -17,7 +17,7 @@ namespace MEATaste.Views.PlotSignal
         private readonly ApplicationState state;
         private List<int> listSelectedChannels;
         private int selectedFilter;
-        public int Id;
+        private int id;
         
 
         public PlotSignalPanelController(
@@ -47,27 +47,13 @@ namespace MEATaste.Views.PlotSignal
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
-        //public void AttachControlToModel(int Id, WpfPlot wpfControl)
-        //{
-        //    if (Id == this.Id)
-        //    {
-        //        Model.PlotControl = wpfControl;
-        //        Trace.WriteLine("Attach ScottPlot iD =" + Id);
-        //    }
-        //}
-
-        private void GetHandleToPlot()
+        public void SetId(int Id)
         {
-            foreach (var control in Grrid.Children)
-            {
-                if (control.GetType() == typeof(WpfPlot))
-                    c++;
-            }
+            this.id = Id;
         }
 
-        public void UpdateChannelList(int Id, List<int> channelList)
+        public void UpdateChannelList(List<int> channelList)
         {
-            this.Id = Id;
             listSelectedChannels = new List<int>( channelList);
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
@@ -91,7 +77,7 @@ namespace MEATaste.Views.PlotSignal
                 var legend = "channel: " + electrodeData.Electrode.Channel;
                 /*+ " electrode: " + electrodeData.Electrode.ElectrodeNumber
                 + " (" + electrodeData.Electrode.XuM + ", " + electrodeData.Electrode.YuM + " µm)";*/
-                Trace.WriteLine("LoadDataToPlot(): " + i + " channel=" + electrodeData.Electrode.Channel + " plotID=" + Id);
+                Trace.WriteLine("LoadDataToPlot(): " + i + " channel=" + electrodeData.Electrode.Channel + " plotID=" + id);
                 var channel = state.DataSelected.Get().Channels[i];
                 AddPlot(ComputeFilteredData(channel), samplingRate, legend);
             }
@@ -116,7 +102,8 @@ namespace MEATaste.Views.PlotSignal
         {
             if (Model.PlotControl == null)
             {
-                GetHandleToPlot();
+                Trace.WriteLine("wpf control null");
+                return;
             }
             var plot = Model.PlotControl.Plot;
             plot.Clear();

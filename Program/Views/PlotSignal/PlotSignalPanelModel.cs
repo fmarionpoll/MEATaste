@@ -23,7 +23,7 @@ namespace MEATaste.Views.PlotSignal
 
         public PlotSignalPanelModel()
         {
-            //plotControl = new WpfPlot();
+            plotControl = new WpfPlot();
         }
 
         public string AcquisitionSettingsLabel

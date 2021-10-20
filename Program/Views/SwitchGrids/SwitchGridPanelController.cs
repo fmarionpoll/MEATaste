@@ -80,7 +80,8 @@ namespace MEATaste.Views.SwitchGrids
                     for (var irow = 0; irow < Model.NRows; irow++)
                     {
                         Grid gridRow = new();
-                        PlotSignalPanel plotPanel = new(index);
+                        PlotSignalPanel plotPanel = new();
+                        plotPanel.SetId(index);
                         plotSignalList.Add(plotPanel);
                         gridRow.Children.Add(plotPanel);
                         index++;

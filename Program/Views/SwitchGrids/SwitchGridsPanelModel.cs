@@ -6,7 +6,8 @@ namespace MEATaste.Views.SwitchGrids
 {
     public class SwitchGridsPanelModel : INotifyPropertyChanged
     {
-        private int nColumns;
+        private int nColumns = 1;
+        private int nRows = 1;
 
         public int NColumns
         {
@@ -19,8 +20,7 @@ namespace MEATaste.Views.SwitchGrids
             }
         }
 
-        private int nRows;
-
+        
         public int NRows
         {
             get => nRows;

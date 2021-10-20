@@ -1,16 +1,15 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using ScottPlot;
 
 
 namespace MEATaste.Views.PlotSignal
 {
-    public partial class PlotSignalPanel 
+
+    public partial class PlotSignalPanel : UserControl
     {
         private readonly PlotSignalPanelController controller;
-        public int Id { get; set; }
-
+ 
         public PlotSignalPanel()
         {
             controller = App.ServiceProvider.GetService<PlotSignalPanelController>();
@@ -18,20 +17,10 @@ namespace MEATaste.Views.PlotSignal
             InitializeComponent();
         }
 
-        public PlotSignalPanel(int id)
+       public void SetId(int Id)
         {
-            controller = App.ServiceProvider.GetService<PlotSignalPanelController>();
-            DataContext = controller!.Model;
-            controller.Id = Id;
-            this.Id = id;
-            InitializeComponent();
+            controller.SetId(Id);
         }
-
-        //private void PlotControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        //{
-        //    var wpfControl = sender as WpfPlot;
-        //    controller.AttachControlToModel(Id, wpfControl);
-        //}
 
         private void PlotControl_AxesChanged(object sender, System.EventArgs e)
         {
@@ -40,9 +29,10 @@ namespace MEATaste.Views.PlotSignal
 
         public void UpdateChannelList(List<int> channelList)
         {
-            controller.UpdateChannelList(Id, channelList);
+            controller.UpdateChannelList(channelList);
         }
 
     }
 
 }
+
