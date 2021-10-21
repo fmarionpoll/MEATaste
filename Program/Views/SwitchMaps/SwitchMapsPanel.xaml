@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="MEATaste.Views.SwitchMaps.SwitchMapsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:electrodesMap="clr-namespace:MEATaste.Views.MapElectrodes"
+             xmlns:electrodesHeatmap="clr-namespace:MEATaste.Views.MapHeatscale"
+             mc:Ignorable="d" d:DesignHeight="280" d:DesignWidth="280">
+
+
+    <Grid  >
+        <TabControl ItemsSource="{Binding TabCollection}"
+                    SelectedIndex="{Binding SelectedTabIndex}"
+                    Margin="20,5,5,5" BorderBrush="{x:Null}"
+                    TabStripPlacement="Bottom" >
+            <TabItem Header="Map" >
+                <electrodesMap:MapElectrodes />
+            </TabItem>
+            <TabItem Header="HeatMap">
+                <electrodesHeatmap:ElectrodesHeatMapPanel />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

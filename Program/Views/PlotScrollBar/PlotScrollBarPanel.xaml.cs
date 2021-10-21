@@ -7,12 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Views.PlotScrollBar
 {
-    
     public partial class PlotScrollBarPanel
     {
         private readonly PlotScrollBarPanelController controller;
-
-
+        
         public PlotScrollBarPanel()
         {
             controller = App.ServiceProvider.GetService<PlotScrollBarPanelController>();
@@ -24,10 +22,10 @@ namespace MEATaste.Views.PlotScrollBar
         {
             if (e.Key == Key.Enter)
             {
-                TextBox tBox = (TextBox)sender;
-                DependencyProperty prop = TextBox.TextProperty;
+                var tBox = (TextBox)sender;
+                var prop = TextBox.TextProperty;
 
-                BindingExpression binding = BindingOperations.GetBindingExpression(tBox, prop);
+                var binding = BindingOperations.GetBindingExpression(tBox, prop);
                 if (binding != null)
                 {
                     binding.UpdateSource();
@@ -35,10 +33,42 @@ namespace MEATaste.Views.PlotScrollBar
                 }
             }
         }
-        
+
+        private void TextBox_KeyEnterUpdateZoom(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var tBox = (TextBox)sender;
+                var prop = TextBox.TextProperty;
+
+                var binding = BindingOperations.GetBindingExpression(tBox, prop);
+                if (binding != null)
+                {
+                    binding.UpdateSource();
+                    controller.UpdateZoomFromModelValues();
+                }
+            }
+        }
+
         private void ScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
         {
             controller.ScrollBar_Scroll(sender, e);
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (controller != null && sender is ComboBox combo)
+                controller.ChangeFilter(combo.SelectedIndex);
+        }
+
+        private void Expand_Click(object sender, RoutedEventArgs e)
+        {
+            controller.ExpandSelectionOneLevel();
+        }
+
+        private void Reduce_Click(object sender, RoutedEventArgs e)
+        {
+            controller.ReduceSelectionOneLevel();
         }
     }
 }

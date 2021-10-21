@@ -4,9 +4,9 @@ using MEATaste.Annotations;
 using OxyPlot;
 
 
-namespace MEATaste.Views.ElectrodesMap
+namespace MEATaste.Views.MapElectrodes
 {
-    public class ElectrodesMapPanelModel : INotifyPropertyChanged
+    public class MapElectrodesModel : INotifyPropertyChanged
     {
         private PlotModel scatterPlotModel;
 
@@ -21,7 +21,7 @@ namespace MEATaste.Views.ElectrodesMap
             }
         }
 
-        public ElectrodesMapPanelModel()
+        public MapElectrodesModel()
         {
             ScatterPlotModel = new PlotModel();
             ScatterPlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom });

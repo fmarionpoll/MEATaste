@@ -1,4 +1,6 @@
-﻿namespace MEATaste.Views.MainView
+﻿
+
+namespace MEATaste.Views.MainView
 {
     public partial class MainView
     {

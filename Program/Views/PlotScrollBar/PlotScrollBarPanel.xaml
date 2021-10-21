@@ -7,26 +7,82 @@
              d:DataContext="{d:DesignInstance Type=local:PlotScrollBarPanelModel}"
              mc:Ignorable="d" 
              d:DesignHeight="26" d:DesignWidth="800">
+    
     <Grid Margin="0,0,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="130" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="130" />
-        </Grid.ColumnDefinitions>
-        <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"
-                 Width="120" Height="18" Grid.Column="0" Text="{Binding XFirst}" KeyUp="TextBox_KeyEnterUpdate" />
 
-        <TextBox HorizontalAlignment="Right" Margin="0,0,5,0" TextWrapping="Wrap" VerticalAlignment="Center"
-                 Width="120" Height="20" Grid.Column="2" Text="{Binding XLast}" KeyUp="TextBox_KeyEnterUpdate" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <ScrollBar Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                   Orientation="Horizontal"
-                   ViewportSize="{Binding ScrollViewPortSize}"
-                   Maximum="{Binding ScrollMaximum}"
-                   Minimum="{Binding ScrollMinimum}"
-                   Value="{Binding ScrollValue}" 
-                   Scroll="ScrollBar_Scroll" 
-                   />
+        <Grid  Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="130" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"
+                     Width="120" Height="18" Grid.Column="0" Text="{Binding XFirst}" KeyUp="TextBox_KeyEnterUpdate" />
+
+            <ScrollBar Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                       Orientation="Horizontal"
+                       ViewportSize="{Binding ScrollViewPortSize}"
+                       Maximum="{Binding ScrollMaximum}"
+                       Minimum="{Binding ScrollMinimum}"
+                       Value="{Binding ScrollValue}" 
+                       Scroll="ScrollBar_Scroll" />
+
+            <TextBox HorizontalAlignment="Right" Margin="0,0,5,0" TextWrapping="Wrap" VerticalAlignment="Center"
+                     Width="120" Height="20" Grid.Column="2" Text="{Binding XLast}" KeyUp="TextBox_KeyEnterUpdate" />
+
+        </Grid>
+
+        <Grid  Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="140" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="175"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Expand selection:" Grid.Column="0"/>
+                <Button Name = "Reduce" Content=" - " Grid.Column="1" Height="20" Click="Reduce_Click" />
+                <Button Name = "Expand" Content=" + " Grid.Column="2" Height="20" Click="Expand_Click" />
+                
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="90"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Display: " Grid.Column="0"/>
+                <ComboBox Name="FilterCombo" Grid.Column="1" Height="20" 
+                          SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+                    <ComboBoxItem Content="Raw signal" />
+                    <ComboBoxItem Content="Derivative" />
+                </ComboBox>
+            </Grid>
+
+           <Grid Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="110"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Zoom (s):" Grid.Column="0"  />
+                <TextBox Grid.Column="1" TextWrapping="Wrap" Height="20" KeyUp="TextBox_KeyEnterUpdateZoom" Text ="{Binding ScrollViewPortSize}"/>
+            </Grid>
+
+
+        </Grid>
+
 
     </Grid>
 </UserControl>

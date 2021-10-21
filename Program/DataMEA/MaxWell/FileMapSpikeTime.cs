@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace MEATaste.DataMEA.MaxWell
 {
-    class SpikeTimeCompound
+    class FileMapSpikeTime
     {
         [StructLayout(LayoutKind.Explicit, Size = 16)]
         internal struct DatasetMembers

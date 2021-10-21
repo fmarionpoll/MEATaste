@@ -2,9 +2,9 @@
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
 
-namespace MEATaste.Views.MainView
+namespace MEATaste.Views.SwitchMaps
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class SwitchMapsPanelModel : INotifyPropertyChanged
     {
         private int selectedTabIndex;
         public int SelectedTabIndex
@@ -19,10 +19,9 @@ namespace MEATaste.Views.MainView
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-    
 }

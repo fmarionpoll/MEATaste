@@ -1,12 +1,14 @@
 ﻿using MEATaste.DataMEA.dbWave;
 using MEATaste.DataMEA.MaxWell;
-using MEATaste.Views.ElectrodesList;
-using MEATaste.Views.ElectrodesMap;
+using MEATaste.Views.MapHeatscale;
+using MEATaste.Views.MapElectrodes;
 using MEATaste.Views.FileOpen;
+using MEATaste.Views.ListElectrodes;
 using MEATaste.Views.MainView;
 using MEATaste.Views.PlotSignal;
-using MEATaste.Views.PlotFiltered;
 using MEATaste.Views.PlotScrollBar;
+using MEATaste.Views.SwitchGrids;
+using MEATaste.Views.SwitchMaps;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Infrastructure
@@ -34,11 +36,13 @@ namespace MEATaste.Infrastructure
             void ConfigureControllers()
             {
                 services.AddSingleton<FileOpenPanelController>();
-                services.AddSingleton<ElectrodesListPanelController>();
-                services.AddSingleton<ElectrodesMapPanelController>(); 
+                services.AddSingleton<ListElectrodesPanelController>();
+                services.AddSingleton<MapElectrodesController>();
+                services.AddSingleton<MapHeatscalelController>();
                 services.AddSingleton<PlotSignalPanelController>();
-                services.AddSingleton<PlotFilteredPanelController>();
                 services.AddSingleton<PlotScrollBarPanelController>();
+                services.AddSingleton<SwitchMapsPanelController>(); 
+                services.AddSingleton<SwitchGridsPanelController>();
                 services.AddSingleton<MainViewModel>();
             }
         }

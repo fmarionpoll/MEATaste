@@ -2,7 +2,7 @@
 
 namespace MEATaste.DataMEA.MaxWell
 {
-    public class ElectrodePropertiesCompound
+    public class FileMapElectrodeProperties
     {
         [StructLayout(LayoutKind.Explicit, Size = 24)]
         internal struct DatasetMembers

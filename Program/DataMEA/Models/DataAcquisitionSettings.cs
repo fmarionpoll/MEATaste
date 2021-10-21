@@ -14,5 +14,7 @@ namespace MEATaste.DataMEA.Models
         public double Lsb { get; set; }
         // acquisition length
         public ulong nDataAcquisitionPoints { get; set; }
+        public ulong nDataAcquisitionChannels { get; set; }
+        public int chunkSize { get; set; }
     }
 }

@@ -1,28 +1,36 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
+using ScottPlot;
 
-namespace MEATaste.Views.MainView
+namespace MEATaste.Views.MapHeatscale
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MapHeatscalelModel : INotifyPropertyChanged
     {
-        private int selectedTabIndex;
-        public int SelectedTabIndex
+
+        private WpfPlot plotControl;
+
+        public WpfPlot PlotControl
         {
-            get => selectedTabIndex;
+            get => plotControl;
             set
             {
-                if (selectedTabIndex == value) return;
-                selectedTabIndex = value;
-                OnPropertyChanged(nameof(SelectedTabIndex));
+                if (plotControl == value) return;
+                plotControl = value;
+                OnPropertyChanged(nameof(PlotControl));
             }
         }
 
+        public MapHeatscalelModel()
+        {
+            PlotControl = new WpfPlot();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-    
+
 }

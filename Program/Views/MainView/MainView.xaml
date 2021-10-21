@@ -4,12 +4,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:plotsignal="clr-namespace:MEATaste.Views.PlotSignal"
-        xmlns:plotfilter="clr-namespace:MEATaste.Views.PlotFiltered"
-        xmlns:electrodesList="clr-namespace:MEATaste.Views.ElectrodesList"
-        xmlns:electrodesMap="clr-namespace:MEATaste.Views.ElectrodesMap"
         xmlns:fileOpen="clr-namespace:MEATaste.Views.FileOpen"
         xmlns:plotscrollbar="clr-namespace:MEATaste.Views.PlotScrollBar"
+        xmlns:switchGrids="clr-namespace:MEATaste.Views.SwitchGrids"
+        xmlns:switchMaps="clr-namespace:MEATaste.Views.SwitchMaps"
+        xmlns:listElectrodes="clr-namespace:MEATaste.Views.ListElectrodes"
         mc:Ignorable="d"
         Title="MainWindow" Width="1024" Height="500">
 
@@ -24,36 +23,33 @@
         </Grid>
 
         <Grid  Grid.Row="1">
-            
-            <Grid >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="280" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0" Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="280"/>
-                    </Grid.RowDefinitions>
-                    <electrodesList:ElectrodesListPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
-                    <electrodesMap:ElectrodesMapPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
-                </Grid>
+            <Grid Grid.Column="0" Grid.Row="0">
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="280"/>
+                </Grid.RowDefinitions>
 
-                <Grid Grid.Column="1" Grid.Row="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="26"/>
-                    </Grid.RowDefinitions>
-                    <plotsignal:PlotSignalPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                    <plotfilter:PlotFilteredPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                    <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                </Grid>
+                <listElectrodes:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+
+                <switchMaps:SwitchMapsPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
             </Grid>
+
+            <Grid Grid.Column="1" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+                <switchGrids:SwitchGridsPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Grid>
+            
         </Grid>
     </Grid>
 

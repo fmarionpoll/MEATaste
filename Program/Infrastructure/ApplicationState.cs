@@ -4,17 +4,19 @@ namespace MEATaste.Infrastructure
 {
     public class ApplicationState
     {
-        public StateProperty<MeaExperiment> CurrentExperiment { get; }
-        public StateProperty<ElectrodeProperties> CurrentElectrode { get; }
-        public StateProperty<ElectrodeDataBuffer> ElectrodeBuffer { get; }
+        public StateProperty<MeaExperiment> MeaExperiment { get; }
+        public StateProperty<ChannelsDictionary> DataSelected { get; }
         public StateProperty<AxesExtrema> AxesMaxMin { get; }
+        public StateProperty<int> FilterProperty { get; }
+        public StateProperty<DynamicGrid> GridProperties { get; }
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {
-            CurrentExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.CurrentExperimentChanged);
-            CurrentElectrode = statePropertyFactory.Create<ElectrodeProperties>(null, EventType.SelectedElectrodeChanged);
-            ElectrodeBuffer = statePropertyFactory.Create<ElectrodeDataBuffer>(null, EventType.ElectrodeRecordLoaded);
+            MeaExperiment = statePropertyFactory.Create<MeaExperiment>(null, EventType.MeaExperimentChanged);
+            DataSelected = statePropertyFactory.Create(new ChannelsDictionary(), EventType.SelectedChannelsChanged);
             AxesMaxMin = statePropertyFactory.Create<AxesExtrema>(null, EventType.AxesMaxMinChanged);
+            FilterProperty = statePropertyFactory.Create(0, EventType.FilterChanged);
+            GridProperties = statePropertyFactory.Create(new DynamicGrid(1, 1), EventType.GridPropertiesChanged);
         }
     }
 }

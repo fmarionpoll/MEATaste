@@ -1,7 +1,16 @@
-﻿namespace MEATaste.DataMEA.Utilities
+﻿using System.Linq;
+using MEATaste.DataMEA.Models;
+
+namespace MEATaste.DataMEA.Utilities
 {
     public static class Filter
     {
+
+        public static double[] ConvertDataToMV(ushort[] electrodeData, double lsb, ushort zero)
+        {
+            return electrodeData.Select(x => (x - zero) * lsb).ToArray();
+        }
+
 		/*
 		Usui S.and Amidror I. (1982)
 		Digital low-pass differentiation for biological signal processing.
@@ -19,7 +28,7 @@
 			from y(k), using ax, bx, and dx to store x(k+1), x(k+2)
 			and x(k+3).
 		*/
-		public static double[] BDerivFast(double[] dataIn, int rowLength)
+		public static double[] BDerivFast2f3(double[] dataIn, int rowLength)
         {
 			double[] dataOut = new double[rowLength];
 			int span = 4;
@@ -34,7 +43,7 @@
             {
 				ax = bx;			// k+1
 				bx = cx;			// k+2
-				cx = dataIn[k-1];     // k+3
+				cx = dataIn[k-1];   // k+3
 				sumk = (ax + bx + cx)/ 6 ;
 				dataOut[k] =  -sumk;   // y(k+4) = -SUM
 				dataOut[k-span] += sumk;		
@@ -43,21 +52,7 @@
 			ZeroesStartAndEnd(dataOut, rowLength, span*2);
 			return dataOut;
         }
-
-		public static double[] BDeriv(double[] dataIn, int rowLength)
-		{
-			double[] dataOut = new double[rowLength];
-			int span = 4;
-			for (int k = span; k < rowLength - span; k++)
-			{
-				dataOut[k] = (dataIn[k + 1] + dataIn[k + 2] + dataIn[k + 3]
-					- dataIn[k - 1] - dataIn[k - 2] - dataIn[k - 3])/6;
-			}
-			ZeroesStartAndEnd(dataOut, rowLength, span);
-
-			return dataOut;
-		}
-
+		
 		private static void ZeroesStartAndEnd(double[] dataOut, int rowLength, int span)
 		{
 			int j = rowLength - 1;
@@ -175,7 +170,7 @@
 				{
 					int j = jj2;
 					for (int k = jj2; newvalue > m_parraySorted [k]; k++, j++)
-					{
+                    {
 						if (k == m_parray_size -1)
 							break;
 						m_parraySorted [j] = m_parraySorted [j + 1];

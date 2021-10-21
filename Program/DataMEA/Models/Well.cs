@@ -1,10 +1,10 @@
 ﻿namespace MEATaste.DataMEA.Models
 {
     public record Well(
-        IdWell[] IdWell,
+        WellId[] IdWell,
         string CellType, 
-        ControlWell[] Control, 
-        string Group_color, 
-        string Group_name, 
+        WellControl[] Control, 
+        string GroupColor, 
+        string GroupName, 
         string Name);
 }

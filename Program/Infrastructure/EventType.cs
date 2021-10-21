@@ -2,9 +2,10 @@
 {
     public enum EventType
     {
-        CurrentExperimentChanged = 0,
-        SelectedElectrodeChanged = 1,
-        ElectrodeRecordLoaded = 2,
-        AxesMaxMinChanged = 3,
+        MeaExperimentChanged = 0,
+        SelectedChannelsChanged = 1,
+        AxesMaxMinChanged = 2,
+        FilterChanged = 3,
+        GridPropertiesChanged = 4,
     }
 }

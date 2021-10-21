@@ -1,7 +1,6 @@
-﻿using System;
+﻿using System.Linq;
 using MEATaste.DataMEA.dbWave;
 using MEATaste.DataMEA.MaxWell;
-using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
 using Microsoft.Win32;
 
@@ -34,39 +33,32 @@ namespace MEATaste.Views.FileOpen
             if (openFileDialog.ShowDialog() != true) return;
 
             var fileName = openFileDialog.FileName;
-            state.CurrentExperiment.Set(h5FileReader.OpenFileAndReadExperiment(fileName));
+            state.MeaExperiment.Set(H5FileReader.OpenFileAndReadExperiment(fileName));
 
-            var currentExperiment = state.CurrentExperiment.Get();
+            var currentExperiment = state.MeaExperiment.Get();
             Model.FileNameLabel = currentExperiment.FileName + " version="+ currentExperiment.FileVersion;
-            
         }
 
         public void SaveCurrentElectrodeDataClick()
         {
-            var experiment = state.CurrentExperiment.Get();
-            var electrode = state.CurrentElectrode.Get();
-            var electrodeData = state.ElectrodeBuffer.Get();
-            dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeData);
+            var meaExp = state.MeaExperiment.Get();
+            var listSelectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
+
+            foreach (var channel in listSelectedChannels)
+            {
+                var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == channel);
+                var data = state.DataSelected.Get().Channels[channel];
+                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData, data);
+            }
         }
 
         public void SaveAllElectrodesDataClick()
         {
-            var experiment = state.CurrentExperiment.Get();
-            var array = state.CurrentExperiment.Get().Electrodes;
-            var electrodeBuffer = state.ElectrodeBuffer.Get();
-            if (electrodeBuffer == null)
+            var meaExp = state.MeaExperiment.Get();
+            foreach (var electrodeData in meaExp.Electrodes)
             {
-                state.ElectrodeBuffer.Set(new ElectrodeDataBuffer());
-                electrodeBuffer = state.ElectrodeBuffer.Get();
-            }
-
-            foreach (var electrode in array)
-            {
-                state.CurrentElectrode.Set(electrode);
-                electrodeBuffer.RawSignalUShort = h5FileReader.ReadAllFromOneChannelAsInt(electrode.Channel);
-                var electrodeDataBuffer = state.ElectrodeBuffer.Get() ??
-                                          throw new ArgumentNullException("state.ElectrodeBuffer.Get()");
-                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(experiment, electrode, electrodeDataBuffer);
+                var data = H5FileReader.ReadAllDataFromSingleChannel(electrodeData.Electrode.Channel);
+                dataFileWriter.SaveCurrentElectrodeDataToAtlabFile(meaExp, electrodeData, data);
             }
         }
 
