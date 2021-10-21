@@ -39,8 +39,8 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<ListElectrodesPanelController>();
                 services.AddSingleton<MapElectrodesController>();
                 services.AddSingleton<MapHeatscalelController>();
-                services.AddSingleton<PlotSignalPanelController>();
-                services.AddTransient<PlotScrollBarPanelController>();
+                services.AddTransient<PlotSignalPanelController>();
+                services.AddSingleton<PlotScrollBarPanelController>();
                 services.AddSingleton<SwitchMapsPanelController>(); 
                 services.AddSingleton<SwitchGridsPanelController>();
                 services.AddSingleton<MainViewModel>();

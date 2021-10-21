@@ -49,7 +49,11 @@ namespace MEATaste.Views.SwitchGrids
         private void LoadDataFromFilev2()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             H5FileReader.A13ReadAllDataFromChannelsParallel(state.DataSelected.Get());
+            sw.Stop();
+            Trace.WriteLine("time to read file = " + sw.Elapsed.Seconds);
             Mouse.OverrideCursor = null;
         }
 
