@@ -7,7 +7,6 @@ namespace MEATaste.Views.PlotSignal
 {
     public class PlotSignalPanelModel : INotifyPropertyChanged
     {
-        private string acquisitionSettingsLabel = string.Empty;
         private WpfPlot plotControl;
         private int id;
 
@@ -37,17 +36,6 @@ namespace MEATaste.Views.PlotSignal
         public PlotSignalPanelModel()
         {
             plotControl = new WpfPlot();
-        }
-
-        public string AcquisitionSettingsLabel
-        {
-            get => acquisitionSettingsLabel;
-            set
-            {
-                if (acquisitionSettingsLabel == value) return;
-                acquisitionSettingsLabel = value;
-                OnPropertyChanged(nameof(AcquisitionSettingsLabel));
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

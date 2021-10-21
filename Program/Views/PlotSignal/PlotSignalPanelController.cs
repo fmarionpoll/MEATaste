@@ -17,6 +17,7 @@ namespace MEATaste.Views.PlotSignal
         private readonly ApplicationState state;
         private List<int> listSelectedChannels;
         private int selectedFilter;
+        private string acquisitionSettings;
         private int id;
         
 
@@ -33,7 +34,7 @@ namespace MEATaste.Views.PlotSignal
         private void LoadAcquisitionParameters()
         {
             var meaExperiment = state.MeaExperiment.Get();
-            Model.AcquisitionSettingsLabel = " High-pass=" + meaExperiment.DataAcquisitionSettings.Hpf + " Hz " 
+            acquisitionSettings = " High-pass=" + meaExperiment.DataAcquisitionSettings.Hpf + " Hz " 
                                            + " Sampling rate=" + meaExperiment.DataAcquisitionSettings.SamplingRate /1000 + " kHz "
                                            + " resolution=" + (meaExperiment.DataAcquisitionSettings.Lsb * 1000).ToString("0.###")  + " mV";
         }
