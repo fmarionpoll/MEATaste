@@ -75,8 +75,7 @@ namespace MEATaste.Views.PlotSignal
             {
                 var electrodeData = meaExp.Electrodes.Single(x => x.Electrode.Channel == i);
                 var legend = "channel: " + electrodeData.Electrode.Channel;
-                /*+ " electrode: " + electrodeData.Electrode.ElectrodeNumber
-                + " (" + electrodeData.Electrode.XuM + ", " + electrodeData.Electrode.YuM + " µm)";*/
+
                 Trace.WriteLine("LoadDataToPlot(): " + i 
                                 + " channel=" + electrodeData.Electrode.Channel 
                                 + " plotID=" + id);
