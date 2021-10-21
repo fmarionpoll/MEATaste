@@ -17,11 +17,6 @@ namespace MEATaste.Views.PlotSignal
             InitializeComponent();
         }
 
-        public void SetId(int Id)
-        {
-            controller.SetId(Id);
-        }
-
         private void PlotControl_AxesChanged(object sender, System.EventArgs e)
         {
             controller.OnAxesChanged(sender, e);

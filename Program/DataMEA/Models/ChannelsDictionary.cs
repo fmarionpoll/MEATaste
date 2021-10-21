@@ -45,7 +45,7 @@ namespace MEATaste.DataMEA.Models
             var flag = false;
             foreach (var (_, value) in Channels)
             {
-                flag = (value == null);
+                flag = value == null;
                 if (flag)
                     break;
             }

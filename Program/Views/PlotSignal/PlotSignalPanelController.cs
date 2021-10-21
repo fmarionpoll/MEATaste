@@ -18,7 +18,6 @@ namespace MEATaste.Views.PlotSignal
         private List<int> listSelectedChannels;
         private int selectedFilter;
         private string acquisitionSettings;
-        private int id;
         
 
         public PlotSignalPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
@@ -46,12 +45,6 @@ namespace MEATaste.Views.PlotSignal
             UpdateSelectedElectrodeData(listSelectedChannels);
         }
 
-        public void SetId(int id)
-        {
-            this.id = id;
-            Model.Id = this.id;
-        }
-
         public void UpdateChannelList(List<int> channelList)
         {
             listSelectedChannels = new List<int>( channelList);
@@ -77,8 +70,8 @@ namespace MEATaste.Views.PlotSignal
                 var legend = "channel: " + electrodeData.Electrode.Channel;
 
                 Trace.WriteLine("LoadDataToPlot(): " + i 
-                                + " channel=" + electrodeData.Electrode.Channel 
-                                + " plotID=" + id);
+                                + " channel=" + electrodeData.Electrode.Channel);
+
                 var channel = state.DataSelected.Get().Channels[i];
                 AddPlot(ComputeFilteredData(channel), samplingRate, legend);
             }
@@ -138,15 +131,16 @@ namespace MEATaste.Views.PlotSignal
         public void OnAxesChanged(object sender, EventArgs e)
         {
             var changedPlot = (WpfPlot)sender;
-            var newAxisLimits = changedPlot.Plot.GetAxisLimits();
-            ChangeXAxes(changedPlot, newAxisLimits.XMin, newAxisLimits.XMax);
+            AxisLimits newAxisLimits = changedPlot.Plot.GetAxisLimits();
+            ChangeXYAxes(changedPlot, changedPlot.Plot.GetAxisLimits());
             state.AxesMaxMin.Set(new AxesExtrema(newAxisLimits.XMin, newAxisLimits.XMax, newAxisLimits.YMin, newAxisLimits.YMax));
         }
 
-        private void ChangeXAxes(WpfPlot plot, double xMin, double xMax)
+        private void ChangeXYAxes(WpfPlot plot, AxisLimits newAxisLimits)
         {
             plot.Configuration.AxesChangedEventEnabled = false;
-            plot.Plot.SetAxisLimitsX(xMin, xMax);
+            plot.Plot.SetAxisLimitsX(newAxisLimits.XMin, newAxisLimits.XMax);
+            plot.Plot.SetAxisLimitsY(newAxisLimits.YMin, newAxisLimits.YMax);
             plot.Render();
             plot.Configuration.AxesChangedEventEnabled = true;
         }
@@ -155,7 +149,10 @@ namespace MEATaste.Views.PlotSignal
         {
             var axesMaxMin = state.AxesMaxMin.Get();
             if (axesMaxMin != null)
-                ChangeXAxes(Model.PlotControl, axesMaxMin.XMin, axesMaxMin.XMax);
+            {
+                ChangeXYAxes(
+                    Model.PlotControl, new AxisLimits(axesMaxMin.XMin, axesMaxMin.XMax, axesMaxMin.YMin, axesMaxMin.YMax));
+            }
         }
 
 

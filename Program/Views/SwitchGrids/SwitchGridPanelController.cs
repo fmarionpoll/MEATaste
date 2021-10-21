@@ -13,7 +13,7 @@ namespace MEATaste.Views.SwitchGrids
     {
         public SwitchGridsPanelModel Model { get; }
         private readonly ApplicationState state;
-        private List<PlotSignalPanel> plotSignalList;
+        private List<PlotSignalPanel> plotSignalList = new();
 
         public SwitchGridsPanelController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
@@ -28,7 +28,7 @@ namespace MEATaste.Views.SwitchGrids
         {
             List<int> listSelectedChannels = new(state.DataSelected.Get().Channels.Keys.ToList());
             //UpdateSelectedElectrodeData(listSelectedChannels);
-            if (plotSignalList == null || listSelectedChannels.Count == 0) return;
+            if (plotSignalList.Count == 0 || listSelectedChannels.Count == 0) return;
 
             if (state.DataSelected.Get().IsLoadingDataFromFileNeeded())
                 LoadDataFromFilev2();
@@ -53,7 +53,7 @@ namespace MEATaste.Views.SwitchGrids
             sw.Start();
             H5FileReader.A13ReadAllDataFromChannelsParallel(state.DataSelected.Get());
             sw.Stop();
-            Trace.WriteLine("time to read file = " + sw.Elapsed.Seconds);
+            Trace.WriteLine($"--> nchannels= {state.DataSelected.Get().Channels.Count} read in t(s)= {sw.Elapsed.Seconds}");
             Mouse.OverrideCursor = null;
         }
 
@@ -61,12 +61,11 @@ namespace MEATaste.Views.SwitchGrids
         {
             if (plotSignalList == null || Model.NColumns * Model.NRows != plotSignalList.Count)
             {
-                Grid mainGrid = new();
                 rootGrid.Children.Clear();
+                plotSignalList.Clear();
+                Grid mainGrid = new();
                 rootGrid.Children.Add(mainGrid);
-                plotSignalList = new();
-                int index = 0;
-
+               
                 for (var icol = 0; icol < Model.NColumns; icol++)
                 {
                     Grid gridCol = new();
@@ -76,16 +75,10 @@ namespace MEATaste.Views.SwitchGrids
 
                     for (var irow = 0; irow < Model.NRows; irow++)
                     {
-                        Grid gridRow = new()
-                        {
-                            Name = "grid" + icol + "_" + irow
-                        };
+                        Grid gridRow = new();
                         PlotSignalPanel plotPanel = new();
-                        plotPanel.SetId(index);
-                        plotPanel.Name = "plot" + index;
                         plotSignalList.Add(plotPanel);
                         gridRow.Children.Add(plotPanel);
-                        index++;
 
                         gridCol.RowDefinitions.Add(new RowDefinition());
                         gridCol.Children.Add(gridRow);
@@ -94,7 +87,7 @@ namespace MEATaste.Views.SwitchGrids
                     }
                 }
             }
-            //ChangeSelectedElectrode();
+            ChangeSelectedElectrode();
         }
     }
 }

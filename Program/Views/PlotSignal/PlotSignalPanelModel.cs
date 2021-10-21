@@ -8,9 +8,7 @@ namespace MEATaste.Views.PlotSignal
     public class PlotSignalPanelModel : INotifyPropertyChanged
     {
         private WpfPlot plotControl;
-        private int id;
-
-
+        
         public WpfPlot PlotControl
         {
             get => plotControl;
@@ -19,17 +17,6 @@ namespace MEATaste.Views.PlotSignal
                 if (plotControl == value) return;
                 plotControl = value;
                 OnPropertyChanged(nameof(PlotControl));
-            }
-        }
-
-        public int Id
-        {
-            get => id;
-            set
-            {
-                if (id == value) return;
-                id = value;
-                OnPropertyChanged(nameof(Id));
             }
         }
 
