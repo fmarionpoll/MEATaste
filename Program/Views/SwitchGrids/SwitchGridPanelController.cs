@@ -27,7 +27,6 @@ namespace MEATaste.Views.SwitchGrids
         private void ChangeSelectedElectrode()
         {
             List<int> listSelectedChannels = new(state.DataSelected.Get().Channels.Keys.ToList());
-            //UpdateSelectedElectrodeData(listSelectedChannels);
             if (plotSignalList.Count == 0 || listSelectedChannels.Count == 0) return;
 
             if (state.DataSelected.Get().IsLoadingDataFromFileNeeded())
@@ -59,31 +58,33 @@ namespace MEATaste.Views.SwitchGrids
 
         public void DoIt(Grid rootGrid)
         {
-            if (plotSignalList == null || Model.NColumns * Model.NRows != plotSignalList.Count)
+            if (Model.NColumns * Model.NRows != plotSignalList.Count)
             {
                 rootGrid.Children.Clear();
                 plotSignalList.Clear();
                 Grid mainGrid = new();
                 rootGrid.Children.Add(mainGrid);
                
-                for (var icol = 0; icol < Model.NColumns; icol++)
+                for (var column = 0; column < Model.NColumns; column++)
                 {
                     Grid gridCol = new();
                     mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
                     mainGrid.Children.Add(gridCol);
-                    Grid.SetColumn(gridCol, icol);
+                    Grid.SetColumn(gridCol, column);
 
-                    for (var irow = 0; irow < Model.NRows; irow++)
+                    for (var row = 0; row < Model.NRows; row++)
                     {
-                        Grid gridRow = new();
                         PlotSignalPanel plotPanel = new();
+                        //TODO : stpre row & col
                         plotSignalList.Add(plotPanel);
+                        
+                        Grid gridRow = new();
                         gridRow.Children.Add(plotPanel);
 
                         gridCol.RowDefinitions.Add(new RowDefinition());
                         gridCol.Children.Add(gridRow);
 
-                        Grid.SetRow(gridRow, irow);
+                        Grid.SetRow(gridRow, row);
                     }
                 }
             }
