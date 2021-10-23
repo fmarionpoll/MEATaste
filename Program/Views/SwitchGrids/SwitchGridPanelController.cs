@@ -52,7 +52,7 @@ namespace MEATaste.Views.SwitchGrids
             sw.Start();
             H5FileReader.A13ReadAllDataFromChannelsParallel(state.DataSelected.Get());
             sw.Stop();
-            Trace.WriteLine($"--> nchannels= {state.DataSelected.Get().Channels.Count} read in t(s)= {sw.Elapsed.Seconds}");
+            Trace.WriteLine($"--> channels= {state.DataSelected.Get().Channels.Count} read in t(s)= {sw.Elapsed.Seconds}");
             Mouse.OverrideCursor = null;
         }
 
