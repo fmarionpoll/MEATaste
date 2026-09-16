@@ -29,6 +29,8 @@ namespace MEATaste.Views.MapVoltage
         private double scaleAmplitude = 1;
         private List<int> selectedChannels = new();
 
+        private ScottPlot.Plottables.Heatmap heatmapPlottable;
+
         public MapVoltageController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
             this.state = state;
@@ -42,6 +44,7 @@ namespace MEATaste.Views.MapVoltage
         public void AttachControlToModel(WpfPlot wpfControl)
         {
             Model.PlotControl = wpfControl;
+            heatmapPlottable = null;
             wpfControl.MouseDown += OnPlotMouseDown;
             try
             {
@@ -112,6 +115,7 @@ namespace MEATaste.Views.MapVoltage
             StopPlayback();
             captureScaleFromFirstFrame = true;
             Model.AutoScale = true;
+            heatmapPlottable = null;
             chunkBuffer.TryLoad(state.MeaExperiment.Get(), 0);
             SetPlayheadSeconds(0);
         }
@@ -253,15 +257,11 @@ namespace MEATaste.Views.MapVoltage
             var lsbMv = experiment.DataAcquisitionSettings.Lsb * 1000;
             var means = chunkBuffer.MeansMv(lsbMv, VoltageZero);
             var (xMin, xMax, yMin, yMax) = GetElectrodeLimits(experiment);
+            var intensities = BuildVoltageGrid(experiment, means, xMin, xMax, yMin, yMax, 10);
 
             if (Model.AutoScale || captureScaleFromFirstFrame)
             {
-                var a = 0.0;
-                foreach (var v in means)
-                {
-                    var abs = Math.Abs(v);
-                    if (abs > a) a = abs;
-                }
+                var a = MaxAbsOccupied(intensities);
                 if (a <= 0) a = 1e-6;
                 scaleAmplitude = a;
                 Model.ScaleAmplitudeText = scaleAmplitude.ToString("0.000");
@@ -273,67 +273,74 @@ namespace MEATaste.Views.MapVoltage
             }
 
             var plot = Model.PlotControl.Plot;
-            ClearPlot(plot);
-
-            var scaleData = new double[,] { { -scaleAmplitude, scaleAmplitude } };
-            var scaleMap = plot.Add.Heatmap(scaleData);
-            scaleMap.Colormap = colormap;
-            scaleMap.ManualRange = new ScottPlot.Range(-scaleAmplitude, scaleAmplitude);
-            scaleMap.Rectangle = new CoordinateRect(xMin - 1e6, xMin - 1e6 + 1, yMin, yMin + 1);
-            plot.Add.ColorBar(scaleMap);
-
-            var span = Math.Max(xMax - xMin, yMax - yMin);
-            var markerPx = span > 2500 ? 7f : 10f;
-            for (var i = 0; i < experiment.Electrodes.Length; i++)
+            if (heatmapPlottable == null || !plot.GetPlottables().Contains(heatmapPlottable))
             {
-                var electrode = experiment.Electrodes[i].Electrode;
-                var t = (means[i] / scaleAmplitude + 1) / 2;
-                var color = colormap.GetColor(t);
-                var marker = plot.Add.Marker(electrode.XuM, electrode.YuM);
-                marker.Shape = MarkerShape.FilledSquare;
-                marker.Size = markerPx;
-                marker.Color = color;
+                plot.Clear();
+                RemoveColorBars(plot);
+                heatmapPlottable = plot.Add.Heatmap(intensities);
+                heatmapPlottable.Colormap = colormap;
+                plot.Add.ColorBar(heatmapPlottable);
+                plot.Axes.Bottom.Label.Text = "x (µm)";
+                plot.Axes.Left.Label.Text = "y (µm)";
+            }
+            else
+            {
+                heatmapPlottable.Intensities = intensities;
             }
 
-            OverlaySelectedElectrodes(plot, experiment);
-            var pad = Math.Max(40, span * 0.04);
-            plot.Axes.SetLimits(xMin - pad, xMax + pad, yMin - pad, yMax + pad);
-            plot.Axes.Bottom.Label.Text = "x (µm)";
-            plot.Axes.Left.Label.Text = "y (µm)";
+            heatmapPlottable.Colormap = colormap;
+            heatmapPlottable.Rectangle = new CoordinateRect(xMin, xMax, yMin, yMax);
+            heatmapPlottable.ManualRange = new ScottPlot.Range(-scaleAmplitude, scaleAmplitude);
+            plot.Axes.SetLimits(xMin, xMax, yMin, yMax);
             plot.Title($"t = {state.PlayheadTime.Get():0.000} s");
 
             Application.Current?.Dispatcher.Invoke(() => Model.PlotControl.Refresh());
         }
 
-        private static void ClearPlot(Plot plot)
+        private static void RemoveColorBars(Plot plot)
         {
-            plot.Clear();
-            var leftovers = plot.GetPlottables().ToArray();
-            foreach (var plottable in leftovers)
-                plot.Remove(plottable);
+            foreach (var panel in plot.Axes.GetPanels().ToArray())
+            {
+                if (panel.GetType().Name.Contains("ColorBar", StringComparison.OrdinalIgnoreCase))
+                    plot.Axes.Remove(panel);
+            }
         }
 
-        private void OverlaySelectedElectrodes(Plot plot, MeaExperiment experiment)
+        private static double[,] BuildVoltageGrid(
+            MeaExperiment experiment,
+            double[] means,
+            double xMin,
+            double xMax,
+            double yMin,
+            double yMax,
+            double step)
         {
-            if (selectedChannels.Count == 0) return;
+            var xItems = (int)((xMax - xMin) / step) + 1;
+            var yItems = (int)((yMax - yMin) / step) + 1;
+            var intensities = new double[xItems, yItems];
 
-            var xs = new List<double>();
-            var ys = new List<double>();
-            foreach (var channel in selectedChannels)
+            for (var e = 0; e < experiment.Electrodes.Length; e++)
             {
-                var match = experiment.Electrodes.FirstOrDefault(e => e.Electrode.Channel == channel);
-                if (match == null) continue;
-                xs.Add(match.Electrode.XuM);
-                ys.Add(match.Electrode.YuM);
+                var electrode = experiment.Electrodes[e].Electrode;
+                var i = (int)((electrode.XuM - xMin) / step);
+                var j = (int)((electrode.YuM - yMin) / step);
+                if (i < 0 || j < 0 || i >= xItems || j >= yItems) continue;
+                intensities[i, j] = means[e];
             }
 
-            if (xs.Count == 0) return;
-            var markers = plot.Add.Scatter(xs, ys);
-            markers.MarkerShape = MarkerShape.OpenCircle;
-            markers.MarkerSize = 14;
-            markers.MarkerLineWidth = 1.5f;
-            markers.MarkerLineColor = Colors.Black;
-            markers.LineWidth = 0;
+            return intensities;
+        }
+
+        private static double MaxAbsOccupied(double[,] values)
+        {
+            var max = 0.0;
+            foreach (var v in values)
+            {
+                var abs = Math.Abs(v);
+                if (abs > max) max = abs;
+            }
+
+            return max;
         }
 
         private static (double, double, double, double) GetElectrodeLimits(MeaExperiment experiment)

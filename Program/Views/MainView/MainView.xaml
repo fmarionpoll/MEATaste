@@ -10,7 +10,7 @@
         xmlns:switchMaps="clr-namespace:MEATaste.Views.SwitchMaps"
         xmlns:listElectrodes="clr-namespace:MEATaste.Views.ListElectrodes"
         mc:Ignorable="d"
-        Title="MainWindow" Width="1024" Height="500">
+        Title="MainWindow" Width="1024" Height="560">
 
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
@@ -32,7 +32,7 @@
                 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="280"/>
+                    <RowDefinition Height="340"/>
                 </Grid.RowDefinitions>
 
                 <listElectrodes:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
