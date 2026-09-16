@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using ScottPlot;
+using ScottPlot.WPF;
 
 namespace MEATaste.Views.MapHeatscale
 {

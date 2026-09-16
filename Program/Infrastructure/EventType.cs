@@ -7,5 +7,6 @@
         AxesMaxMinChanged = 2,
         FilterChanged = 3,
         GridPropertiesChanged = 4,
+        PlayheadTimeChanged = 5,
     }
 }

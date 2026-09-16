@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using MEATaste.Infrastructure;
 using ScottPlot;
-using ScottPlot.Drawing;
+using ScottPlot.WPF;
 
 namespace MEATaste.Views.MapHeatscale
 {
@@ -32,11 +32,14 @@ namespace MEATaste.Views.MapHeatscale
 
             var (xMin, xMax, yMin, yMax) = GetElectrodeLimits();
             var intensities = GetNbSpikes(xMin, xMax, yMin, yMax, 10);
-            
-            var hmc = plot.AddHeatmapCoordinated(intensities, xMin, xMax, yMin, yMax, Colormap.Turbo);
-            var cb = plot.AddColorbar(hmc);
-            plot.Render();
-            Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Render(); });
+
+            var heatmap = plot.Add.Heatmap(intensities);
+            heatmap.Colormap = new ScottPlot.Colormaps.Turbo();
+            heatmap.Rectangle = new CoordinateRect(xMin, xMax, yMin, yMax);
+            plot.Add.ColorBar(heatmap);
+            plot.Axes.SetLimits(xMin, xMax, yMin, yMax);
+
+            Application.Current.Dispatcher.Invoke(() => { Model.PlotControl.Refresh(); });
         }
 
         private void ChangeSelectedElectrode()

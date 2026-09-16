@@ -9,6 +9,7 @@ namespace MEATaste.Infrastructure
         public StateProperty<AxesExtrema> AxesMaxMin { get; }
         public StateProperty<int> FilterProperty { get; }
         public StateProperty<DynamicGrid> GridProperties { get; }
+        public StateProperty<double> PlayheadTime { get; }
 
         public ApplicationState(StatePropertyFactory statePropertyFactory)
         {
@@ -17,6 +18,7 @@ namespace MEATaste.Infrastructure
             AxesMaxMin = statePropertyFactory.Create<AxesExtrema>(null, EventType.AxesMaxMinChanged);
             FilterProperty = statePropertyFactory.Create(0, EventType.FilterChanged);
             GridProperties = statePropertyFactory.Create(new DynamicGrid(1, 1), EventType.GridPropertiesChanged);
+            PlayheadTime = statePropertyFactory.Create(0.0, EventType.PlayheadTimeChanged);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
-using ScottPlot;
+using ScottPlot.WPF;
 
 namespace MEATaste.Views.PlotSignal
 {
@@ -22,7 +22,11 @@ namespace MEATaste.Views.PlotSignal
 
         public PlotSignalPanelModel()
         {
-            plotControl = new WpfPlot();
+            plotControl = new WpfPlot
+            {
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                VerticalAlignment = System.Windows.VerticalAlignment.Stretch
+            };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

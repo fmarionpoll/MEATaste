@@ -2,6 +2,7 @@
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.Views.MapHeatscale;
 using MEATaste.Views.MapElectrodes;
+using MEATaste.Views.MapVoltage;
 using MEATaste.Views.FileOpen;
 using MEATaste.Views.ListElectrodes;
 using MEATaste.Views.MainView;
@@ -39,6 +40,7 @@ namespace MEATaste.Infrastructure
                 services.AddSingleton<ListElectrodesPanelController>();
                 services.AddSingleton<MapElectrodesController>();
                 services.AddSingleton<MapHeatscalelController>();
+                services.AddSingleton<MapVoltageController>();
                 services.AddTransient<PlotSignalPanelController>();
                 services.AddSingleton<PlotScrollBarPanelController>();
                 services.AddSingleton<SwitchMapsPanelController>(); 

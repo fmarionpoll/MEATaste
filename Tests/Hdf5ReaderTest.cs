@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Threading.Tasks;
-using HDF5.NET;
+using PureHDF;
+using PureHDF.VOL.Native;
 using MEATaste.DataMEA.MaxWell;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace Tests
     public class Hdf5ReaderTest
     {
 
-        private static H5File Root { get; set; }
+        private static NativeFile Root { get; set; }
         private string fileName;
 
         private string GetFileNameHdd(bool optionHdd)

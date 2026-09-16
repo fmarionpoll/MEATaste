@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Version>1.0.2</Version>
     <Authors>FMP</Authors>
@@ -17,7 +17,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="HDF.PInvoke.1.10" Version="1.10.612" />
-    <PackageReference Include="Intrinsics.ISA-L.PInvoke" Version="2.30.0" />
+    <PackageReference Include="PureHDF" Version="2.2.0" />
+    <PackageReference Include="PureHDF.Filters.Deflate.ISA-L" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="ScottPlot.WPF" Version="5.1.59" />

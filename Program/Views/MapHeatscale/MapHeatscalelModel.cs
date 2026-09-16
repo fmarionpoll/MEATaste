@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MEATaste.Annotations;
-using ScottPlot;
+using ScottPlot.WPF;
 
 namespace MEATaste.Views.MapHeatscale
 {

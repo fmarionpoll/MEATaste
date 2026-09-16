@@ -1,0 +1,52 @@
+<UserControl x:Class="MEATaste.Views.MapVoltage.VoltageMapPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+             mc:Ignorable="d"
+             d:DesignHeight="280" d:DesignWidth="280"
+             IsVisibleChanged="VoltageMapPanel_IsVisibleChanged">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScottPlot:WpfPlot x:Name="PlotControl" Grid.Row="0" Loaded="PlotControl_Loaded" />
+
+        <StackPanel Grid.Row="1" Margin="2,2,2,2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="&lt;&lt;" Width="28" Height="22" Click="SkipBack_Click" ToolTip="Back 100 ms"/>
+                <Button Grid.Column="1" Content="&lt;" Width="22" Height="22" Click="StepBack_Click" ToolTip="Back 10 ms"/>
+                <TextBox Grid.Column="2" Height="22" Margin="2,0" Text="{Binding TimeText, UpdateSourceTrigger=PropertyChanged}"
+                         KeyUp="TimeText_KeyUp" ToolTip="Time (s)"/>
+                <Button Grid.Column="3" Content="&gt;" Width="22" Height="22" Click="StepForward_Click" ToolTip="Forward 10 ms"/>
+                <Button Grid.Column="4" Content="&gt;&gt;" Width="28" Height="22" Click="SkipForward_Click" ToolTip="Forward 100 ms"/>
+                <Button Grid.Column="5" Content="{Binding RunStopLabel}" MinWidth="40" Height="22" Margin="2,0,0,0" Click="RunStop_Click"/>
+                <CheckBox Grid.Column="6" Content="Loop" VerticalAlignment="Center" Margin="4,0,0,0" IsChecked="{Binding Loop}"/>
+            </Grid>
+            <Grid Margin="0,2,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0" Content="Auto" VerticalAlignment="Center"
+                          IsChecked="{Binding AutoScale}" Checked="AutoScale_Changed" Unchecked="AutoScale_Changed"/>
+                <Label Grid.Column="1" Content="±mV" Padding="6,0,2,0" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="2" Height="22" Text="{Binding ScaleAmplitudeText, UpdateSourceTrigger=PropertyChanged}"
+                         KeyUp="ScaleText_KeyUp"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

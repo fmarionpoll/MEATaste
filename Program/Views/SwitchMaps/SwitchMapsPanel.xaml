@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:electrodesMap="clr-namespace:MEATaste.Views.MapElectrodes"
              xmlns:electrodesHeatmap="clr-namespace:MEATaste.Views.MapHeatscale"
+             xmlns:electrodesVoltage="clr-namespace:MEATaste.Views.MapVoltage"
              mc:Ignorable="d" d:DesignHeight="280" d:DesignWidth="280">
 
 
     <Grid  >
-        <TabControl ItemsSource="{Binding TabCollection}"
-                    SelectedIndex="{Binding SelectedTabIndex}"
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}"
                     Margin="20,5,5,5" BorderBrush="{x:Null}"
                     TabStripPlacement="Bottom" >
             <TabItem Header="Map" >
@@ -18,6 +18,9 @@
             </TabItem>
             <TabItem Header="HeatMap">
                 <electrodesHeatmap:ElectrodesHeatMapPanel />
+            </TabItem>
+            <TabItem Header="Voltage">
+                <electrodesVoltage:VoltageMapPanel />
             </TabItem>
         </TabControl>
     </Grid>
