@@ -9,11 +9,16 @@
              mc:Ignorable="d" d:DesignHeight="280" d:DesignWidth="280">
 
 
-    <Grid  >
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}"
-                    Margin="20,5,5,5" BorderBrush="{x:Null}"
-                    TabStripPlacement="Bottom" >
-            <TabItem Header="Map" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0" SelectedIndex="{Binding SelectedTabIndex}"
+                    Margin="8,5,5,0" BorderBrush="{x:Null}"
+                    TabStripPlacement="Bottom">
+            <TabItem Header="Map">
                 <electrodesMap:MapElectrodes />
             </TabItem>
             <TabItem Header="HeatMap">
@@ -23,5 +28,18 @@
                 <electrodesVoltage:VoltageMapPanel />
             </TabItem>
         </TabControl>
+        <ScrollBar Grid.Row="1" Orientation="Horizontal" Margin="8,2,8,2" Height="18"
+                   Minimum="0"
+                   Maximum="{Binding PlayheadMaximum}"
+                   ViewportSize="{Binding PlayheadViewportSize}"
+                   Value="{Binding PlayheadValue, Mode=TwoWay}"
+                   SmallChange="{Binding PlayheadSmallChange}"
+                   LargeChange="{Binding PlayheadLargeChange}"
+                   IsEnabled="{Binding PlayheadEnabled}"
+                   ToolTip="Recording time"
+                   Scroll="PlayheadScrollBar_Scroll"/>
+        <Button Grid.Row="2" x:Name="DockToggleButton" Content="Undock"
+                HorizontalAlignment="Right" Margin="5,2,8,4" Padding="8,2"
+                Click="DockToggleButton_Click"/>
     </Grid>
 </UserControl>

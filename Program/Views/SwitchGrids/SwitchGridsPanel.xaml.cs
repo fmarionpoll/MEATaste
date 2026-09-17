@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MEATaste.Views.SwitchGrids
@@ -7,15 +9,28 @@ namespace MEATaste.Views.SwitchGrids
     {
         private readonly SwitchGridsPanelController controller;
 
+        public event EventHandler DockToggleRequested;
+
         public SwitchGridsPanel()
         {
             controller = App.ServiceProvider.GetService<SwitchGridsPanelController>();
-            DataContext = controller!.Model; InitializeComponent();
+            DataContext = controller!.Model;
+            InitializeComponent();
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        public void SetDocked(bool docked)
+        {
+            DockToggleButton.Content = docked ? "Undock" : "Dock";
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             controller.DoIt(Root);
+        }
+
+        private void DockToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            DockToggleRequested?.Invoke(this, EventArgs.Empty);
         }
     }
 }

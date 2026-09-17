@@ -7,14 +7,15 @@ using System.Windows.Threading;
 using MEATaste.DataMEA.MaxWell;
 using MEATaste.DataMEA.Models;
 using MEATaste.Infrastructure;
+using MEATaste.Views;
 using ScottPlot;
+using ScottPlot.Plottables;
 using ScottPlot.WPF;
 
 namespace MEATaste.Views.MapVoltage
 {
     public class MapVoltageController
     {
-        private const double ClickRadiusUm = 30;
         private const int PlayFps = 20;
         private const ushort VoltageZero = 512;
 
@@ -28,8 +29,12 @@ namespace MEATaste.Views.MapVoltage
         private bool captureScaleFromFirstFrame = true;
         private double scaleAmplitude = 1;
         private List<int> selectedChannels = new();
-
-        private ScottPlot.Plottables.Heatmap heatmapPlottable;
+        private Heatmap colorScale;
+        private Marker[] electrodeMarkers;
+        private Scatter selectionOverlay;
+        private Point mouseDownPos;
+        private bool mouseDown;
+        private double playSpeed = 1;
 
         public MapVoltageController(ApplicationState state, IEventSubscriber eventSubscriber)
         {
@@ -44,16 +49,11 @@ namespace MEATaste.Views.MapVoltage
         public void AttachControlToModel(WpfPlot wpfControl)
         {
             Model.PlotControl = wpfControl;
-            heatmapPlottable = null;
+            colorScale = null;
+            electrodeMarkers = null;
+            selectionOverlay = null;
             wpfControl.MouseDown += OnPlotMouseDown;
-            try
-            {
-                wpfControl.UserInputProcessor.IsEnabled = false;
-            }
-            catch (Exception)
-            {
-                // ScottPlot versions differ; click-to-select still works.
-            }
+            wpfControl.MouseUp += OnPlotMouseUp;
 
             if (panelActive && state.MeaExperiment.Get() != null)
                 RedrawHeatmap();
@@ -68,6 +68,24 @@ namespace MEATaste.Views.MapVoltage
                 RedrawHeatmap();
         }
 
+        public void ZoomIn() => Zoom(MapViewGeometry.ZoomFactor);
+
+        public void ZoomOut() => Zoom(1 / MapViewGeometry.ZoomFactor);
+
+        public void Fit()
+        {
+            var experiment = state.MeaExperiment.Get();
+            if (experiment?.Electrodes == null || Model.PlotControl == null) return;
+            var full = MapViewGeometry.FullLimits(experiment);
+            MapViewGeometry.SetLimits(Model.PlotControl.Plot, full.XMin, full.XMax, full.YMin, full.YMax);
+            Model.PlotControl.Refresh();
+        }
+
+        public void SetPlaySpeed(double speed)
+        {
+            playSpeed = speed <= 0 ? 1 : speed;
+        }
+
         public void ToggleRun()
         {
             if (Model.IsRunning)
@@ -75,10 +93,6 @@ namespace MEATaste.Views.MapVoltage
             else
                 StartPlayback();
         }
-
-        public void StepSmall(int direction) => NudgeSamples(direction * ChunkSampleCount());
-
-        public void StepLarge(int direction) => NudgeSamples(direction * ChunkSampleCount() * 10);
 
         public void CommitTimeText()
         {
@@ -115,7 +129,8 @@ namespace MEATaste.Views.MapVoltage
             StopPlayback();
             captureScaleFromFirstFrame = true;
             Model.AutoScale = true;
-            heatmapPlottable = null;
+            colorScale = null;
+            electrodeMarkers = null;
             chunkBuffer.TryLoad(state.MeaExperiment.Get(), 0);
             SetPlayheadSeconds(0);
         }
@@ -124,7 +139,6 @@ namespace MEATaste.Views.MapVoltage
         {
             var seconds = state.PlayheadTime.Get();
             Model.TimeText = seconds.ToString("0.000");
-            FollowPlayhead(seconds);
             if (panelActive)
                 RedrawHeatmap();
         }
@@ -132,8 +146,8 @@ namespace MEATaste.Views.MapVoltage
         private void OnSelectedChannelsChanged()
         {
             selectedChannels = state.DataSelected.Get().Channels.Keys.ToList();
-            if (panelActive)
-                RedrawHeatmap();
+            ApplySelection(zoomToSelection: true);
+            Model.PlotControl?.Refresh();
         }
 
         private void StartPlayback()
@@ -162,7 +176,7 @@ namespace MEATaste.Views.MapVoltage
             }
 
             var samplingRate = experiment.DataAcquisitionSettings.SamplingRate;
-            var step = Math.Max(1, (long)Math.Round(samplingRate / PlayFps));
+            var step = Math.Max(1, (long)Math.Round(samplingRate / PlayFps * playSpeed));
             if (!NudgeSamples(step) && !Model.Loop)
                 StopPlayback();
         }
@@ -220,26 +234,26 @@ namespace MEATaste.Views.MapVoltage
             state.PlayheadTime.Set(seconds);
         }
 
-        private int ChunkSampleCount()
+        private void Zoom(double factor)
         {
-            var experiment = state.MeaExperiment.Get();
-            if (experiment == null) return 200;
-            return Math.Max(1, experiment.DataAcquisitionSettings.chunkSize);
+            if (Model.PlotControl == null) return;
+            MapViewGeometry.ZoomAboutCenter(Model.PlotControl.Plot, factor);
+            Model.PlotControl.Refresh();
         }
 
-        private void FollowPlayhead(double timeSeconds)
+        private void ApplySelection(bool zoomToSelection)
         {
-            var axes = state.AxesMaxMin.Get();
-            if (axes == null) return;
-            if (timeSeconds >= axes.XMin && timeSeconds <= axes.XMax) return;
-
-            var width = axes.XMax - axes.XMin;
-            if (width <= 0) return;
-
-            if (timeSeconds > axes.XMax)
-                state.AxesMaxMin.Set(new AxesExtrema(timeSeconds - width, timeSeconds, axes.YMin, axes.YMax));
-            else
-                state.AxesMaxMin.Set(new AxesExtrema(timeSeconds, timeSeconds + width, axes.YMin, axes.YMax));
+            if (Model.PlotControl == null) return;
+            var experiment = state.MeaExperiment.Get();
+            if (experiment == null) return;
+            var plot = Model.PlotControl.Plot;
+            selectionOverlay = MapViewGeometry.ReplaceSelectionOverlay(plot, selectionOverlay, experiment, selectedChannels);
+            if (zoomToSelection && selectedChannels.Count > 0)
+            {
+                var sel = MapViewGeometry.SelectionLimits(experiment, selectedChannels);
+                if (sel != null)
+                    MapViewGeometry.SetLimits(plot, sel.Value.XMin, sel.Value.XMax, sel.Value.YMin, sel.Value.YMax);
+            }
         }
 
         private void RedrawHeatmap()
@@ -256,12 +270,10 @@ namespace MEATaste.Views.MapVoltage
 
             var lsbMv = experiment.DataAcquisitionSettings.Lsb * 1000;
             var means = chunkBuffer.MeansMv(lsbMv, VoltageZero);
-            var (xMin, xMax, yMin, yMax) = GetElectrodeLimits(experiment);
-            var intensities = BuildVoltageGrid(experiment, means, xMin, xMax, yMin, yMax, 10);
 
             if (Model.AutoScale || captureScaleFromFirstFrame)
             {
-                var a = MaxAbsOccupied(intensities);
+                var a = MaxAbsOccupied(means);
                 if (a <= 0) a = 1e-6;
                 scaleAmplitude = a;
                 Model.ScaleAmplitudeText = scaleAmplitude.ToString("0.000");
@@ -272,66 +284,45 @@ namespace MEATaste.Views.MapVoltage
                 }
             }
 
+            var colors = MapViewGeometry.MapValues(colormap, means, -scaleAmplitude, scaleAmplitude);
             var plot = Model.PlotControl.Plot;
-            if (heatmapPlottable == null || !plot.GetPlottables().Contains(heatmapPlottable))
+            var firstDraw = electrodeMarkers == null
+                            || colorScale == null
+                            || !plot.GetPlottables().Contains(colorScale);
+
+            if (firstDraw)
             {
                 plot.Clear();
-                RemoveColorBars(plot);
-                heatmapPlottable = plot.Add.Heatmap(intensities);
-                heatmapPlottable.Colormap = colormap;
-                plot.Add.ColorBar(heatmapPlottable);
+                MapViewGeometry.RemoveColorBars(plot);
+                selectionOverlay = null;
+                colorScale = MapViewGeometry.AddHiddenColorScale(plot, colormap, -scaleAmplitude, scaleAmplitude);
+                MapViewGeometry.GetElectrodePositions(experiment, out var xs, out var ys);
+                electrodeMarkers = MapViewGeometry.AddColoredMarkers(plot, xs, ys, colors);
                 plot.Axes.Bottom.Label.Text = "x (µm)";
                 plot.Axes.Left.Label.Text = "y (µm)";
             }
             else
             {
-                heatmapPlottable.Intensities = intensities;
+                MapViewGeometry.SetColorScaleRange(colorScale, colormap, -scaleAmplitude, scaleAmplitude);
+                MapViewGeometry.UpdateMarkerColors(electrodeMarkers, colors);
             }
 
-            heatmapPlottable.Colormap = colormap;
-            heatmapPlottable.Rectangle = new CoordinateRect(xMin, xMax, yMin, yMax);
-            heatmapPlottable.ManualRange = new ScottPlot.Range(-scaleAmplitude, scaleAmplitude);
-            plot.Axes.SetLimits(xMin, xMax, yMin, yMax);
             plot.Title($"t = {state.PlayheadTime.Get():0.000} s");
+
+            if (firstDraw)
+            {
+                ApplySelection(zoomToSelection: selectedChannels.Count > 0);
+                if (selectedChannels.Count == 0)
+                {
+                    var (xMin, xMax, yMin, yMax) = MapViewGeometry.FullLimits(experiment);
+                    MapViewGeometry.SetLimits(plot, xMin, xMax, yMin, yMax);
+                }
+            }
 
             Application.Current?.Dispatcher.Invoke(() => Model.PlotControl.Refresh());
         }
 
-        private static void RemoveColorBars(Plot plot)
-        {
-            foreach (var panel in plot.Axes.GetPanels().ToArray())
-            {
-                if (panel.GetType().Name.Contains("ColorBar", StringComparison.OrdinalIgnoreCase))
-                    plot.Axes.Remove(panel);
-            }
-        }
-
-        private static double[,] BuildVoltageGrid(
-            MeaExperiment experiment,
-            double[] means,
-            double xMin,
-            double xMax,
-            double yMin,
-            double yMax,
-            double step)
-        {
-            var xItems = (int)((xMax - xMin) / step) + 1;
-            var yItems = (int)((yMax - yMin) / step) + 1;
-            var intensities = new double[xItems, yItems];
-
-            for (var e = 0; e < experiment.Electrodes.Length; e++)
-            {
-                var electrode = experiment.Electrodes[e].Electrode;
-                var i = (int)((electrode.XuM - xMin) / step);
-                var j = (int)((electrode.YuM - yMin) / step);
-                if (i < 0 || j < 0 || i >= xItems || j >= yItems) continue;
-                intensities[i, j] = means[e];
-            }
-
-            return intensities;
-        }
-
-        private static double MaxAbsOccupied(double[,] values)
+        private static double MaxAbsOccupied(double[] values)
         {
             var max = 0.0;
             foreach (var v in values)
@@ -343,42 +334,30 @@ namespace MEATaste.Views.MapVoltage
             return max;
         }
 
-        private static (double, double, double, double) GetElectrodeLimits(MeaExperiment experiment)
-        {
-            var first = experiment.Electrodes[0].Electrode;
-            var xMin = first.XuM;
-            var xMax = first.XuM;
-            var yMin = first.YuM;
-            var yMax = first.YuM;
-            foreach (var electrode in experiment.Electrodes)
-            {
-                if (xMin > electrode.Electrode.XuM) xMin = electrode.Electrode.XuM;
-                if (yMin > electrode.Electrode.YuM) yMin = electrode.Electrode.YuM;
-                if (xMax < electrode.Electrode.XuM) xMax = electrode.Electrode.XuM;
-                if (yMax < electrode.Electrode.YuM) yMax = electrode.Electrode.YuM;
-            }
-
-            return (xMin, xMax, yMin, yMax);
-        }
-
         private void OnPlotMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left) return;
+            mouseDown = true;
+            mouseDownPos = e.GetPosition(Model.PlotControl);
+        }
+
+        private void OnPlotMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!mouseDown || e.ChangedButton != MouseButton.Left) return;
+            mouseDown = false;
+            var pos = e.GetPosition(Model.PlotControl);
+            if (Math.Abs(pos.X - mouseDownPos.X) > 5 || Math.Abs(pos.Y - mouseDownPos.Y) > 5)
+                return;
+            SelectAt(pos);
+        }
+
+        private void SelectAt(Point pos)
+        {
             var experiment = state.MeaExperiment.Get();
             if (experiment?.Electrodes == null || Model.PlotControl == null) return;
 
-            var pos = e.GetPosition(Model.PlotControl);
-            Coordinates coord;
-            try
-            {
-                coord = Model.PlotControl.Plot.GetCoordinates((float)pos.X, (float)pos.Y);
-            }
-            catch (Exception)
-            {
-                return;
-            }
-
-            var nearest = FindNearestElectrode(experiment, coord.X, coord.Y);
+            var nearest = MapViewGeometry.FindNearestElectrode(
+                Model.PlotControl.Plot, (float)pos.X, (float)pos.Y, experiment);
             if (nearest == null) return;
 
             var channels = new List<int> { nearest.Electrode.Channel };
@@ -390,23 +369,6 @@ namespace MEATaste.Views.MapVoltage
             if (dictionary.IsListEqualToStateSelectedItems(selectedChannels)) return;
             dictionary.TrimDictionaryToList(selectedChannels);
             state.DataSelected.Set(dictionary);
-        }
-
-        private static ElectrodeData FindNearestElectrode(MeaExperiment experiment, double xUm, double yUm)
-        {
-            ElectrodeData nearest = null;
-            var best = ClickRadiusUm * ClickRadiusUm;
-            foreach (var electrodeData in experiment.Electrodes)
-            {
-                var dx = electrodeData.Electrode.XuM - xUm;
-                var dy = electrodeData.Electrode.YuM - yUm;
-                var d2 = dx * dx + dy * dy;
-                if (d2 >= best) continue;
-                best = d2;
-                nearest = electrodeData;
-            }
-
-            return nearest;
         }
     }
 }

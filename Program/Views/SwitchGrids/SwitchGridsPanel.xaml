@@ -19,6 +19,8 @@
                 <Label Content="Rows" Margin="0, 0, 0, 0" VerticalAlignment="Center"/>
                 <TextBox Width="50" VerticalAlignment="Center" Text="{Binding NRows}"/>
                 <Button Content="Do it!"  Margin="10, 0, 0, 0" VerticalAlignment="Center" Click="Button_Click"/>
+                <Button x:Name="DockToggleButton" Content="Undock" Margin="16,0,0,0"
+                        VerticalAlignment="Center" Padding="8,2" Click="DockToggleButton_Click"/>
             </StackPanel>
         </Grid>
         

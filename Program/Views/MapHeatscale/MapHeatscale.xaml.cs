@@ -11,7 +11,7 @@ namespace MEATaste.Views.MapHeatscale
         public ElectrodesHeatMapPanel()
         {
             controller = App.ServiceProvider.GetService<MapHeatscalelController>();
-            DataContext = controller!.Model; 
+            DataContext = controller!.Model;
             InitializeComponent();
         }
 
@@ -20,6 +20,16 @@ namespace MEATaste.Views.MapHeatscale
             var wpfControl = sender as WpfPlot;
             controller.AttachControlToModel(wpfControl);
         }
-        
+
+        private void HeatMapPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            controller.SetActive(IsVisible);
+        }
+
+        private void ZoomIn_Click(object sender, RoutedEventArgs e) => controller.ZoomIn();
+
+        private void ZoomOut_Click(object sender, RoutedEventArgs e) => controller.ZoomOut();
+
+        private void Fit_Click(object sender, RoutedEventArgs e) => controller.Fit();
     }
 }

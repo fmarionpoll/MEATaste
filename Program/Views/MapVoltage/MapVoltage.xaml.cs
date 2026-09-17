@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 using ScottPlot.WPF;
@@ -7,6 +8,7 @@ namespace MEATaste.Views.MapVoltage
 {
     public partial class VoltageMapPanel
     {
+        private static readonly double[] PlaySpeeds = { 0.5, 1, 2, 5, 10 };
         private readonly MapVoltageController controller;
 
         public VoltageMapPanel()
@@ -26,15 +28,21 @@ namespace MEATaste.Views.MapVoltage
             controller.SetActive(IsVisible);
         }
 
-        private void SkipBack_Click(object sender, RoutedEventArgs e) => controller.StepLarge(-1);
-
-        private void StepBack_Click(object sender, RoutedEventArgs e) => controller.StepSmall(-1);
-
-        private void StepForward_Click(object sender, RoutedEventArgs e) => controller.StepSmall(1);
-
-        private void SkipForward_Click(object sender, RoutedEventArgs e) => controller.StepLarge(1);
-
         private void RunStop_Click(object sender, RoutedEventArgs e) => controller.ToggleRun();
+
+        private void ZoomIn_Click(object sender, RoutedEventArgs e) => controller.ZoomIn();
+
+        private void ZoomOut_Click(object sender, RoutedEventArgs e) => controller.ZoomOut();
+
+        private void Fit_Click(object sender, RoutedEventArgs e) => controller.Fit();
+
+        private void Speed_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (controller == null) return;
+            var index = ((ComboBox)sender).SelectedIndex;
+            if (index < 0 || index >= PlaySpeeds.Length) return;
+            controller.SetPlaySpeed(PlaySpeeds[index]);
+        }
 
         private void TimeText_KeyUp(object sender, KeyEventArgs e)
         {

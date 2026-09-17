@@ -10,7 +10,8 @@
         xmlns:switchMaps="clr-namespace:MEATaste.Views.SwitchMaps"
         xmlns:listElectrodes="clr-namespace:MEATaste.Views.ListElectrodes"
         mc:Ignorable="d"
-        Title="MainWindow" Width="1024" Height="560">
+        Title="MEATaste" Width="1024" Height="560"
+        Closing="MainView_Closing">
 
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
@@ -18,40 +19,52 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <Grid  Grid.Row="0">
-            <fileOpen:FileOpenPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <Grid Grid.Row="0">
+            <fileOpen:FileOpenPanel HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
         </Grid>
 
-        <Grid  Grid.Row="1">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="300" MinWidth="180"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*" MinWidth="240"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0" Grid.Row="0">
-                
+            <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="340"/>
+                    <RowDefinition Height="*" MinHeight="80"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="*" MinHeight="160"/>
                 </Grid.RowDefinitions>
 
-                <listElectrodes:ElectrodesListPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+                <listElectrodes:ElectrodesListPanel Grid.Row="0"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
-                <switchMaps:SwitchMapsPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch" ResizeDirection="Rows"
+                              ResizeBehavior="PreviousAndNext"/>
 
+                <Grid x:Name="MapsHost" Grid.Row="2">
+                    <switchMaps:SwitchMapsPanel x:Name="MapsPanel"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </Grid>
             </Grid>
 
-            <Grid Grid.Column="1" Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="60"/>
-                </Grid.RowDefinitions>
-                <switchGrids:SwitchGridsPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                <plotscrollbar:PlotScrollBarPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
+
+            <Grid x:Name="TracesHost" Grid.Column="2">
+                <Grid x:Name="TracesContent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="60"/>
+                    </Grid.RowDefinitions>
+                    <switchGrids:SwitchGridsPanel x:Name="TracesPanel"
+                        Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    <plotscrollbar:PlotScrollBarPanel
+                        Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </Grid>
             </Grid>
-            
         </Grid>
     </Grid>
-
-
 </Window>

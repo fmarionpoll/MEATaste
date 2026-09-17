@@ -18,22 +18,30 @@
         <StackPanel Grid.Row="1" Margin="2,2,2,2">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="&lt;&lt;" Width="28" Height="22" Click="SkipBack_Click" ToolTip="Back 100 ms"/>
-                <Button Grid.Column="1" Content="&lt;" Width="22" Height="22" Click="StepBack_Click" ToolTip="Back 10 ms"/>
-                <TextBox Grid.Column="2" Height="22" Margin="2,0" Text="{Binding TimeText, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Grid.Column="0" Height="22" Margin="0,0,2,0"
+                         Text="{Binding TimeText, UpdateSourceTrigger=PropertyChanged}"
                          KeyUp="TimeText_KeyUp" ToolTip="Time (s)"/>
-                <Button Grid.Column="3" Content="&gt;" Width="22" Height="22" Click="StepForward_Click" ToolTip="Forward 10 ms"/>
-                <Button Grid.Column="4" Content="&gt;&gt;" Width="28" Height="22" Click="SkipForward_Click" ToolTip="Forward 100 ms"/>
-                <Button Grid.Column="5" Content="{Binding RunStopLabel}" MinWidth="40" Height="22" Margin="2,0,0,0" Click="RunStop_Click"/>
-                <CheckBox Grid.Column="6" Content="Loop" VerticalAlignment="Center" Margin="4,0,0,0" IsChecked="{Binding Loop}"/>
+                <Button Grid.Column="1" Content="{Binding RunStopLabel}" MinWidth="40" Height="22" Click="RunStop_Click"/>
+                <CheckBox Grid.Column="2" Content="Loop" VerticalAlignment="Center" Margin="4,0,0,0" IsChecked="{Binding Loop}"/>
+                <ComboBox Grid.Column="3" Width="56" Height="22" Margin="4,0,0,0"
+                          SelectedIndex="1" SelectionChanged="Speed_SelectionChanged" ToolTip="Playback speed">
+                    <ComboBoxItem Content="0.5x"/>
+                    <ComboBoxItem Content="1x"/>
+                    <ComboBoxItem Content="2x"/>
+                    <ComboBoxItem Content="5x"/>
+                    <ComboBoxItem Content="10x"/>
+                </ComboBox>
+                <Button Grid.Column="4" Content="+" Width="24" Height="22" Margin="4,0,0,0" Click="ZoomIn_Click" ToolTip="Zoom in"/>
+                <Button Grid.Column="5" Content="−" Width="24" Height="22" Margin="2,0,0,0" Click="ZoomOut_Click" ToolTip="Zoom out"/>
+                <Button Grid.Column="6" Content="Fit" MinWidth="32" Height="22" Margin="2,0,0,0" Click="Fit_Click" ToolTip="Fit array"/>
             </Grid>
             <Grid Margin="0,2,0,0">
                 <Grid.ColumnDefinitions>
